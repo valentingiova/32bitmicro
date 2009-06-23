@@ -1,0 +1,116 @@
+#
+# * 32bitmicro GCC Makefile include
+# * $URL$
+# * $ID$
+#
+#Copyright (c) 2009, 32bitmicro
+#All rights reserved.
+#
+#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation 
+#and/or other materials provided with the distribution.
+#Neither the name of the 32bitmicro nor the names of its contributors may be used to endorse or promote products derived from this software without 
+#specific prior written permission.
+#
+#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+#BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+#SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+#DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+#OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+#NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ifndef TARGET_SDK_ROOT
+${error TARGET_SDK_ROOT is not defined!}
+endif
+
+ifndef TARGET_SDK_PREFIX
+${error TARGET_SDK_PREFIX is not defined!}
+endif
+
+TARGET_COMPILER=GCC
+AR=${TARGET_SDK_PREFIX}${EXE}
+AS=${TARGET_SDK_PREFIX}as${EXE}
+GCC=${TARGET_SDK_PREFIX}gcc${EXE}
+GXX=${TARGET_SDK_PREFIX}g++${EXE}
+LD=${TARGET_SDK_PREFIX}ld${EXE}
+NM=${TARGET_SDK_PREFIX}nm${EXE}
+OBJCOPY=${TARGET_SDK_PREFIX}objcopy${EXE}
+OBJDUMP=${TARGET_SDK_PREFIX}objdump${EXE}
+RANLIB=${TARGET_SDK_PREFIX}ranlib${EXE}
+STRIP=${TARGET_SDK_PREFIX}strip${EXE}
+READELF=${TARGET_SDK_PREFIX}readelf${EXE}
+CC=${GCC}
+CXX=${GXX}
+
+# Flags
+
+ifeq ($(TARGET_CORE),CM3)
+TARGET_SDK_AFLAGS  =-mcpu=cortex-m3
+TARGET_SDK_CFLAGS  =-mcpu=cortex-m3
+TARGET_SDK_LDFLAGS =-mcpu=cortex-m3
+endif
+
+ifndef TARGET_SDK_AFLAGS
+${error TARGET_CORE is not supported by SDK}
+endif
+
+ifndef TARGET_SDK_CFLAGS
+${error TARGET_CORE is not supported by SDK}
+endif
+
+ifndef TARGET_SDK_LDFLAGS
+${error TARGET_CORE is not supported by SDK}
+endif
+
+# ARM related settings
+# link script arm flash
+TARGET_SDK_LDSCRIPT +=-L$(32BITMICRO)/src/make -T$(32BITMICRO)/src/make/${TARGET_MCU}-gcc-flash.ld
+
+# Target defines
+ifdef TARGET_SERIES
+TARGET_SDK_CFLAGS  +=-D${TARGET_SERIES}
+endif
+
+ifdef TARGET_FAMILY
+TARGET_SDK_CFLAGS  +=-D${TARGET_FAMILY}
+else
+${warning TARGET_FAMILY is not defined!}
+endif
+
+ifdef TARGET_CORE
+TARGET_SDK_CFLAGS  +=-D${TARGET_CORE}
+endif
+
+ifdef TARGET_COREREV
+TARGET_SDK_CFLAGS  +=-D${TARGET_COREREV}
+endif
+
+ifdef TARGET_ARCH
+TARGET_SDK_CFLAGS  +=-D${TARGET_ARCH}
+endif
+
+ifeq ($(TARGET_ARCH),ARMv7M)
+TARGET_SDK_AFLAGS  +=-march=armv7-m
+TARGET_SDK_CFLAGS  +=-march=armv7-m
+TARGET_SDK_LDFLAGS +=-march=armv7-m
+endif
+
+ifeq ($(TARGET_CODE_MODE),ARM)
+TARGET_SDK_AFLAGS  +=
+TARGET_SDK_CFLAGS  +=
+TARGET_SDK_LDFLAGS +=
+endif
+
+ifeq ($(TARGET_CODE_MODE),THUMB)
+TARGET_SDK_AFLAGS  +=-mthumb
+TARGET_SDK_CFLAGS  +=-mthumb
+TARGET_SDK_LDFLAGS +=-mthumb
+endif
+
+ifeq ($(TARGET_CODE_MODE),THUMB2)
+TARGET_SDK_AFLAGS  +=-mthumb
+TARGET_SDK_CFLAGS  +=-mthumb
+TARGET_SDK_LDFLAGS +=-mthumb
+endif
+

@@ -1,0 +1,323 @@
+#
+# * 32bitmicro Makefile rules
+# * $URL$
+# * $ID$
+#
+#Copyright (c) 2009, 32bitmicro
+#All rights reserved.
+#
+#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation 
+#and/or other materials provided with the distribution.
+#Neither the name of the 32bitmicro nor the names of its contributors may be used to endorse or promote products derived from this software without 
+#specific prior written permission.
+#
+#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+#BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+#SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+#DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+#OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+#NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+ifndef 32BITMICRO
+${error 32BITMICRO is not defined!}
+endif
+
+ifndef HOST_OS
+${error HOST_OS is not defined!}
+endif
+include $(32BITMICRO)/src/make/Makefile.${HOST_OS}
+
+ifndef TARGET_MCU
+${error TARGET_MCU is not defined!}
+endif
+include $(32BITMICRO)/src/make/Makefile.${TARGET_MCU}
+
+ifndef TARGET_BOARD
+TARGET_BOARD=
+else
+include $(32BITMICRO)/src/make/Makefile.${TARGET_BOARD}
+endif
+
+ifndef TARGET_CLOCK
+TARGET_CLOCK=
+${warning TARGET_CLOCK is not defined!}
+endif
+
+
+ifndef TARGET_OS
+  ${error TARGET_OS is not defined!}
+endif
+
+ifndef TARGET_SDK
+${error TARGET_SDK is not defined!}
+else
+include $(32BITMICRO)/src/make/Makefile.${TARGET_SDK}
+endif
+
+ifndef PROJECT
+  ${error PROJECT is not defined!}
+endif
+
+ifndef PROJECT_TYPE
+${error PROJECT_TYPE is not defined!}
+endif
+
+# Object files
+AOBJ  = $(patsubst %.s,%.o,$(ASRC))
+COBJ  = $(patsubst %.c,%.o,$(CSRC))
+
+# List files
+AOBJ_LST= $(patsubst %.o,%.o.lst,$(AOBJ))
+COBJ_LST= $(patsubst %.o,%.o.lst,$(COBJ))
+
+# Source files
+ALL_ASRC   =${ASRC}
+ALL_CSRC   =${CSRC}
+ALL_AFLAGS = ${TARGET_SDK_AFLAGS}  ${AFLAGS}
+ALL_CFLAGS = ${TARGET_SDK_CFLAGS}  ${CFLAGS}
+ALL_LDFLAG = ${TARGET_SDK_LDFLAGS} ${LDFLAGS}
+
+ifdef ADD_CMSIS
+include $(32BITMICRO)/src/make/Makefile.${ADD_CMSIS}
+ALL_ASRC   +=${CMSIS_ASRC}
+ALL_CSRC   +=${CMSIS_CSRC}
+ALL_AFLAGS +=${CMSIS_AFLAGS}
+ALL_CFLAGS +=${CMSIS_CFLAGS}
+ALL_LDFLAGS+=${CMSIS_LDFLAGS}
+endif
+
+# Linker script
+ifdef TARGET_LDSCRIPT
+ALL_LDFLAGS+=${TARGET_LDSCRIPT}
+else
+ifdef TARGET_SDK_LDSCRIPT
+ALL_LDFLAGS+=${TARGET_SDK_LDSCRIPT}
+endif
+endif
+
+# Object files
+ALL_AOBJ  = $(patsubst %.s,%.o,$(ALL_ASRC))
+ALL_COBJ  = $(patsubst %.c,%.o,$(ALL_CSRC))
+ALL_OBJ   = ${ALL_AOBJ}
+ALL_OBJ   +=${ALL_COBJ}
+ALL_AOBJ_LST= $(patsubst %.o,%.o.lst,$(ALL_AOBJ))
+ALL_COBJ_LST= $(patsubst %.o,%.o.lst,$(ALL_COBJ))
+ALL_OBJ_LST = $(patsubst %.o,%.o.lst,$(ALL_OBJ))
+
+
+# Poject output
+ifeq ($(PROJECT_TYPE),APP)
+${PROJECT}.out :
+	$(LD)  ${ALL_LDFLAGS}  ${ALL_OBJ} -o ${PROJECT}.out
+	$(OBJDUMP)  -S -D  ${PROJECT}.out  > ${PROJECT}.out.lst
+endif
+
+ifeq ($(PROJECT_TYPE),LIB)
+${PROJECT}.out
+endif
+
+
+# Project
+${PROJECT}: ${ALL_OBJ} ${PROJECT}.out
+
+
+# Suffixes
+.SUFFIXES:
+.SUFFIXES: .c .cpp .cc .cxx .h .hpp .o .a
+
+%.o: %.c
+	@echo Compiling $<
+	$(CC) $(ALL_CFLAGS) -c $< -o $@ 
+	$(OBJDUMP)  -S -D  $@  > $@.lst
+
+
+%.o: %.s
+	@echo Assembling $< 
+	$(AS) $(ALL_AFLAGS) $< -o $@
+	$(OBJDUMP)  -S -D $@  > $@.lst
+
+
+clean_aobj:
+	rm -f ${AOBJ}
+	rm -f ${AOBJ_LST}
+
+clean_cobj:
+	rm -f ${COBJ}
+	rm -f ${COBJ_LST}
+
+clean_obj: clean_aobj clean_cobj
+
+
+clean_all_aobj:
+	rm -f ${ALL_AOBJ}
+	rm -f ${ALL_AOBJ_LST}
+
+clean_all_cobj:
+	rm -f ${ALL_COBJ}
+	rm -f ${ALL_COBJ_LST}
+
+clean_all_obj: clean_all_aobj clean_all_cobj
+
+clean: clean_all_obj
+	rm -f ${PROJECT}.out
+	rm -f ${PROJECT}.out.lst
+
+
+# Phony targets
+.PHONY : help
+
+
+# Echo targets
+
+echo_sdk_asrc:
+	@echo "TARGET_SDK_ASRC :"
+	@echo ${TARGET_SDK_ASRC}
+
+echo_sdk_csrc:
+	@echo "TARGET_SDK_CSRC :"
+	@echo ${TARGET_SDK_CSRC}
+
+echo_sdk_src: echo_sdk_asrc echo_sdk_csrc
+
+#.PHONY : echo_src echo_asrc echo_csrc
+	
+echo_sdk_aflags:
+	@echo "TARGET_SDK_AFLAGS : "${TARGET_SDK_AFLAGS}
+	
+echo_sdk_cflags:
+	@echo "TARGET_SDK_CFLAGS : "${TARGET_SDK_CFLAGS}
+
+echo_sdk_ldflags:
+	@echo "TARGET_SDK_LDFLAGS: "${TARGET_SDK_LDFLAGS}
+
+echo_sdk_flags: echo_sdk_aflags echo_sdk_cflags echo_sdk_ldflags
+	
+#.PHONY : echo_sdk_flags echo_sdk_aflags echo_sdk_cflags echo_sdk_ldflags
+
+echo_asrc:
+	@echo "ASRC :"
+	@echo ${ASRC}
+
+echo_csrc:
+	@echo "CSRC :"
+	@echo ${CSRC}
+
+echo_src: echo_asrc echo_csrc
+
+#.PHONY : echo_src echo_asrc echo_csrc
+	
+echo_aflags:
+	@echo "AFLAGS            : "${AFLAGS}
+	
+echo_cflags:
+	@echo "CFLAGS            : "${CFLAGS}
+
+echo_ldflags:
+	@echo "LDFLAGS           : "${LDFLAGS}
+
+echo_flags: echo_aflags echo_cflags echo_ldflags
+	
+.PHONY : echo_flags echo_aflags echo_cflags echo_ldflags
+
+
+echo_all_asrc:
+	@echo "ALL_ASRC :"
+	@echo ${ALL_ASRC}
+
+echo_all_csrc:
+	@echo "ALL_CSRC :"
+	@echo ${ALL_CSRC}
+
+echo_all_src: echo_all_asrc echo_all_csrc
+
+
+echo_all_aobj:
+	@echo "ALL_AOBJ :"
+	@echo ${ALL_AOBJ}
+
+echo_all_cobj:
+	@echo "ALL_COBJ :"
+	@echo ${ALL_COBJ}
+
+echo_all_obj: echo_all_aobj echo_all_cobj
+	@echo "ALL_OBJ :"
+	@echo ${ALL_OBJ}
+
+#.PHONY : echo_src echo_asrc echo_csrc
+	
+echo_all_aflags:
+	@echo "ALL_AFLAGS        : "${ALL_AFLAGS}
+	
+echo_all_cflags:
+	@echo "ALL_CFLAGS        : "${ALL_CFLAGS}
+
+echo_all_ldflags:
+	@echo "ALL_LDFLAGS       : "${ALL_LDFLAGS}
+
+echo_all_flags: echo_all_aflags echo_all_cflags echo_all_ldflags
+	
+.PHONY : echo_all_flags echo_all_aflags echo_all_cflags echo_all_ldflags
+
+
+
+echo_32bitmicro:
+	@echo "32BITMICRO        : "${32BITMICRO}
+.PHONY : echo_32bitmicro
+
+echo_project:
+	@echo "PROJECT           : "${PROJECT}
+	@echo "PROJECT_TYPE      : "${PROJECT_TYPE}
+.PHONY : echo_project
+
+echo_target:
+	@echo "TARGET            : "${TARGET}
+	@echo "TARGET_SERIES     : "${TARGET_SERIES}
+	@echo "TARGET_FAMILY     : "${TARGET_FAMILY}
+	@echo "TARGET_CORE       : "${TARGET_CORE}
+	@echo "TARGET_COREREV    : "${TARGET_COREREV}
+	@echo "TARGET_MCU        : "${TARGET_MCU}
+	@echo "TARGET_CLOCK      : "${TARGET_CLOCK}
+	@echo "TARGET_ARCH       : "${TARGET_ARCH}
+	@echo "TARGET_CODE_MODE  : "${TARGET_CODE_MODE}
+	@echo "TARGET_OS         : "${TARGET_OS}
+	@echo "TARGET_BOARD      : "${TARGET_BOARD}
+.PHONY : echo_target
+
+echo_target_sdk:
+	@echo "TARGET_SDK        : "${TARGET_SDK}
+	@echo "TARGET_SDK_ROOT   : "${TARGET_SDK_ROOT}
+	@echo "TARGET_PREFIX     : "${TARGET_PREFIX}
+	@echo "AR                : "${AR}
+	@echo "AS                : "${AS}
+	@echo "CC                : "${CC}
+	@echo "CXX               : "${CXX}
+	@echo "LD                : "${LD}
+	@echo "NM                : "${NM}
+	@echo "OBJCOPY           : "${OBJCOPY}
+	@echo "OBJDUMP           : "${OBJDUMP}
+	@echo "RANLIB            : "${RANLIB}
+	@echo "STRIP             : "${STRIP}
+.PHONY : echo_target_sdk
+
+
+echo:	echo_32bitmicro echo_project echo_target echo_target_sdk
+.PHONY : echo
+
+
+help_echo:
+	@echo "32BITMICRO make help_echo"
+	@echo "make echo            - print      configuration"
+	@echo "make echo_32bitmicro - 32bitmicro configuration"
+	@echo "make echo_project    - project    configuration"
+	@echo "make echo_target     - target     configuration"
+	@echo "make echo_target_sdk - target sdk configuration"
+#.PHONY : help_echo
+	
+help:
+	@echo "32BITMICRO make help"
+	@echo "make echo      - print configuration"
+	@echo "make help_echo - echo help"
+
+

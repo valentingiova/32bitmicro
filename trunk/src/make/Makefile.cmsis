@@ -1,0 +1,170 @@
+#
+# * CMSIS Makefile include
+# * $URL$
+# * $ID$
+#
+#Copyright (c) 2009, 32bitmicro
+#All rights reserved.
+#
+#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation 
+#and/or other materials provided with the distribution.
+#Neither the name of the 32bitmicro nor the names of its contributors may be used to endorse or promote products derived from this software without 
+#specific prior written permission.
+#
+#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+#BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+#SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+#DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+#OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+#NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# MCU Core
+
+ifeq ($(TARGET_CORE),CM0)
+CMSIS_CORE=cm0
+CMSIS_CORE_PATH=CM0
+endif
+
+ifeq ($(TARGET_CORE),CM3)
+CMSIS_CORE=cm3
+CMSIS_CORE_PATH=CM3
+endif
+
+ifndef CMSIS_CORE
+${error TARGET_CORE is not supported by CMSIS}
+endif
+
+# MCU Series
+
+ifeq ($(TARGET_SERIES),LM3S)
+CMSIS_SERIES=lm3s
+CMSIS_SERIES_PATH=LM3s
+endif
+
+ifeq ($(TARGET_SERIES),LPC1700)
+CMSIS_SERIES=LPC17xx
+CMSIS_SERIES_PATH=LPC17xx
+endif
+
+ifeq ($(TARGET_SERIES),STM32)
+CMSIS_SERIES=stm32f10x
+CMSIS_SERIES_PATH=STM32
+endif
+
+ifeq ($(TARGET_SERIES),TMPM330)
+CMSIS_SERIES=TMPM330
+CMSIS_SERIES_PATH=TMPM330
+endif
+
+ifndef CMSIS_SERIES
+${error TARGET_SERIES is not supported by CMSIS}
+endif
+
+# Compiler
+
+ifeq ($(TARGET_COMPILER),GCC)
+CMSIS_COMPILER=gcc
+CMSIS_COMPILER_PATH=gcc
+endif
+
+ifndef TARGET_COMPILER
+${error TARGET_COMPILER is not supported by CMSIS}
+endif
+
+# Paths
+
+CMSIS_ROOT=${32BITMICRO}/src/${CMSIS_VERSION}
+CMSIS_CORE_ROOT=${CMSIS_ROOT}/Core/${CMSIS_CORE_PATH}
+CMSIS_STARTUP_ROOT=${CMSIS_CORE_ROOT}/startup/${CMSIS_COMPILER_PATH}
+CMSIS_SYSTEM_ROOT=${CMSIS_CORE_ROOT}/System/${CMSIS_SERIES_PATH}
+
+
+# Sources
+CMSIS_ASRC=
+CMSIS_CSRC=
+CMSIS_HEADERS=
+
+# Object files
+CMSIS_AOBJ  = $(patsubst %.s,%.o,$(CMSIS_ASRC))
+CMSIS_COBJ  = $(patsubst %.c,%.o,$(CMSIS_CSRC))
+
+# List files
+CMSIS_AOBJ_LST= $(patsubst %.o,%.o.lst,$(CMSIS_AOBJ))
+CMSIS_COBJ_LST= $(patsubst %.o,%.o.lst,$(CMSIS_COBJ))
+
+# Flags
+
+CMSIS_CFLAGS=-I${CMSIS_CORE_ROOT}
+CMSIS_LDFLAGS=
+
+
+clean_cmsis_aobj:
+	rm -f ${CMSIS_AOBJ}
+	rm -f ${CMSIS_AOBJ_LST}
+
+clean_cmsis_cobj:
+	rm -f ${CMSIS_COBJ}
+	rm -f ${CMSIS_COBJ_LST}
+
+clean_cmsis_obj: clean_cmsis_aobj clean_cmsis_cobj
+	
+clean_cmsis: clean_cmsis_obj
+	
+echo_cmsis_asrc:
+	@echo "CMSIS_ASRC :"
+	@echo ${CMSIS_ASRC}
+.PHONY : echo_cmsis_asrc
+
+echo_cmsis_csrc:
+	@echo "CMSIS_CSRC :"
+	@echo ${CMSIS_CSRC}
+.PHONY : echo_cmsis_csrc
+
+echo_cmsis_src: echo_cmsis_asrc echo_cmsis_csrc
+.PHONY : echo_cmsis_src
+	
+help_echo_cmsis_src:
+	@echo "CMSIS sources make help_echo"
+	@echo "make echo_cmsis_src  - print      sources"
+	@echo "make echo_cmsis_asrc - print Asm  sources"
+	@echo "make echo_cmsis_csrc - print C    sources"
+	
+echo_cmsis_aflags:
+	@echo "CMSIS_AFLAGS      : "${CMSIS_AFLAGS}
+	
+echo_cmsis_cflags:
+	@echo "CMSIS_CFLAGS      : "${CMSIS_CFLAGS}
+
+echo_cmsis_ldflags:
+	@echo "CMSIS_LDFLAGS     : "${CMSIS_LDFLAGS}
+
+echo_cmsis_flags: echo_cmsis_aflags echo_cmsis_cflags echo_cmsis_ldflags
+	
+.PHONY : echo_cmsis_flags echo_cmsis_aflags echo_cmsis_cflags echo_cmsis_ldflags
+
+help_echo_cmsis_flags:
+	@echo "CMSIS flags make help_echo"
+	@echo "make echo_cmsis_flags  - print        flags"
+	@echo "make echo_cmsis_aflags - print Asm    flags"
+	@echo "make echo_cmsis_cflags - print C      flags"
+	@echo "make echo_cmsis_ldflags- print Linker flags"
+
+echo_cmsis:
+	@echo "CMSIS             : "${CMSIS_VERSION}
+	@echo "CMSIS_CORE        : "${CMSIS_CORE}
+	@echo "CMSIS_SERIES      : "${CMSIS_SERIES}
+	@echo "CMSIS_COMPILER    : "${CMSIS_COMPILER}
+	@echo "CMSIS_ROOT        : "${CMSIS_ROOT}
+	@echo "CMSIS_CORE_ROOT   : "${CMSIS_CORE_ROOT}
+	@echo "CMSIS_STARTUP_ROOT: "${CMSIS_STARTUP_ROOT}
+	@echo "CMSIS_SYSTEM_ROOT : "${CMSIS_SYSTEM_ROOT}
+
+help_echo_cmsis:
+	@echo "CMSIS make help_echo"
+	@echo "make echo_cmsis      - print      configuration"
+	@echo "make echo_cmsis_src  - print      sources"
+	@echo "make echo_cmsis_flags- print      flags"
+#.PHONY : help_echo
+	
