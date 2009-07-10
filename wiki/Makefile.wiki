@@ -2,7 +2,7 @@
 
 = Introduction =
 
-Explanation of 32bitmicro project Makefile
+Project Makefile
 
 
 = Details =
