@@ -48,6 +48,12 @@ TARGET_LIBC=default
 HOST_OS=win32
 #HOST_OS=linux 
 
+# Target output options
+TARGET_GEN_MAP=1
+TARGET_GEN_CREF=1
+#TARGET_GEN_LST=1
+TARGET_GEN_HEX=1
+
 # Common rules
 include ../common/src/Makefile.rules
 
