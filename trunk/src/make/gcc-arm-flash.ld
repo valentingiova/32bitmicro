@@ -26,7 +26,10 @@ SECTIONS
 {
   .text :
   {
+    _text = . ;
+    _vector = . ;
     KEEP(*(.isr_vector))
+    _evector = . ;
     _start = .;
     *(.text .text.* .gnu.linkonce.t.*)
     *(.plt)
@@ -74,23 +77,23 @@ SECTIONS
     KEEP (*(SORT(.fini_array.*)))
     __fini_array_end = .;
 
-    . = ALIGN(0x4);
+    . = ALIGN(4);
     KEEP (*crtbegin.o(.ctors))
     KEEP (*(EXCLUDE_FILE (*crtend.o) .ctors))
     KEEP (*(SORT(.ctors.*)))
     KEEP (*crtend.o(.ctors))
 
-    . = ALIGN(0x4);
+    . = ALIGN(4);
     KEEP (*crtbegin.o(.dtors))
     KEEP (*(EXCLUDE_FILE (*crtend.o) .dtors))
     KEEP (*(SORT(.dtors.*)))
     KEEP (*crtend.o(.dtors))
 
-    . = ALIGN (8);
+    . = ALIGN(8);
     _etext = .;
   } >rom
 
-  .data : ALIGN (8)
+  .data : ALIGN(8)
   {
     _data = .;
     KEEP(*(.jcr))
@@ -109,8 +112,24 @@ SECTIONS
     *(.bss .bss.* .gnu.linkonce.b.*)
     _ebss = .;
     *(COMMON)
-    . = ALIGN (8);
+    . = ALIGN(8);
     *(.ram.b)
+  } >ram
+
+  .heap :
+  {
+   . = ALIGN(8);
+    _heap = .;
+    *(.heap)
+    _eheap = .;
+  } >ram
+
+  .stack :
+  {
+    . = ALIGN(8);
+    _stack = .;
+   *(.stack)
+    _estack = .;
     _end = .;
     __end = .;
   } >ram
