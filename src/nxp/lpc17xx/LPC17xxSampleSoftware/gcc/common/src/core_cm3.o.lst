@@ -1,0 +1,356 @@
+
+../common/src/core_cm3.o:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <__get_PSP>:
+   0:	f04f 0300 	mov.w	r3, #0	; 0x0
+   4:	f3ef 8309 	mrs	r3, PSP
+   8:	4618      	mov	r0, r3
+   a:	4770      	bx	lr
+   c:	4618      	mov	r0, r3
+   e:	bf00      	nop
+
+00000010 <__set_PSP>:
+  10:	4603      	mov	r3, r0
+  12:	f383 8809 	msr	PSP, r3
+  16:	4770      	bx	lr
+
+00000018 <__get_MSP>:
+  18:	f04f 0300 	mov.w	r3, #0	; 0x0
+  1c:	f3ef 8308 	mrs	r3, MSP
+  20:	4618      	mov	r0, r3
+  22:	4770      	bx	lr
+  24:	4618      	mov	r0, r3
+  26:	bf00      	nop
+
+00000028 <__set_MSP>:
+  28:	4603      	mov	r3, r0
+  2a:	f383 8808 	msr	MSP, r3
+  2e:	4770      	bx	lr
+
+00000030 <__get_BASEPRI>:
+  30:	b480      	push	{r7}
+  32:	b083      	sub	sp, #12
+  34:	af00      	add	r7, sp, #0
+  36:	f04f 0300 	mov.w	r3, #0	; 0x0
+  3a:	607b      	str	r3, [r7, #4]
+  3c:	f3ef 8312 	mrs	r3, BASEPRI_MASK
+  40:	607b      	str	r3, [r7, #4]
+  42:	687b      	ldr	r3, [r7, #4]
+  44:	4618      	mov	r0, r3
+  46:	f107 070c 	add.w	r7, r7, #12	; 0xc
+  4a:	46bd      	mov	sp, r7
+  4c:	bc80      	pop	{r7}
+  4e:	4770      	bx	lr
+
+00000050 <__set_BASEPRI>:
+  50:	b480      	push	{r7}
+  52:	b083      	sub	sp, #12
+  54:	af00      	add	r7, sp, #0
+  56:	6078      	str	r0, [r7, #4]
+  58:	687b      	ldr	r3, [r7, #4]
+  5a:	f383 8811 	msr	BASEPRI, r3
+  5e:	f107 070c 	add.w	r7, r7, #12	; 0xc
+  62:	46bd      	mov	sp, r7
+  64:	bc80      	pop	{r7}
+  66:	4770      	bx	lr
+
+00000068 <__get_PRIMASK>:
+  68:	b480      	push	{r7}
+  6a:	b083      	sub	sp, #12
+  6c:	af00      	add	r7, sp, #0
+  6e:	f04f 0300 	mov.w	r3, #0	; 0x0
+  72:	607b      	str	r3, [r7, #4]
+  74:	f3ef 8310 	mrs	r3, PRIMASK
+  78:	607b      	str	r3, [r7, #4]
+  7a:	687b      	ldr	r3, [r7, #4]
+  7c:	4618      	mov	r0, r3
+  7e:	f107 070c 	add.w	r7, r7, #12	; 0xc
+  82:	46bd      	mov	sp, r7
+  84:	bc80      	pop	{r7}
+  86:	4770      	bx	lr
+
+00000088 <__set_PRIMASK>:
+  88:	b480      	push	{r7}
+  8a:	b083      	sub	sp, #12
+  8c:	af00      	add	r7, sp, #0
+  8e:	6078      	str	r0, [r7, #4]
+  90:	687b      	ldr	r3, [r7, #4]
+  92:	f383 8810 	msr	PRIMASK, r3
+  96:	f107 070c 	add.w	r7, r7, #12	; 0xc
+  9a:	46bd      	mov	sp, r7
+  9c:	bc80      	pop	{r7}
+  9e:	4770      	bx	lr
+
+000000a0 <__get_FAULTMASK>:
+  a0:	b480      	push	{r7}
+  a2:	b083      	sub	sp, #12
+  a4:	af00      	add	r7, sp, #0
+  a6:	f04f 0300 	mov.w	r3, #0	; 0x0
+  aa:	607b      	str	r3, [r7, #4]
+  ac:	f3ef 8313 	mrs	r3, FAULTMASK
+  b0:	607b      	str	r3, [r7, #4]
+  b2:	687b      	ldr	r3, [r7, #4]
+  b4:	4618      	mov	r0, r3
+  b6:	f107 070c 	add.w	r7, r7, #12	; 0xc
+  ba:	46bd      	mov	sp, r7
+  bc:	bc80      	pop	{r7}
+  be:	4770      	bx	lr
+
+000000c0 <__set_FAULTMASK>:
+  c0:	b480      	push	{r7}
+  c2:	b083      	sub	sp, #12
+  c4:	af00      	add	r7, sp, #0
+  c6:	6078      	str	r0, [r7, #4]
+  c8:	687b      	ldr	r3, [r7, #4]
+  ca:	f383 8813 	msr	FAULTMASK, r3
+  ce:	f107 070c 	add.w	r7, r7, #12	; 0xc
+  d2:	46bd      	mov	sp, r7
+  d4:	bc80      	pop	{r7}
+  d6:	4770      	bx	lr
+
+000000d8 <__REV>:
+  d8:	b480      	push	{r7}
+  da:	b085      	sub	sp, #20
+  dc:	af00      	add	r7, sp, #0
+  de:	6078      	str	r0, [r7, #4]
+  e0:	f04f 0300 	mov.w	r3, #0	; 0x0
+  e4:	60fb      	str	r3, [r7, #12]
+  e6:	687b      	ldr	r3, [r7, #4]
+  e8:	ba1b      	rev	r3, r3
+  ea:	60fb      	str	r3, [r7, #12]
+  ec:	68fb      	ldr	r3, [r7, #12]
+  ee:	4618      	mov	r0, r3
+  f0:	f107 0714 	add.w	r7, r7, #20	; 0x14
+  f4:	46bd      	mov	sp, r7
+  f6:	bc80      	pop	{r7}
+  f8:	4770      	bx	lr
+  fa:	bf00      	nop
+
+000000fc <__REV16>:
+  fc:	b480      	push	{r7}
+  fe:	b085      	sub	sp, #20
+ 100:	af00      	add	r7, sp, #0
+ 102:	4603      	mov	r3, r0
+ 104:	80fb      	strh	r3, [r7, #6]
+ 106:	f04f 0300 	mov.w	r3, #0	; 0x0
+ 10a:	60fb      	str	r3, [r7, #12]
+ 10c:	88fb      	ldrh	r3, [r7, #6]
+ 10e:	ba5b      	rev16	r3, r3
+ 110:	60fb      	str	r3, [r7, #12]
+ 112:	68fb      	ldr	r3, [r7, #12]
+ 114:	4618      	mov	r0, r3
+ 116:	f107 0714 	add.w	r7, r7, #20	; 0x14
+ 11a:	46bd      	mov	sp, r7
+ 11c:	bc80      	pop	{r7}
+ 11e:	4770      	bx	lr
+
+00000120 <__REVSH>:
+ 120:	b480      	push	{r7}
+ 122:	b085      	sub	sp, #20
+ 124:	af00      	add	r7, sp, #0
+ 126:	4603      	mov	r3, r0
+ 128:	80fb      	strh	r3, [r7, #6]
+ 12a:	f04f 0300 	mov.w	r3, #0	; 0x0
+ 12e:	60fb      	str	r3, [r7, #12]
+ 130:	88fb      	ldrh	r3, [r7, #6]
+ 132:	badb      	revsh	r3, r3
+ 134:	60fb      	str	r3, [r7, #12]
+ 136:	68fb      	ldr	r3, [r7, #12]
+ 138:	4618      	mov	r0, r3
+ 13a:	f107 0714 	add.w	r7, r7, #20	; 0x14
+ 13e:	46bd      	mov	sp, r7
+ 140:	bc80      	pop	{r7}
+ 142:	4770      	bx	lr
+
+00000144 <__RBIT>:
+ 144:	b480      	push	{r7}
+ 146:	b085      	sub	sp, #20
+ 148:	af00      	add	r7, sp, #0
+ 14a:	6078      	str	r0, [r7, #4]
+ 14c:	f04f 0300 	mov.w	r3, #0	; 0x0
+ 150:	60fb      	str	r3, [r7, #12]
+ 152:	687b      	ldr	r3, [r7, #4]
+ 154:	fa93 f3a3 	rbit	r3, r3
+ 158:	60fb      	str	r3, [r7, #12]
+ 15a:	68fb      	ldr	r3, [r7, #12]
+ 15c:	4618      	mov	r0, r3
+ 15e:	f107 0714 	add.w	r7, r7, #20	; 0x14
+ 162:	46bd      	mov	sp, r7
+ 164:	bc80      	pop	{r7}
+ 166:	4770      	bx	lr
+
+00000168 <__LDREXB>:
+ 168:	b480      	push	{r7}
+ 16a:	b085      	sub	sp, #20
+ 16c:	af00      	add	r7, sp, #0
+ 16e:	6078      	str	r0, [r7, #4]
+ 170:	f04f 0300 	mov.w	r3, #0	; 0x0
+ 174:	73fb      	strb	r3, [r7, #15]
+ 176:	687b      	ldr	r3, [r7, #4]
+ 178:	e8d3 3f4f 	ldrexb	r3, [r3]
+ 17c:	73fb      	strb	r3, [r7, #15]
+ 17e:	7bfb      	ldrb	r3, [r7, #15]
+ 180:	4618      	mov	r0, r3
+ 182:	f107 0714 	add.w	r7, r7, #20	; 0x14
+ 186:	46bd      	mov	sp, r7
+ 188:	bc80      	pop	{r7}
+ 18a:	4770      	bx	lr
+
+0000018c <__LDREXH>:
+ 18c:	b480      	push	{r7}
+ 18e:	b085      	sub	sp, #20
+ 190:	af00      	add	r7, sp, #0
+ 192:	6078      	str	r0, [r7, #4]
+ 194:	f04f 0300 	mov.w	r3, #0	; 0x0
+ 198:	81fb      	strh	r3, [r7, #14]
+ 19a:	687b      	ldr	r3, [r7, #4]
+ 19c:	e8d3 3f5f 	ldrexh	r3, [r3]
+ 1a0:	81fb      	strh	r3, [r7, #14]
+ 1a2:	89fb      	ldrh	r3, [r7, #14]
+ 1a4:	4618      	mov	r0, r3
+ 1a6:	f107 0714 	add.w	r7, r7, #20	; 0x14
+ 1aa:	46bd      	mov	sp, r7
+ 1ac:	bc80      	pop	{r7}
+ 1ae:	4770      	bx	lr
+
+000001b0 <__LDREXW>:
+ 1b0:	b480      	push	{r7}
+ 1b2:	b085      	sub	sp, #20
+ 1b4:	af00      	add	r7, sp, #0
+ 1b6:	6078      	str	r0, [r7, #4]
+ 1b8:	f04f 0300 	mov.w	r3, #0	; 0x0
+ 1bc:	60fb      	str	r3, [r7, #12]
+ 1be:	687b      	ldr	r3, [r7, #4]
+ 1c0:	e853 3f00 	ldrex	r3, [r3]
+ 1c4:	60fb      	str	r3, [r7, #12]
+ 1c6:	68fb      	ldr	r3, [r7, #12]
+ 1c8:	4618      	mov	r0, r3
+ 1ca:	f107 0714 	add.w	r7, r7, #20	; 0x14
+ 1ce:	46bd      	mov	sp, r7
+ 1d0:	bc80      	pop	{r7}
+ 1d2:	4770      	bx	lr
+
+000001d4 <__STREXB>:
+ 1d4:	b480      	push	{r7}
+ 1d6:	b085      	sub	sp, #20
+ 1d8:	af00      	add	r7, sp, #0
+ 1da:	4603      	mov	r3, r0
+ 1dc:	6039      	str	r1, [r7, #0]
+ 1de:	71fb      	strb	r3, [r7, #7]
+ 1e0:	f04f 0300 	mov.w	r3, #0	; 0x0
+ 1e4:	60fb      	str	r3, [r7, #12]
+ 1e6:	683a      	ldr	r2, [r7, #0]
+ 1e8:	79fb      	ldrb	r3, [r7, #7]
+ 1ea:	e8c2 3f43 	strexb	r3, r3, [r2]
+ 1ee:	60fb      	str	r3, [r7, #12]
+ 1f0:	68fb      	ldr	r3, [r7, #12]
+ 1f2:	4618      	mov	r0, r3
+ 1f4:	f107 0714 	add.w	r7, r7, #20	; 0x14
+ 1f8:	46bd      	mov	sp, r7
+ 1fa:	bc80      	pop	{r7}
+ 1fc:	4770      	bx	lr
+ 1fe:	bf00      	nop
+
+00000200 <__STREXH>:
+ 200:	b480      	push	{r7}
+ 202:	b085      	sub	sp, #20
+ 204:	af00      	add	r7, sp, #0
+ 206:	4603      	mov	r3, r0
+ 208:	6039      	str	r1, [r7, #0]
+ 20a:	80fb      	strh	r3, [r7, #6]
+ 20c:	f04f 0300 	mov.w	r3, #0	; 0x0
+ 210:	60fb      	str	r3, [r7, #12]
+ 212:	683a      	ldr	r2, [r7, #0]
+ 214:	88fb      	ldrh	r3, [r7, #6]
+ 216:	e8c2 3f53 	strexh	r3, r3, [r2]
+ 21a:	60fb      	str	r3, [r7, #12]
+ 21c:	68fb      	ldr	r3, [r7, #12]
+ 21e:	4618      	mov	r0, r3
+ 220:	f107 0714 	add.w	r7, r7, #20	; 0x14
+ 224:	46bd      	mov	sp, r7
+ 226:	bc80      	pop	{r7}
+ 228:	4770      	bx	lr
+ 22a:	bf00      	nop
+
+0000022c <__STREXW>:
+ 22c:	b480      	push	{r7}
+ 22e:	b085      	sub	sp, #20
+ 230:	af00      	add	r7, sp, #0
+ 232:	6078      	str	r0, [r7, #4]
+ 234:	6039      	str	r1, [r7, #0]
+ 236:	f04f 0300 	mov.w	r3, #0	; 0x0
+ 23a:	60fb      	str	r3, [r7, #12]
+ 23c:	683a      	ldr	r2, [r7, #0]
+ 23e:	687b      	ldr	r3, [r7, #4]
+ 240:	e842 3300 	strex	r3, r3, [r2]
+ 244:	60fb      	str	r3, [r7, #12]
+ 246:	68fb      	ldr	r3, [r7, #12]
+ 248:	4618      	mov	r0, r3
+ 24a:	f107 0714 	add.w	r7, r7, #20	; 0x14
+ 24e:	46bd      	mov	sp, r7
+ 250:	bc80      	pop	{r7}
+ 252:	4770      	bx	lr
+
+00000254 <__get_CONTROL>:
+ 254:	b480      	push	{r7}
+ 256:	b083      	sub	sp, #12
+ 258:	af00      	add	r7, sp, #0
+ 25a:	f04f 0300 	mov.w	r3, #0	; 0x0
+ 25e:	607b      	str	r3, [r7, #4]
+ 260:	f3ef 8314 	mrs	r3, CONTROL
+ 264:	607b      	str	r3, [r7, #4]
+ 266:	687b      	ldr	r3, [r7, #4]
+ 268:	4618      	mov	r0, r3
+ 26a:	f107 070c 	add.w	r7, r7, #12	; 0xc
+ 26e:	46bd      	mov	sp, r7
+ 270:	bc80      	pop	{r7}
+ 272:	4770      	bx	lr
+
+00000274 <__set_CONTROL>:
+ 274:	b480      	push	{r7}
+ 276:	b083      	sub	sp, #12
+ 278:	af00      	add	r7, sp, #0
+ 27a:	6078      	str	r0, [r7, #4]
+ 27c:	687b      	ldr	r3, [r7, #4]
+ 27e:	f383 8814 	msr	CONTROL, r3
+ 282:	f107 070c 	add.w	r7, r7, #12	; 0xc
+ 286:	46bd      	mov	sp, r7
+ 288:	bc80      	pop	{r7}
+ 28a:	4770      	bx	lr
+
+Disassembly of section .comment:
+
+00000000 <.comment>:
+   0:	43434700 	movtmi	r4, #14080	; 0x3700
+   4:	5328203a 	.word	0x5328203a
+   8:	6372756f 	.word	0x6372756f
+   c:	20797265 	.word	0x20797265
+  10:	202b2b47 	.word	0x202b2b47
+  14:	6574694c 	.word	0x6574694c
+  18:	30303220 	.word	0x30303220
+  1c:	2d317139 	.word	0x2d317139
+  20:	29313631 	.word	0x29313631
+  24:	332e3420 	.word	0x332e3420
+  28:	Address 0x00000028 is out of bounds.
+
+
+Disassembly of section .ARM.attributes:
+
+00000000 <.ARM.attributes>:
+   0:	00003041 	andeq	r3, r0, r1, asr #32
+   4:	61656100 	cmnvs	r5, r0, lsl #2
+   8:	01006962 	tsteq	r0, r2, ror #18
+   c:	00000026 	andeq	r0, r0, r6, lsr #32
+  10:	524f4305 	subpl	r4, pc, #335544320	; 0x14000000
+  14:	2d584554 	cfldr64cs	mvdx4, [r8, #-336]
+  18:	0600334d 	streq	r3, [r0], -sp, asr #6
+  1c:	094d070a 	stmdbeq	sp, {r1, r3, r8, r9, sl}^
+  20:	14041202 	strne	r1, [r4], #-514
+  24:	17011501 	strne	r1, [r1, -r1, lsl #10]
+  28:	19011803 	stmdbne	r1, {r0, r1, fp, ip}
+  2c:	1e011a01 	vmlane.f32	s2, s2, s2
+  30:	Address 0x00000030 is out of bounds.
+

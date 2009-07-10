@@ -1,0 +1,2465 @@
+
+tcpip.o:     file format elf32-littlearm
+
+
+Disassembly of section .text:
+
+00000000 <TCPLowLevelInit>:
+       0:	b580      	push	{r7, lr}
+       2:	af00      	add	r7, sp, #0
+       4:	f244 0200 	movw	r2, #16384	; 0x4000
+       8:	f2c4 0200 	movt	r2, #16384	; 0x4000
+       c:	f64f 1340 	movw	r3, #63808	; 0xf940
+      10:	f2c0 032f 	movt	r3, #47	; 0x2f
+      14:	6193      	str	r3, [r2, #24]
+      16:	f244 0300 	movw	r3, #16384	; 0x4000
+      1a:	f2c4 0300 	movt	r3, #16384	; 0x4000
+      1e:	f04f 0203 	mov.w	r2, #3	; 0x3
+      22:	615a      	str	r2, [r3, #20]
+      24:	f244 0300 	movw	r3, #16384	; 0x4000
+      28:	f2c4 0300 	movt	r3, #16384	; 0x4000
+      2c:	f04f 0201 	mov.w	r2, #1	; 0x1
+      30:	605a      	str	r2, [r3, #4]
+      32:	f04f 0001 	mov.w	r0, #1	; 0x1
+      36:	f000 f85f 	bl	f8 <NVIC_EnableIRQ>
+      3a:	f24c 0200 	movw	r2, #49152	; 0xc000
+      3e:	f2c4 020f 	movt	r2, #16399	; 0x400f
+      42:	f24c 0300 	movw	r3, #49152	; 0xc000
+      46:	f2c4 030f 	movt	r3, #16399	; 0x400f
+      4a:	f8d3 30c4 	ldr.w	r3, [r3, #196]
+      4e:	f443 5380 	orr.w	r3, r3, #4096	; 0x1000
+      52:	f8c2 30c4 	str.w	r3, [r2, #196]
+      56:	f24c 0200 	movw	r2, #49152	; 0xc000
+      5a:	f2c4 0202 	movt	r2, #16386	; 0x4002
+      5e:	f24c 0300 	movw	r3, #49152	; 0xc000
+      62:	f2c4 0302 	movt	r3, #16386	; 0x4002
+      66:	681b      	ldr	r3, [r3, #0]
+      68:	f043 6370 	orr.w	r3, r3, #251658240	; 0xf000000
+      6c:	6013      	str	r3, [r2, #0]
+      6e:	f24c 0200 	movw	r2, #49152	; 0xc000
+      72:	f2c4 0202 	movt	r2, #16386	; 0x4002
+      76:	f24c 0300 	movw	r3, #49152	; 0xc000
+      7a:	f2c4 0302 	movt	r3, #16386	; 0x4002
+      7e:	685b      	ldr	r3, [r3, #4]
+      80:	f423 137f 	bic.w	r3, r3, #4177920	; 0x3fc000
+      84:	6053      	str	r3, [r2, #4]
+      86:	f24c 0200 	movw	r2, #49152	; 0xc000
+      8a:	f2c4 0202 	movt	r2, #16386	; 0x4002
+      8e:	f24c 0300 	movw	r3, #49152	; 0xc000
+      92:	f2c4 0302 	movt	r3, #16386	; 0x4002
+      96:	685b      	ldr	r3, [r3, #4]
+      98:	f443 13aa 	orr.w	r3, r3, #1392640	; 0x154000
+      9c:	6053      	str	r3, [r2, #4]
+      9e:	f24c 0200 	movw	r2, #49152	; 0xc000
+      a2:	f2c4 0202 	movt	r2, #16386	; 0x4002
+      a6:	f24c 0300 	movw	r3, #49152	; 0xc000
+      aa:	f2c4 0302 	movt	r3, #16386	; 0x4002
+      ae:	68db      	ldr	r3, [r3, #12]
+      b0:	f043 4370 	orr.w	r3, r3, #4026531840	; 0xf0000000
+      b4:	60d3      	str	r3, [r2, #12]
+      b6:	f7ff fffe 	bl	0 <Init_EMAC>
+      ba:	f240 0300 	movw	r3, #0	; 0x0
+      be:	f2c0 0300 	movt	r3, #0	; 0x0
+      c2:	f04f 0200 	mov.w	r2, #0	; 0x0
+      c6:	701a      	strb	r2, [r3, #0]
+      c8:	f240 0300 	movw	r3, #0	; 0x0
+      cc:	f2c0 0300 	movt	r3, #0	; 0x0
+      d0:	f04f 0200 	mov.w	r2, #0	; 0x0
+      d4:	701a      	strb	r2, [r3, #0]
+      d6:	f240 0300 	movw	r3, #0	; 0x0
+      da:	f2c0 0300 	movt	r3, #0	; 0x0
+      de:	f04f 0200 	mov.w	r2, #0	; 0x0
+      e2:	701a      	strb	r2, [r3, #0]
+      e4:	f240 0300 	movw	r3, #0	; 0x0
+      e8:	f2c0 0300 	movt	r3, #0	; 0x0
+      ec:	f04f 0200 	mov.w	r2, #0	; 0x0
+      f0:	701a      	strb	r2, [r3, #0]
+      f2:	46bd      	mov	sp, r7
+      f4:	bd80      	pop	{r7, pc}
+      f6:	bf00      	nop
+
+000000f8 <NVIC_EnableIRQ>:
+      f8:	b480      	push	{r7}
+      fa:	b083      	sub	sp, #12
+      fc:	af00      	add	r7, sp, #0
+      fe:	4603      	mov	r3, r0
+     100:	71fb      	strb	r3, [r7, #7]
+     102:	f24e 1100 	movw	r1, #57600	; 0xe100
+     106:	f2ce 0100 	movt	r1, #57344	; 0xe000
+     10a:	f997 3007 	ldrsb.w	r3, [r7, #7]
+     10e:	ea4f 1053 	mov.w	r0, r3, lsr #5
+     112:	79fb      	ldrb	r3, [r7, #7]
+     114:	f003 021f 	and.w	r2, r3, #31	; 0x1f
+     118:	f04f 0301 	mov.w	r3, #1	; 0x1
+     11c:	fa03 f302 	lsl.w	r3, r3, r2
+     120:	f841 3020 	str.w	r3, [r1, r0, lsl #2]
+     124:	f107 070c 	add.w	r7, r7, #12	; 0xc
+     128:	46bd      	mov	sp, r7
+     12a:	bc80      	pop	{r7}
+     12c:	4770      	bx	lr
+     12e:	bf00      	nop
+
+00000130 <TCPPassiveOpen>:
+     130:	b480      	push	{r7}
+     132:	af00      	add	r7, sp, #0
+     134:	f240 0300 	movw	r3, #0	; 0x0
+     138:	f2c0 0300 	movt	r3, #0	; 0x0
+     13c:	781b      	ldrb	r3, [r3, #0]
+     13e:	2b00      	cmp	r3, #0
+     140:	d11a      	bne.n	178 <TCPPassiveOpen+0x48>
+     142:	f240 0300 	movw	r3, #0	; 0x0
+     146:	f2c0 0300 	movt	r3, #0	; 0x0
+     14a:	781b      	ldrb	r3, [r3, #0]
+     14c:	461a      	mov	r2, r3
+     14e:	f002 02fe 	and.w	r2, r2, #254	; 0xfe
+     152:	f240 0300 	movw	r3, #0	; 0x0
+     156:	f2c0 0300 	movt	r3, #0	; 0x0
+     15a:	701a      	strb	r2, [r3, #0]
+     15c:	f240 0300 	movw	r3, #0	; 0x0
+     160:	f2c0 0300 	movt	r3, #0	; 0x0
+     164:	f04f 0201 	mov.w	r2, #1	; 0x1
+     168:	701a      	strb	r2, [r3, #0]
+     16a:	f240 0300 	movw	r3, #0	; 0x0
+     16e:	f2c0 0300 	movt	r3, #0	; 0x0
+     172:	f04f 0201 	mov.w	r2, #1	; 0x1
+     176:	701a      	strb	r2, [r3, #0]
+     178:	46bd      	mov	sp, r7
+     17a:	bc80      	pop	{r7}
+     17c:	4770      	bx	lr
+     17e:	bf00      	nop
+
+00000180 <TCPActiveOpen>:
+     180:	b580      	push	{r7, lr}
+     182:	af00      	add	r7, sp, #0
+     184:	f240 0300 	movw	r3, #0	; 0x0
+     188:	f2c0 0300 	movt	r3, #0	; 0x0
+     18c:	781b      	ldrb	r3, [r3, #0]
+     18e:	2b00      	cmp	r3, #0
+     190:	d006      	beq.n	1a0 <TCPActiveOpen+0x20>
+     192:	f240 0300 	movw	r3, #0	; 0x0
+     196:	f2c0 0300 	movt	r3, #0	; 0x0
+     19a:	781b      	ldrb	r3, [r3, #0]
+     19c:	2b01      	cmp	r3, #1
+     19e:	d12b      	bne.n	1f8 <TCPActiveOpen+0x78>
+     1a0:	f240 0300 	movw	r3, #0	; 0x0
+     1a4:	f2c0 0300 	movt	r3, #0	; 0x0
+     1a8:	781b      	ldrb	r3, [r3, #0]
+     1aa:	f043 0301 	orr.w	r3, r3, #1	; 0x1
+     1ae:	b2da      	uxtb	r2, r3
+     1b0:	f240 0300 	movw	r3, #0	; 0x0
+     1b4:	f2c0 0300 	movt	r3, #0	; 0x0
+     1b8:	701a      	strb	r2, [r3, #0]
+     1ba:	f240 0300 	movw	r3, #0	; 0x0
+     1be:	f2c0 0300 	movt	r3, #0	; 0x0
+     1c2:	781b      	ldrb	r3, [r3, #0]
+     1c4:	461a      	mov	r2, r3
+     1c6:	f002 02fd 	and.w	r2, r2, #253	; 0xfd
+     1ca:	f240 0300 	movw	r3, #0	; 0x0
+     1ce:	f2c0 0300 	movt	r3, #0	; 0x0
+     1d2:	701a      	strb	r2, [r3, #0]
+     1d4:	f7ff fffe 	bl	10c4 <PrepareARP_REQUEST>
+     1d8:	f240 0300 	movw	r3, #0	; 0x0
+     1dc:	f2c0 0300 	movt	r3, #0	; 0x0
+     1e0:	f04f 0200 	mov.w	r2, #0	; 0x0
+     1e4:	701a      	strb	r2, [r3, #0]
+     1e6:	f7ff fffe 	bl	1934 <TCPStartRetryTimer>
+     1ea:	f240 0300 	movw	r3, #0	; 0x0
+     1ee:	f2c0 0300 	movt	r3, #0	; 0x0
+     1f2:	f04f 0201 	mov.w	r2, #1	; 0x1
+     1f6:	701a      	strb	r2, [r3, #0]
+     1f8:	46bd      	mov	sp, r7
+     1fa:	bd80      	pop	{r7, pc}
+
+000001fc <TCPClose>:
+     1fc:	b480      	push	{r7}
+     1fe:	af00      	add	r7, sp, #0
+     200:	f240 0300 	movw	r3, #0	; 0x0
+     204:	f2c0 0300 	movt	r3, #0	; 0x0
+     208:	781b      	ldrb	r3, [r3, #0]
+     20a:	f103 33ff 	add.w	r3, r3, #4294967295	; 0xffffffff
+     20e:	2b03      	cmp	r3, #3
+     210:	d82d      	bhi.n	26e <TCPClose+0x72>
+     212:	a201      	add	r2, pc, #4	(adr r2, 218 <TCPClose+0x1c>)
+     214:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
+     218:	00000229 	.word	0x00000229
+     21c:	00000229 	.word	0x00000229
+     220:	00000255 	.word	0x00000255
+     224:	00000255 	.word	0x00000255
+     228:	f240 0300 	movw	r3, #0	; 0x0
+     22c:	f2c0 0300 	movt	r3, #0	; 0x0
+     230:	f04f 0200 	mov.w	r2, #0	; 0x0
+     234:	701a      	strb	r2, [r3, #0]
+     236:	f240 0300 	movw	r3, #0	; 0x0
+     23a:	f2c0 0300 	movt	r3, #0	; 0x0
+     23e:	f04f 0200 	mov.w	r2, #0	; 0x0
+     242:	701a      	strb	r2, [r3, #0]
+     244:	f240 0300 	movw	r3, #0	; 0x0
+     248:	f2c0 0300 	movt	r3, #0	; 0x0
+     24c:	f04f 0200 	mov.w	r2, #0	; 0x0
+     250:	701a      	strb	r2, [r3, #0]
+     252:	e00c      	b.n	26e <TCPClose+0x72>
+     254:	f240 0300 	movw	r3, #0	; 0x0
+     258:	f2c0 0300 	movt	r3, #0	; 0x0
+     25c:	781b      	ldrb	r3, [r3, #0]
+     25e:	f043 0310 	orr.w	r3, r3, #16	; 0x10
+     262:	b2da      	uxtb	r2, r3
+     264:	f240 0300 	movw	r3, #0	; 0x0
+     268:	f2c0 0300 	movt	r3, #0	; 0x0
+     26c:	701a      	strb	r2, [r3, #0]
+     26e:	46bd      	mov	sp, r7
+     270:	bc80      	pop	{r7}
+     272:	4770      	bx	lr
+
+00000274 <TCPReleaseRxBuffer>:
+     274:	b480      	push	{r7}
+     276:	af00      	add	r7, sp, #0
+     278:	f240 0300 	movw	r3, #0	; 0x0
+     27c:	f2c0 0300 	movt	r3, #0	; 0x0
+     280:	781b      	ldrb	r3, [r3, #0]
+     282:	461a      	mov	r2, r3
+     284:	f002 02fb 	and.w	r2, r2, #251	; 0xfb
+     288:	f240 0300 	movw	r3, #0	; 0x0
+     28c:	f2c0 0300 	movt	r3, #0	; 0x0
+     290:	701a      	strb	r2, [r3, #0]
+     292:	46bd      	mov	sp, r7
+     294:	bc80      	pop	{r7}
+     296:	4770      	bx	lr
+
+00000298 <TCPTransmitTxBuffer>:
+     298:	b580      	push	{r7, lr}
+     29a:	af00      	add	r7, sp, #0
+     29c:	f240 0300 	movw	r3, #0	; 0x0
+     2a0:	f2c0 0300 	movt	r3, #0	; 0x0
+     2a4:	781b      	ldrb	r3, [r3, #0]
+     2a6:	2b04      	cmp	r3, #4
+     2a8:	d006      	beq.n	2b8 <TCPTransmitTxBuffer+0x20>
+     2aa:	f240 0300 	movw	r3, #0	; 0x0
+     2ae:	f2c0 0300 	movt	r3, #0	; 0x0
+     2b2:	781b      	ldrb	r3, [r3, #0]
+     2b4:	2b07      	cmp	r3, #7
+     2b6:	d149      	bne.n	34c <TCPTransmitTxBuffer+0xb4>
+     2b8:	f240 0300 	movw	r3, #0	; 0x0
+     2bc:	f2c0 0300 	movt	r3, #0	; 0x0
+     2c0:	781b      	ldrb	r3, [r3, #0]
+     2c2:	f003 0308 	and.w	r3, r3, #8	; 0x8
+     2c6:	2b00      	cmp	r3, #0
+     2c8:	d040      	beq.n	34c <TCPTransmitTxBuffer+0xb4>
+     2ca:	f240 0300 	movw	r3, #0	; 0x0
+     2ce:	f2c0 0300 	movt	r3, #0	; 0x0
+     2d2:	781b      	ldrb	r3, [r3, #0]
+     2d4:	461a      	mov	r2, r3
+     2d6:	f002 02f7 	and.w	r2, r2, #247	; 0xf7
+     2da:	f240 0300 	movw	r3, #0	; 0x0
+     2de:	f2c0 0300 	movt	r3, #0	; 0x0
+     2e2:	701a      	strb	r2, [r3, #0]
+     2e4:	f240 0300 	movw	r3, #0	; 0x0
+     2e8:	f2c0 0300 	movt	r3, #0	; 0x0
+     2ec:	881b      	ldrh	r3, [r3, #0]
+     2ee:	461a      	mov	r2, r3
+     2f0:	f240 0300 	movw	r3, #0	; 0x0
+     2f4:	f2c0 0300 	movt	r3, #0	; 0x0
+     2f8:	681b      	ldr	r3, [r3, #0]
+     2fa:	441a      	add	r2, r3
+     2fc:	f240 0300 	movw	r3, #0	; 0x0
+     300:	f2c0 0300 	movt	r3, #0	; 0x0
+     304:	601a      	str	r2, [r3, #0]
+     306:	f240 0300 	movw	r3, #0	; 0x0
+     30a:	f2c0 0300 	movt	r3, #0	; 0x0
+     30e:	881b      	ldrh	r3, [r3, #0]
+     310:	f103 0336 	add.w	r3, r3, #54	; 0x36
+     314:	b29a      	uxth	r2, r3
+     316:	f240 0300 	movw	r3, #0	; 0x0
+     31a:	f2c0 0300 	movt	r3, #0	; 0x0
+     31e:	801a      	strh	r2, [r3, #0]
+     320:	f240 0300 	movw	r3, #0	; 0x0
+     324:	f2c0 0300 	movt	r3, #0	; 0x0
+     328:	781b      	ldrb	r3, [r3, #0]
+     32a:	f043 0301 	orr.w	r3, r3, #1	; 0x1
+     32e:	b2da      	uxtb	r2, r3
+     330:	f240 0300 	movw	r3, #0	; 0x0
+     334:	f2c0 0300 	movt	r3, #0	; 0x0
+     338:	701a      	strb	r2, [r3, #0]
+     33a:	f240 0300 	movw	r3, #0	; 0x0
+     33e:	f2c0 0300 	movt	r3, #0	; 0x0
+     342:	f04f 0204 	mov.w	r2, #4	; 0x4
+     346:	701a      	strb	r2, [r3, #0]
+     348:	f7ff fffe 	bl	1934 <TCPStartRetryTimer>
+     34c:	46bd      	mov	sp, r7
+     34e:	bd80      	pop	{r7, pc}
+
+00000350 <IsBroadcast>:
+     350:	b580      	push	{r7, lr}
+     352:	b084      	sub	sp, #16
+     354:	af00      	add	r7, sp, #0
+     356:	f7ff fffe 	bl	0 <StartReadFrame>
+     35a:	4603      	mov	r3, r0
+     35c:	461a      	mov	r2, r3
+     35e:	f240 0300 	movw	r3, #0	; 0x0
+     362:	f2c0 0300 	movt	r3, #0	; 0x0
+     366:	801a      	strh	r2, [r3, #0]
+     368:	f107 030a 	add.w	r3, r7, #10	; 0xa
+     36c:	4618      	mov	r0, r3
+     36e:	f04f 0106 	mov.w	r1, #6	; 0x6
+     372:	f7ff fffe 	bl	0 <CopyFromFrame_EMAC>
+     376:	f240 0000 	movw	r0, #0	; 0x0
+     37a:	f2c0 0000 	movt	r0, #0	; 0x0
+     37e:	f04f 0106 	mov.w	r1, #6	; 0x6
+     382:	f7ff fffe 	bl	0 <CopyFromFrame_EMAC>
+     386:	897a      	ldrh	r2, [r7, #10]
+     388:	f64f 73ff 	movw	r3, #65535	; 0xffff
+     38c:	429a      	cmp	r2, r3
+     38e:	d10d      	bne.n	3ac <IsBroadcast+0x5c>
+     390:	89ba      	ldrh	r2, [r7, #12]
+     392:	f64f 73ff 	movw	r3, #65535	; 0xffff
+     396:	429a      	cmp	r2, r3
+     398:	d108      	bne.n	3ac <IsBroadcast+0x5c>
+     39a:	89fa      	ldrh	r2, [r7, #14]
+     39c:	f64f 73ff 	movw	r3, #65535	; 0xffff
+     3a0:	429a      	cmp	r2, r3
+     3a2:	d103      	bne.n	3ac <IsBroadcast+0x5c>
+     3a4:	f04f 0301 	mov.w	r3, #1	; 0x1
+     3a8:	607b      	str	r3, [r7, #4]
+     3aa:	e002      	b.n	3b2 <IsBroadcast+0x62>
+     3ac:	f04f 0300 	mov.w	r3, #0	; 0x0
+     3b0:	607b      	str	r3, [r7, #4]
+     3b2:	687b      	ldr	r3, [r7, #4]
+     3b4:	4618      	mov	r0, r3
+     3b6:	f107 0710 	add.w	r7, r7, #16	; 0x10
+     3ba:	46bd      	mov	sp, r7
+     3bc:	bd80      	pop	{r7, pc}
+     3be:	bf00      	nop
+
+000003c0 <DoNetworkStuff>:
+     3c0:	b580      	push	{r7, lr}
+     3c2:	af00      	add	r7, sp, #0
+     3c4:	f7ff fffe 	bl	0 <CheckFrameReceived>
+     3c8:	4603      	mov	r3, r0
+     3ca:	2b00      	cmp	r3, #0
+     3cc:	d00b      	beq.n	3e6 <DoNetworkStuff+0x26>
+     3ce:	f7ff fffe 	bl	350 <IsBroadcast>
+     3d2:	4603      	mov	r3, r0
+     3d4:	2b00      	cmp	r3, #0
+     3d6:	d002      	beq.n	3de <DoNetworkStuff+0x1e>
+     3d8:	f7ff fffe 	bl	780 <ProcessEthBroadcastFrame>
+     3dc:	e001      	b.n	822 <ProcessEthIAFrame+0x6>
+     3de:	f7ff fffe 	bl	81c <ProcessEthIAFrame>
+     3e2:	f7ff fffe 	bl	0 <EndReadFrame>
+     3e6:	f240 0300 	movw	r3, #0	; 0x0
+     3ea:	f2c0 0300 	movt	r3, #0	; 0x0
+     3ee:	781b      	ldrb	r3, [r3, #0]
+     3f0:	f003 0304 	and.w	r3, r3, #4	; 0x4
+     3f4:	2b00      	cmp	r3, #0
+     3f6:	d04f      	beq.n	498 <DoNetworkStuff+0xd8>
+     3f8:	f240 0300 	movw	r3, #0	; 0x0
+     3fc:	f2c0 0300 	movt	r3, #0	; 0x0
+     400:	781b      	ldrb	r3, [r3, #0]
+     402:	f003 0308 	and.w	r3, r3, #8	; 0x8
+     406:	2b00      	cmp	r3, #0
+     408:	d024      	beq.n	454 <DoNetworkStuff+0x94>
+     40a:	f240 0300 	movw	r3, #0	; 0x0
+     40e:	f2c0 0300 	movt	r3, #0	; 0x0
+     412:	781b      	ldrb	r3, [r3, #0]
+     414:	2b08      	cmp	r3, #8
+     416:	d93f      	bls.n	498 <DoNetworkStuff+0xd8>
+     418:	f7ff fffe 	bl	19dc <TCPRestartTimer>
+     41c:	f240 0300 	movw	r3, #0	; 0x0
+     420:	f2c0 0300 	movt	r3, #0	; 0x0
+     424:	781b      	ldrb	r3, [r3, #0]
+     426:	2b00      	cmp	r3, #0
+     428:	d00f      	beq.n	44a <DoNetworkStuff+0x8a>
+     42a:	f7ff fffe 	bl	1a18 <TCPHandleRetransmission>
+     42e:	f240 0300 	movw	r3, #0	; 0x0
+     432:	f2c0 0300 	movt	r3, #0	; 0x0
+     436:	781b      	ldrb	r3, [r3, #0]
+     438:	f103 33ff 	add.w	r3, r3, #4294967295	; 0xffffffff
+     43c:	b2da      	uxtb	r2, r3
+     43e:	f240 0300 	movw	r3, #0	; 0x0
+     442:	f2c0 0300 	movt	r3, #0	; 0x0
+     446:	701a      	strb	r2, [r3, #0]
+     448:	e026      	b.n	498 <DoNetworkStuff+0xd8>
+     44a:	f7ff fffe 	bl	19f4 <TCPStopTimer>
+     44e:	f7ff fffe 	bl	1a88 <TCPHandleTimeout>
+     452:	e021      	b.n	46 <TCPTimer+0x46>
+     454:	f240 0300 	movw	r3, #0	; 0x0
+     458:	f2c0 0300 	movt	r3, #0	; 0x0
+     45c:	781b      	ldrb	r3, [r3, #0]
+     45e:	2b02      	cmp	r3, #2
+     460:	d91a      	bls.n	498 <DoNetworkStuff+0xd8>
+     462:	f240 0300 	movw	r3, #0	; 0x0
+     466:	f2c0 0300 	movt	r3, #0	; 0x0
+     46a:	f04f 0200 	mov.w	r2, #0	; 0x0
+     46e:	701a      	strb	r2, [r3, #0]
+     470:	f240 0300 	movw	r3, #0	; 0x0
+     474:	f2c0 0300 	movt	r3, #0	; 0x0
+     478:	f04f 0200 	mov.w	r2, #0	; 0x0
+     47c:	701a      	strb	r2, [r3, #0]
+     47e:	f240 0300 	movw	r3, #0	; 0x0
+     482:	f2c0 0300 	movt	r3, #0	; 0x0
+     486:	781b      	ldrb	r3, [r3, #0]
+     488:	461a      	mov	r2, r3
+     48a:	f002 0204 	and.w	r2, r2, #4	; 0x4
+     48e:	f240 0300 	movw	r3, #0	; 0x0
+     492:	f2c0 0300 	movt	r3, #0	; 0x0
+     496:	701a      	strb	r2, [r3, #0]
+     498:	f240 0300 	movw	r3, #0	; 0x0
+     49c:	f2c0 0300 	movt	r3, #0	; 0x0
+     4a0:	781b      	ldrb	r3, [r3, #0]
+     4a2:	2b07      	cmp	r3, #7
+     4a4:	f200 80f0 	bhi.w	688 <DoNetworkStuff+0x2c8>
+     4a8:	a201      	add	r2, pc, #4	(adr r2, 4b0 <DoNetworkStuff+0xf0>)
+     4aa:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
+     4ae:	bf00      	nop
+     4b0:	000004d1 	.word	0x000004d1
+     4b4:	000004d1 	.word	0x000004d1
+     4b8:	00000689 	.word	0x00000689
+     4bc:	000005a1 	.word	0x000005a1
+     4c0:	000005a1 	.word	0x000005a1
+     4c4:	00000689 	.word	0x00000689
+     4c8:	00000689 	.word	0x00000689
+     4cc:	0000061f 	.word	0x0000061f
+     4d0:	f240 0300 	movw	r3, #0	; 0x0
+     4d4:	f2c0 0300 	movt	r3, #0	; 0x0
+     4d8:	781b      	ldrb	r3, [r3, #0]
+     4da:	f003 0301 	and.w	r3, r3, #1	; 0x1
+     4de:	b2db      	uxtb	r3, r3
+     4e0:	2b00      	cmp	r3, #0
+     4e2:	f000 80d1 	beq.w	688 <DoNetworkStuff+0x2c8>
+     4e6:	f240 0300 	movw	r3, #0	; 0x0
+     4ea:	f2c0 0300 	movt	r3, #0	; 0x0
+     4ee:	781b      	ldrb	r3, [r3, #0]
+     4f0:	f003 0302 	and.w	r3, r3, #2	; 0x2
+     4f4:	2b00      	cmp	r3, #0
+     4f6:	f000 80c7 	beq.w	688 <DoNetworkStuff+0x2c8>
+     4fa:	f240 0300 	movw	r3, #0	; 0x0
+     4fe:	f2c0 0300 	movt	r3, #0	; 0x0
+     502:	781b      	ldrb	r3, [r3, #0]
+     504:	f003 0302 	and.w	r3, r3, #2	; 0x2
+     508:	2b00      	cmp	r3, #0
+     50a:	f040 80bd 	bne.w	688 <DoNetworkStuff+0x2c8>
+     50e:	f240 0300 	movw	r3, #0	; 0x0
+     512:	f2c0 0300 	movt	r3, #0	; 0x0
+     516:	881b      	ldrh	r3, [r3, #0]
+     518:	ea4f 4203 	mov.w	r2, r3, lsl #16
+     51c:	f244 0300 	movw	r3, #16384	; 0x4000
+     520:	f2c4 0300 	movt	r3, #16384	; 0x4000
+     524:	689b      	ldr	r3, [r3, #8]
+     526:	ea4f 4303 	mov.w	r3, r3, lsl #16
+     52a:	ea4f 4313 	mov.w	r3, r3, lsr #16
+     52e:	ea42 0203 	orr.w	r2, r2, r3
+     532:	f240 0300 	movw	r3, #0	; 0x0
+     536:	f2c0 0300 	movt	r3, #0	; 0x0
+     53a:	601a      	str	r2, [r3, #0]
+     53c:	f240 0300 	movw	r3, #0	; 0x0
+     540:	f2c0 0300 	movt	r3, #0	; 0x0
+     544:	681a      	ldr	r2, [r3, #0]
+     546:	f240 0300 	movw	r3, #0	; 0x0
+     54a:	f2c0 0300 	movt	r3, #0	; 0x0
+     54e:	601a      	str	r2, [r3, #0]
+     550:	f240 0300 	movw	r3, #0	; 0x0
+     554:	f2c0 0300 	movt	r3, #0	; 0x0
+     558:	f04f 0200 	mov.w	r2, #0	; 0x0
+     55c:	601a      	str	r2, [r3, #0]
+     55e:	f240 0300 	movw	r3, #0	; 0x0
+     562:	f2c0 0300 	movt	r3, #0	; 0x0
+     566:	681b      	ldr	r3, [r3, #0]
+     568:	f103 0201 	add.w	r2, r3, #1	; 0x1
+     56c:	f240 0300 	movw	r3, #0	; 0x0
+     570:	f2c0 0300 	movt	r3, #0	; 0x0
+     574:	601a      	str	r2, [r3, #0]
+     576:	f04f 0002 	mov.w	r0, #2	; 0x2
+     57a:	f7ff fffe 	bl	1484 <PrepareTCP_FRAME>
+     57e:	f240 0300 	movw	r3, #0	; 0x0
+     582:	f2c0 0300 	movt	r3, #0	; 0x0
+     586:	f04f 0201 	mov.w	r2, #1	; 0x1
+     58a:	701a      	strb	r2, [r3, #0]
+     58c:	f7ff fffe 	bl	1934 <TCPStartRetryTimer>
+     590:	f240 0300 	movw	r3, #0	; 0x0
+     594:	f2c0 0300 	movt	r3, #0	; 0x0
+     598:	f04f 0202 	mov.w	r2, #2	; 0x2
+     59c:	701a      	strb	r2, [r3, #0]
+     59e:	e073      	b.n	688 <DoNetworkStuff+0x2c8>
+     5a0:	f240 0300 	movw	r3, #0	; 0x0
+     5a4:	f2c0 0300 	movt	r3, #0	; 0x0
+     5a8:	781b      	ldrb	r3, [r3, #0]
+     5aa:	f003 0310 	and.w	r3, r3, #16	; 0x10
+     5ae:	2b00      	cmp	r3, #0
+     5b0:	d06a      	beq.n	688 <DoNetworkStuff+0x2c8>
+     5b2:	f240 0300 	movw	r3, #0	; 0x0
+     5b6:	f2c0 0300 	movt	r3, #0	; 0x0
+     5ba:	781b      	ldrb	r3, [r3, #0]
+     5bc:	f003 0303 	and.w	r3, r3, #3	; 0x3
+     5c0:	2b00      	cmp	r3, #0
+     5c2:	d161      	bne.n	688 <DoNetworkStuff+0x2c8>
+     5c4:	f240 0300 	movw	r3, #0	; 0x0
+     5c8:	f2c0 0300 	movt	r3, #0	; 0x0
+     5cc:	681a      	ldr	r2, [r3, #0]
+     5ce:	f240 0300 	movw	r3, #0	; 0x0
+     5d2:	f2c0 0300 	movt	r3, #0	; 0x0
+     5d6:	681b      	ldr	r3, [r3, #0]
+     5d8:	429a      	cmp	r2, r3
+     5da:	d155      	bne.n	688 <DoNetworkStuff+0x2c8>
+     5dc:	f240 0300 	movw	r3, #0	; 0x0
+     5e0:	f2c0 0300 	movt	r3, #0	; 0x0
+     5e4:	681b      	ldr	r3, [r3, #0]
+     5e6:	f103 0201 	add.w	r2, r3, #1	; 0x1
+     5ea:	f240 0300 	movw	r3, #0	; 0x0
+     5ee:	f2c0 0300 	movt	r3, #0	; 0x0
+     5f2:	601a      	str	r2, [r3, #0]
+     5f4:	f04f 0011 	mov.w	r0, #17	; 0x11
+     5f8:	f7ff fffe 	bl	1484 <PrepareTCP_FRAME>
+     5fc:	f240 0300 	movw	r3, #0	; 0x0
+     600:	f2c0 0300 	movt	r3, #0	; 0x0
+     604:	f04f 0203 	mov.w	r2, #3	; 0x3
+     608:	701a      	strb	r2, [r3, #0]
+     60a:	f7ff fffe 	bl	1934 <TCPStartRetryTimer>
+     60e:	f240 0300 	movw	r3, #0	; 0x0
+     612:	f2c0 0300 	movt	r3, #0	; 0x0
+     616:	f04f 0205 	mov.w	r2, #5	; 0x5
+     61a:	701a      	strb	r2, [r3, #0]
+     61c:	e034      	b.n	688 <DoNetworkStuff+0x2c8>
+     61e:	f240 0300 	movw	r3, #0	; 0x0
+     622:	f2c0 0300 	movt	r3, #0	; 0x0
+     626:	781b      	ldrb	r3, [r3, #0]
+     628:	f003 0303 	and.w	r3, r3, #3	; 0x3
+     62c:	2b00      	cmp	r3, #0
+     62e:	d12b      	bne.n	688 <DoNetworkStuff+0x2c8>
+     630:	f240 0300 	movw	r3, #0	; 0x0
+     634:	f2c0 0300 	movt	r3, #0	; 0x0
+     638:	681a      	ldr	r2, [r3, #0]
+     63a:	f240 0300 	movw	r3, #0	; 0x0
+     63e:	f2c0 0300 	movt	r3, #0	; 0x0
+     642:	681b      	ldr	r3, [r3, #0]
+     644:	429a      	cmp	r2, r3
+     646:	d11f      	bne.n	688 <DoNetworkStuff+0x2c8>
+     648:	f240 0300 	movw	r3, #0	; 0x0
+     64c:	f2c0 0300 	movt	r3, #0	; 0x0
+     650:	681b      	ldr	r3, [r3, #0]
+     652:	f103 0201 	add.w	r2, r3, #1	; 0x1
+     656:	f240 0300 	movw	r3, #0	; 0x0
+     65a:	f2c0 0300 	movt	r3, #0	; 0x0
+     65e:	601a      	str	r2, [r3, #0]
+     660:	f04f 0011 	mov.w	r0, #17	; 0x11
+     664:	f7ff fffe 	bl	1484 <PrepareTCP_FRAME>
+     668:	f240 0300 	movw	r3, #0	; 0x0
+     66c:	f2c0 0300 	movt	r3, #0	; 0x0
+     670:	f04f 0203 	mov.w	r2, #3	; 0x3
+     674:	701a      	strb	r2, [r3, #0]
+     676:	f7ff fffe 	bl	1934 <TCPStartRetryTimer>
+     67a:	f240 0300 	movw	r3, #0	; 0x0
+     67e:	f2c0 0300 	movt	r3, #0	; 0x0
+     682:	f04f 0209 	mov.w	r2, #9	; 0x9
+     686:	701a      	strb	r2, [r3, #0]
+     688:	f240 0300 	movw	r3, #0	; 0x0
+     68c:	f2c0 0300 	movt	r3, #0	; 0x0
+     690:	781b      	ldrb	r3, [r3, #0]
+     692:	f003 0302 	and.w	r3, r3, #2	; 0x2
+     696:	2b00      	cmp	r3, #0
+     698:	d031      	beq.n	6fe <DoNetworkStuff+0x33e>
+     69a:	f240 0300 	movw	r3, #0	; 0x0
+     69e:	f2c0 0300 	movt	r3, #0	; 0x0
+     6a2:	781b      	ldrb	r3, [r3, #0]
+     6a4:	4618      	mov	r0, r3
+     6a6:	f7ff fffe 	bl	0 <RequestSend>
+     6aa:	f7ff fffe 	bl	0 <Rdy4Tx>
+     6ae:	4603      	mov	r3, r0
+     6b0:	2b00      	cmp	r3, #0
+     6b2:	d002      	beq.n	6ba <DoNetworkStuff+0x2fa>
+     6b4:	f7ff fffe 	bl	1b4c <SendFrame2>
+     6b8:	e014      	b.n	2c <TCPStateMachine+0x2c>
+     6ba:	f240 0300 	movw	r3, #0	; 0x0
+     6be:	f2c0 0300 	movt	r3, #0	; 0x0
+     6c2:	f04f 0200 	mov.w	r2, #0	; 0x0
+     6c6:	701a      	strb	r2, [r3, #0]
+     6c8:	f240 0300 	movw	r3, #0	; 0x0
+     6cc:	f2c0 0300 	movt	r3, #0	; 0x0
+     6d0:	f04f 0250 	mov.w	r2, #80	; 0x50
+     6d4:	701a      	strb	r2, [r3, #0]
+     6d6:	f240 0300 	movw	r3, #0	; 0x0
+     6da:	f2c0 0300 	movt	r3, #0	; 0x0
+     6de:	f04f 0200 	mov.w	r2, #0	; 0x0
+     6e2:	701a      	strb	r2, [r3, #0]
+     6e4:	f240 0300 	movw	r3, #0	; 0x0
+     6e8:	f2c0 0300 	movt	r3, #0	; 0x0
+     6ec:	781b      	ldrb	r3, [r3, #0]
+     6ee:	461a      	mov	r2, r3
+     6f0:	f002 02fd 	and.w	r2, r2, #253	; 0xfd
+     6f4:	f240 0300 	movw	r3, #0	; 0x0
+     6f8:	f2c0 0300 	movt	r3, #0	; 0x0
+     6fc:	701a      	strb	r2, [r3, #0]
+     6fe:	f240 0300 	movw	r3, #0	; 0x0
+     702:	f2c0 0300 	movt	r3, #0	; 0x0
+     706:	781b      	ldrb	r3, [r3, #0]
+     708:	f003 0301 	and.w	r3, r3, #1	; 0x1
+     70c:	b2db      	uxtb	r3, r3
+     70e:	2b00      	cmp	r3, #0
+     710:	d033      	beq.n	77a <DoNetworkStuff+0x3ba>
+     712:	f7ff fffe 	bl	16b8 <PrepareTCP_DATA_FRAME>
+     716:	f240 0300 	movw	r3, #0	; 0x0
+     71a:	f2c0 0300 	movt	r3, #0	; 0x0
+     71e:	881b      	ldrh	r3, [r3, #0]
+     720:	4618      	mov	r0, r3
+     722:	f7ff fffe 	bl	0 <RequestSend>
+     726:	f7ff fffe 	bl	0 <Rdy4Tx>
+     72a:	4603      	mov	r3, r0
+     72c:	2b00      	cmp	r3, #0
+     72e:	d002      	beq.n	736 <DoNetworkStuff+0x376>
+     730:	f7ff fffe 	bl	1b2c <SendFrame1>
+     734:	e014      	b.n	2c <TCPStateMachine+0x2c>
+     736:	f240 0300 	movw	r3, #0	; 0x0
+     73a:	f2c0 0300 	movt	r3, #0	; 0x0
+     73e:	f04f 0200 	mov.w	r2, #0	; 0x0
+     742:	701a      	strb	r2, [r3, #0]
+     744:	f240 0300 	movw	r3, #0	; 0x0
+     748:	f2c0 0300 	movt	r3, #0	; 0x0
+     74c:	f04f 0250 	mov.w	r2, #80	; 0x50
+     750:	701a      	strb	r2, [r3, #0]
+     752:	f240 0300 	movw	r3, #0	; 0x0
+     756:	f2c0 0300 	movt	r3, #0	; 0x0
+     75a:	f04f 0200 	mov.w	r2, #0	; 0x0
+     75e:	701a      	strb	r2, [r3, #0]
+     760:	f240 0300 	movw	r3, #0	; 0x0
+     764:	f2c0 0300 	movt	r3, #0	; 0x0
+     768:	781b      	ldrb	r3, [r3, #0]
+     76a:	461a      	mov	r2, r3
+     76c:	f002 02fe 	and.w	r2, r2, #254	; 0xfe
+     770:	f240 0300 	movw	r3, #0	; 0x0
+     774:	f2c0 0300 	movt	r3, #0	; 0x0
+     778:	701a      	strb	r2, [r3, #0]
+     77a:	46bd      	mov	sp, r7
+     77c:	bd80      	pop	{r7, pc}
+     77e:	bf00      	nop
+
+00000780 <ProcessEthBroadcastFrame>:
+     780:	b580      	push	{r7, lr}
+     782:	b082      	sub	sp, #8
+     784:	af00      	add	r7, sp, #0
+     786:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     78a:	4603      	mov	r3, r0
+     78c:	461a      	mov	r2, r3
+     78e:	f640 0306 	movw	r3, #2054	; 0x806
+     792:	429a      	cmp	r2, r3
+     794:	d13e      	bne.n	814 <ProcessEthBroadcastFrame+0x94>
+     796:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     79a:	4603      	mov	r3, r0
+     79c:	2b01      	cmp	r3, #1
+     79e:	d139      	bne.n	814 <ProcessEthBroadcastFrame+0x94>
+     7a0:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     7a4:	4603      	mov	r3, r0
+     7a6:	f5b3 6f00 	cmp.w	r3, #2048	; 0x800
+     7aa:	d133      	bne.n	6a <ReadFrameBE_EMAC+0x6a>
+     7ac:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     7b0:	4603      	mov	r3, r0
+     7b2:	461a      	mov	r2, r3
+     7b4:	f240 6304 	movw	r3, #1540	; 0x604
+     7b8:	429a      	cmp	r2, r3
+     7ba:	d12b      	bne.n	814 <ProcessEthBroadcastFrame+0x94>
+     7bc:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     7c0:	4603      	mov	r3, r0
+     7c2:	2b01      	cmp	r3, #1
+     7c4:	d126      	bne.n	814 <ProcessEthBroadcastFrame+0x94>
+     7c6:	f04f 0006 	mov.w	r0, #6	; 0x6
+     7ca:	f7ff fffe 	bl	0 <DummyReadFrame_EMAC>
+     7ce:	f240 0000 	movw	r0, #0	; 0x0
+     7d2:	f2c0 0000 	movt	r0, #0	; 0x0
+     7d6:	f04f 0104 	mov.w	r1, #4	; 0x4
+     7da:	f7ff fffe 	bl	0 <CopyFromFrame_EMAC>
+     7de:	f04f 0006 	mov.w	r0, #6	; 0x6
+     7e2:	f7ff fffe 	bl	0 <DummyReadFrame_EMAC>
+     7e6:	f107 0304 	add.w	r3, r7, #4	; 0x4
+     7ea:	4618      	mov	r0, r3
+     7ec:	f04f 0104 	mov.w	r1, #4	; 0x4
+     7f0:	f7ff fffe 	bl	0 <CopyFromFrame_EMAC>
+     7f4:	f107 0304 	add.w	r3, r7, #4	; 0x4
+     7f8:	f240 0000 	movw	r0, #0	; 0x0
+     7fc:	f2c0 0000 	movt	r0, #0	; 0x0
+     800:	4619      	mov	r1, r3
+     802:	f04f 0204 	mov.w	r2, #4	; 0x4
+     806:	f7ff fffe 	bl	0 <memcmp>
+     80a:	4603      	mov	r3, r0
+     80c:	2b00      	cmp	r3, #0
+     80e:	d101      	bne.n	814 <ProcessEthBroadcastFrame+0x94>
+     810:	f7ff fffe 	bl	1220 <PrepareARP_ANSWER>
+     814:	f107 0708 	add.w	r7, r7, #8	; 0x8
+     818:	46bd      	mov	sp, r7
+     81a:	bd80      	pop	{r7, pc}
+
+0000081c <ProcessEthIAFrame>:
+     81c:	b580      	push	{r7, lr}
+     81e:	b084      	sub	sp, #16
+     820:	af00      	add	r7, sp, #0
+     822:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     826:	4603      	mov	r3, r0
+     828:	603b      	str	r3, [r7, #0]
+     82a:	683a      	ldr	r2, [r7, #0]
+     82c:	f5b2 6f00 	cmp.w	r2, #2048	; 0x800
+     830:	d03e      	beq.n	8b0 <ProcessEthIAFrame+0x94>
+     832:	f640 0306 	movw	r3, #2054	; 0x806
+     836:	683a      	ldr	r2, [r7, #0]
+     838:	429a      	cmp	r2, r3
+     83a:	f040 8086 	bne.w	94a <ProcessEthIAFrame+0x12e>
+     83e:	f240 0300 	movw	r3, #0	; 0x0
+     842:	f2c0 0300 	movt	r3, #0	; 0x0
+     846:	781b      	ldrb	r3, [r3, #0]
+     848:	f003 0303 	and.w	r3, r3, #3	; 0x3
+     84c:	2b01      	cmp	r3, #1
+     84e:	d17c      	bne.n	94a <ProcessEthIAFrame+0x12e>
+     850:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     854:	4603      	mov	r3, r0
+     856:	2b01      	cmp	r3, #1
+     858:	d177      	bne.n	94a <ProcessEthIAFrame+0x12e>
+     85a:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     85e:	4603      	mov	r3, r0
+     860:	f5b3 6f00 	cmp.w	r3, #2048	; 0x800
+     864:	d171      	bne.n	e6 <ReadFrameBE_EMAC+0xe6>
+     866:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     86a:	4603      	mov	r3, r0
+     86c:	461a      	mov	r2, r3
+     86e:	f240 6304 	movw	r3, #1540	; 0x604
+     872:	429a      	cmp	r2, r3
+     874:	d169      	bne.n	94a <ProcessEthIAFrame+0x12e>
+     876:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     87a:	4603      	mov	r3, r0
+     87c:	2b02      	cmp	r3, #2
+     87e:	d164      	bne.n	94a <ProcessEthIAFrame+0x12e>
+     880:	f7ff fffe 	bl	19f4 <TCPStopTimer>
+     884:	f240 0000 	movw	r0, #0	; 0x0
+     888:	f2c0 0000 	movt	r0, #0	; 0x0
+     88c:	f04f 0106 	mov.w	r1, #6	; 0x6
+     890:	f7ff fffe 	bl	0 <CopyFromFrame_EMAC>
+     894:	f240 0300 	movw	r3, #0	; 0x0
+     898:	f2c0 0300 	movt	r3, #0	; 0x0
+     89c:	781b      	ldrb	r3, [r3, #0]
+     89e:	f043 0302 	orr.w	r3, r3, #2	; 0x2
+     8a2:	b2da      	uxtb	r2, r3
+     8a4:	f240 0300 	movw	r3, #0	; 0x0
+     8a8:	f2c0 0300 	movt	r3, #0	; 0x0
+     8ac:	701a      	strb	r2, [r3, #0]
+     8ae:	e04c      	b.n	94a <ProcessEthIAFrame+0x12e>
+     8b0:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     8b4:	4603      	mov	r3, r0
+     8b6:	f403 437f 	and.w	r3, r3, #65280	; 0xff00
+     8ba:	f5b3 4f8a 	cmp.w	r3, #17664	; 0x4500
+     8be:	d144      	bne.n	8c <ReadFrameBE_EMAC+0x8c>
+     8c0:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     8c4:	4603      	mov	r3, r0
+     8c6:	461a      	mov	r2, r3
+     8c8:	f240 0300 	movw	r3, #0	; 0x0
+     8cc:	f2c0 0300 	movt	r3, #0	; 0x0
+     8d0:	801a      	strh	r2, [r3, #0]
+     8d2:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     8d6:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     8da:	4603      	mov	r3, r0
+     8dc:	ea4f 4383 	mov.w	r3, r3, lsl #18
+     8e0:	ea4f 4393 	mov.w	r3, r3, lsr #18
+     8e4:	2b00      	cmp	r3, #0
+     8e6:	d130      	bne.n	94a <ProcessEthIAFrame+0x12e>
+     8e8:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     8ec:	4603      	mov	r3, r0
+     8ee:	73fb      	strb	r3, [r7, #15]
+     8f0:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     8f4:	f240 0000 	movw	r0, #0	; 0x0
+     8f8:	f2c0 0000 	movt	r0, #0	; 0x0
+     8fc:	f04f 0104 	mov.w	r1, #4	; 0x4
+     900:	f7ff fffe 	bl	0 <CopyFromFrame_EMAC>
+     904:	f107 030a 	add.w	r3, r7, #10	; 0xa
+     908:	4618      	mov	r0, r3
+     90a:	f04f 0104 	mov.w	r1, #4	; 0x4
+     90e:	f7ff fffe 	bl	0 <CopyFromFrame_EMAC>
+     912:	f107 030a 	add.w	r3, r7, #10	; 0xa
+     916:	f240 0000 	movw	r0, #0	; 0x0
+     91a:	f2c0 0000 	movt	r0, #0	; 0x0
+     91e:	4619      	mov	r1, r3
+     920:	f04f 0204 	mov.w	r2, #4	; 0x4
+     924:	f7ff fffe 	bl	0 <memcmp>
+     928:	4603      	mov	r3, r0
+     92a:	2b00      	cmp	r3, #0
+     92c:	d10d      	bne.n	94a <ProcessEthIAFrame+0x12e>
+     92e:	7bfb      	ldrb	r3, [r7, #15]
+     930:	607b      	str	r3, [r7, #4]
+     932:	687a      	ldr	r2, [r7, #4]
+     934:	2a01      	cmp	r2, #1
+     936:	d003      	beq.n	940 <ProcessEthIAFrame+0x124>
+     938:	687b      	ldr	r3, [r7, #4]
+     93a:	2b06      	cmp	r3, #6
+     93c:	d003      	beq.n	946 <ProcessEthIAFrame+0x12a>
+     93e:	e004      	b.n	94a <ProcessEthIAFrame+0x12e>
+     940:	f7ff fffe 	bl	954 <ProcessICMPFrame>
+     944:	e001      	b.n	986 <ProcessTCPFrame+0x6>
+     946:	f7ff fffe 	bl	980 <ProcessTCPFrame>
+     94a:	f107 0710 	add.w	r7, r7, #16	; 0x10
+     94e:	46bd      	mov	sp, r7
+     950:	bd80      	pop	{r7, pc}
+     952:	bf00      	nop
+
+00000954 <ProcessICMPFrame>:
+     954:	b580      	push	{r7, lr}
+     956:	b082      	sub	sp, #8
+     958:	af00      	add	r7, sp, #0
+     95a:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     95e:	4603      	mov	r3, r0
+     960:	80fb      	strh	r3, [r7, #6]
+     962:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     966:	88fb      	ldrh	r3, [r7, #6]
+     968:	ea4f 2313 	mov.w	r3, r3, lsr #8
+     96c:	b29b      	uxth	r3, r3
+     96e:	2b08      	cmp	r3, #8
+     970:	d101      	bne.n	976 <ProcessICMPFrame+0x22>
+     972:	f7ff fffe 	bl	1314 <PrepareICMP_ECHO_REPLY>
+     976:	f107 0708 	add.w	r7, r7, #8	; 0x8
+     97a:	46bd      	mov	sp, r7
+     97c:	bd80      	pop	{r7, pc}
+     97e:	bf00      	nop
+
+00000980 <ProcessTCPFrame>:
+     980:	b580      	push	{r7, lr}
+     982:	b088      	sub	sp, #32
+     984:	af00      	add	r7, sp, #0
+     986:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     98a:	4603      	mov	r3, r0
+     98c:	81bb      	strh	r3, [r7, #12]
+     98e:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     992:	4603      	mov	r3, r0
+     994:	81fb      	strh	r3, [r7, #14]
+     996:	f240 0300 	movw	r3, #0	; 0x0
+     99a:	f2c0 0300 	movt	r3, #0	; 0x0
+     99e:	881a      	ldrh	r2, [r3, #0]
+     9a0:	89fb      	ldrh	r3, [r7, #14]
+     9a2:	4293      	cmp	r3, r2
+     9a4:	f040 838a 	bne.w	10bc <ProcessTCPFrame+0x73c>
+     9a8:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     9ac:	4603      	mov	r3, r0
+     9ae:	ea4f 4303 	mov.w	r3, r3, lsl #16
+     9b2:	613b      	str	r3, [r7, #16]
+     9b4:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     9b8:	4603      	mov	r3, r0
+     9ba:	461a      	mov	r2, r3
+     9bc:	693b      	ldr	r3, [r7, #16]
+     9be:	ea43 0302 	orr.w	r3, r3, r2
+     9c2:	613b      	str	r3, [r7, #16]
+     9c4:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     9c8:	4603      	mov	r3, r0
+     9ca:	ea4f 4303 	mov.w	r3, r3, lsl #16
+     9ce:	617b      	str	r3, [r7, #20]
+     9d0:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     9d4:	4603      	mov	r3, r0
+     9d6:	461a      	mov	r2, r3
+     9d8:	697b      	ldr	r3, [r7, #20]
+     9da:	ea43 0302 	orr.w	r3, r3, r2
+     9de:	617b      	str	r3, [r7, #20]
+     9e0:	f7ff fffe 	bl	0 <ReadFrameBE_EMAC>
+     9e4:	4603      	mov	r3, r0
+     9e6:	837b      	strh	r3, [r7, #26]
+     9e8:	8b7b      	ldrh	r3, [r7, #26]
+     9ea:	f403 4370 	and.w	r3, r3, #61440	; 0xf000
+     9ee:	ea4f 23a3 	mov.w	r3, r3, asr #10
+     9f2:	777b      	strb	r3, [r7, #29]
+     9f4:	f240 0300 	movw	r3, #0	; 0x0
+     9f8:	f2c0 0300 	movt	r3, #0	; 0x0
+     9fc:	881a      	ldrh	r2, [r3, #0]
+     9fe:	7f7b      	ldrb	r3, [r7, #29]
+     a00:	ebc3 0302 	rsb	r3, r3, r2
+     a04:	b29b      	uxth	r3, r3
+     a06:	f1a3 0314 	sub.w	r3, r3, #20	; 0x14
+     a0a:	83fb      	strh	r3, [r7, #30]
+     a0c:	8bfb      	ldrh	r3, [r7, #30]
+     a0e:	f5b3 7f80 	cmp.w	r3, #256	; 0x100
+     a12:	f200 8353 	bhi.w	10bc <ProcessTCPFrame+0x73c>
+     a16:	7f7b      	ldrb	r3, [r7, #29]
+     a18:	2b14      	cmp	r3, #20
+     a1a:	d906      	bls.n	a2a <ProcessTCPFrame+0xaa>
+     a1c:	7f7b      	ldrb	r3, [r7, #29]
+     a1e:	f1a3 0314 	sub.w	r3, r3, #20	; 0x14
+     a22:	b29b      	uxth	r3, r3
+     a24:	4618      	mov	r0, r3
+     a26:	f7ff fffe 	bl	0 <DummyReadFrame_EMAC>
+     a2a:	f240 0300 	movw	r3, #0	; 0x0
+     a2e:	f2c0 0300 	movt	r3, #0	; 0x0
+     a32:	781b      	ldrb	r3, [r3, #0]
+     a34:	607b      	str	r3, [r7, #4]
+     a36:	687a      	ldr	r2, [r7, #4]
+     a38:	2a01      	cmp	r2, #1
+     a3a:	d060      	beq.n	afe <ProcessTCPFrame+0x17e>
+     a3c:	687b      	ldr	r3, [r7, #4]
+     a3e:	2b02      	cmp	r3, #2
+     a40:	f000 80d7 	beq.w	bf2 <ProcessTCPFrame+0x272>
+     a44:	687a      	ldr	r2, [r7, #4]
+     a46:	2a00      	cmp	r2, #0
+     a48:	f040 8191 	bne.w	d6e <ProcessTCPFrame+0x3ee>
+     a4c:	8b7b      	ldrh	r3, [r7, #26]
+     a4e:	f003 0304 	and.w	r3, r3, #4	; 0x4
+     a52:	2b00      	cmp	r3, #0
+     a54:	f040 8332 	bne.w	10bc <ProcessTCPFrame+0x73c>
+     a58:	f240 0300 	movw	r3, #0	; 0x0
+     a5c:	f2c0 0300 	movt	r3, #0	; 0x0
+     a60:	89ba      	ldrh	r2, [r7, #12]
+     a62:	801a      	strh	r2, [r3, #0]
+     a64:	f240 0000 	movw	r0, #0	; 0x0
+     a68:	f2c0 0000 	movt	r0, #0	; 0x0
+     a6c:	f240 0100 	movw	r1, #0	; 0x0
+     a70:	f2c0 0100 	movt	r1, #0	; 0x0
+     a74:	f04f 0206 	mov.w	r2, #6	; 0x6
+     a78:	f7ff fffe 	bl	0 <memcpy>
+     a7c:	f240 0000 	movw	r0, #0	; 0x0
+     a80:	f2c0 0000 	movt	r0, #0	; 0x0
+     a84:	f240 0100 	movw	r1, #0	; 0x0
+     a88:	f2c0 0100 	movt	r1, #0	; 0x0
+     a8c:	f04f 0204 	mov.w	r2, #4	; 0x4
+     a90:	f7ff fffe 	bl	0 <memcpy>
+     a94:	8b7b      	ldrh	r3, [r7, #26]
+     a96:	f003 0310 	and.w	r3, r3, #16	; 0x10
+     a9a:	2b00      	cmp	r3, #0
+     a9c:	d00a      	beq.n	ab4 <ProcessTCPFrame+0x134>
+     a9e:	f240 0300 	movw	r3, #0	; 0x0
+     aa2:	f2c0 0300 	movt	r3, #0	; 0x0
+     aa6:	697a      	ldr	r2, [r7, #20]
+     aa8:	601a      	str	r2, [r3, #0]
+     aaa:	f04f 0004 	mov.w	r0, #4	; 0x4
+     aae:	f7ff fffe 	bl	1484 <PrepareTCP_FRAME>
+     ab2:	e303      	b.n	60a <TCPSeqNr+0x60a>
+     ab4:	f240 0300 	movw	r3, #0	; 0x0
+     ab8:	f2c0 0300 	movt	r3, #0	; 0x0
+     abc:	f04f 0200 	mov.w	r2, #0	; 0x0
+     ac0:	601a      	str	r2, [r3, #0]
+     ac2:	8bfa      	ldrh	r2, [r7, #30]
+     ac4:	693b      	ldr	r3, [r7, #16]
+     ac6:	441a      	add	r2, r3
+     ac8:	f240 0300 	movw	r3, #0	; 0x0
+     acc:	f2c0 0300 	movt	r3, #0	; 0x0
+     ad0:	601a      	str	r2, [r3, #0]
+     ad2:	8b7b      	ldrh	r3, [r7, #26]
+     ad4:	f003 0303 	and.w	r3, r3, #3	; 0x3
+     ad8:	2b00      	cmp	r3, #0
+     ada:	d00b      	beq.n	af4 <ProcessTCPFrame+0x174>
+     adc:	f240 0300 	movw	r3, #0	; 0x0
+     ae0:	f2c0 0300 	movt	r3, #0	; 0x0
+     ae4:	681b      	ldr	r3, [r3, #0]
+     ae6:	f103 0201 	add.w	r2, r3, #1	; 0x1
+     aea:	f240 0300 	movw	r3, #0	; 0x0
+     aee:	f2c0 0300 	movt	r3, #0	; 0x0
+     af2:	601a      	str	r2, [r3, #0]
+     af4:	f04f 0014 	mov.w	r0, #20	; 0x14
+     af8:	f7ff fffe 	bl	1484 <PrepareTCP_FRAME>
+     afc:	e2de      	b.n	10bc <ProcessTCPFrame+0x73c>
+     afe:	8b7b      	ldrh	r3, [r7, #26]
+     b00:	f003 0304 	and.w	r3, r3, #4	; 0x4
+     b04:	2b00      	cmp	r3, #0
+     b06:	f040 82d9 	bne.w	10bc <ProcessTCPFrame+0x73c>
+     b0a:	f240 0300 	movw	r3, #0	; 0x0
+     b0e:	f2c0 0300 	movt	r3, #0	; 0x0
+     b12:	89ba      	ldrh	r2, [r7, #12]
+     b14:	801a      	strh	r2, [r3, #0]
+     b16:	f240 0000 	movw	r0, #0	; 0x0
+     b1a:	f2c0 0000 	movt	r0, #0	; 0x0
+     b1e:	f240 0100 	movw	r1, #0	; 0x0
+     b22:	f2c0 0100 	movt	r1, #0	; 0x0
+     b26:	f04f 0206 	mov.w	r2, #6	; 0x6
+     b2a:	f7ff fffe 	bl	0 <memcpy>
+     b2e:	f240 0000 	movw	r0, #0	; 0x0
+     b32:	f2c0 0000 	movt	r0, #0	; 0x0
+     b36:	f240 0100 	movw	r1, #0	; 0x0
+     b3a:	f2c0 0100 	movt	r1, #0	; 0x0
+     b3e:	f04f 0204 	mov.w	r2, #4	; 0x4
+     b42:	f7ff fffe 	bl	0 <memcpy>
+     b46:	8b7b      	ldrh	r3, [r7, #26]
+     b48:	f003 0310 	and.w	r3, r3, #16	; 0x10
+     b4c:	2b00      	cmp	r3, #0
+     b4e:	d00a      	beq.n	b66 <ProcessTCPFrame+0x1e6>
+     b50:	f240 0300 	movw	r3, #0	; 0x0
+     b54:	f2c0 0300 	movt	r3, #0	; 0x0
+     b58:	697a      	ldr	r2, [r7, #20]
+     b5a:	601a      	str	r2, [r3, #0]
+     b5c:	f04f 0004 	mov.w	r0, #4	; 0x4
+     b60:	f7ff fffe 	bl	1484 <PrepareTCP_FRAME>
+     b64:	e2aa      	b.n	10bc <ProcessTCPFrame+0x73c>
+     b66:	8b7b      	ldrh	r3, [r7, #26]
+     b68:	f003 0302 	and.w	r3, r3, #2	; 0x2
+     b6c:	2b00      	cmp	r3, #0
+     b6e:	f000 82a5 	beq.w	10bc <ProcessTCPFrame+0x73c>
+     b72:	693b      	ldr	r3, [r7, #16]
+     b74:	f103 0201 	add.w	r2, r3, #1	; 0x1
+     b78:	f240 0300 	movw	r3, #0	; 0x0
+     b7c:	f2c0 0300 	movt	r3, #0	; 0x0
+     b80:	601a      	str	r2, [r3, #0]
+     b82:	f240 0300 	movw	r3, #0	; 0x0
+     b86:	f2c0 0300 	movt	r3, #0	; 0x0
+     b8a:	881b      	ldrh	r3, [r3, #0]
+     b8c:	ea4f 4203 	mov.w	r2, r3, lsl #16
+     b90:	f244 0300 	movw	r3, #16384	; 0x4000
+     b94:	f2c4 0300 	movt	r3, #16384	; 0x4000
+     b98:	689b      	ldr	r3, [r3, #8]
+     b9a:	ea4f 4303 	mov.w	r3, r3, lsl #16
+     b9e:	ea4f 4313 	mov.w	r3, r3, lsr #16
+     ba2:	ea42 0203 	orr.w	r2, r2, r3
+     ba6:	f240 0300 	movw	r3, #0	; 0x0
+     baa:	f2c0 0300 	movt	r3, #0	; 0x0
+     bae:	601a      	str	r2, [r3, #0]
+     bb0:	f240 0300 	movw	r3, #0	; 0x0
+     bb4:	f2c0 0300 	movt	r3, #0	; 0x0
+     bb8:	681b      	ldr	r3, [r3, #0]
+     bba:	f103 0201 	add.w	r2, r3, #1	; 0x1
+     bbe:	f240 0300 	movw	r3, #0	; 0x0
+     bc2:	f2c0 0300 	movt	r3, #0	; 0x0
+     bc6:	601a      	str	r2, [r3, #0]
+     bc8:	f04f 0012 	mov.w	r0, #18	; 0x12
+     bcc:	f7ff fffe 	bl	1484 <PrepareTCP_FRAME>
+     bd0:	f240 0300 	movw	r3, #0	; 0x0
+     bd4:	f2c0 0300 	movt	r3, #0	; 0x0
+     bd8:	f04f 0202 	mov.w	r2, #2	; 0x2
+     bdc:	701a      	strb	r2, [r3, #0]
+     bde:	f7ff fffe 	bl	1934 <TCPStartRetryTimer>
+     be2:	f240 0300 	movw	r3, #0	; 0x0
+     be6:	f2c0 0300 	movt	r3, #0	; 0x0
+     bea:	f04f 0203 	mov.w	r2, #3	; 0x3
+     bee:	701a      	strb	r2, [r3, #0]
+     bf0:	e264      	b.n	10bc <ProcessTCPFrame+0x73c>
+     bf2:	f240 0000 	movw	r0, #0	; 0x0
+     bf6:	f2c0 0000 	movt	r0, #0	; 0x0
+     bfa:	f240 0100 	movw	r1, #0	; 0x0
+     bfe:	f2c0 0100 	movt	r1, #0	; 0x0
+     c02:	f04f 0204 	mov.w	r2, #4	; 0x4
+     c06:	f7ff fffe 	bl	0 <memcmp>
+     c0a:	4603      	mov	r3, r0
+     c0c:	2b00      	cmp	r3, #0
+     c0e:	f040 8255 	bne.w	10bc <ProcessTCPFrame+0x73c>
+     c12:	f240 0300 	movw	r3, #0	; 0x0
+     c16:	f2c0 0300 	movt	r3, #0	; 0x0
+     c1a:	881a      	ldrh	r2, [r3, #0]
+     c1c:	89bb      	ldrh	r3, [r7, #12]
+     c1e:	4293      	cmp	r3, r2
+     c20:	f040 824c 	bne.w	10bc <ProcessTCPFrame+0x73c>
+     c24:	8b7b      	ldrh	r3, [r7, #26]
+     c26:	f003 0310 	and.w	r3, r3, #16	; 0x10
+     c2a:	2b00      	cmp	r3, #0
+     c2c:	d018      	beq.n	c60 <ProcessTCPFrame+0x2e0>
+     c2e:	f240 0300 	movw	r3, #0	; 0x0
+     c32:	f2c0 0300 	movt	r3, #0	; 0x0
+     c36:	681a      	ldr	r2, [r3, #0]
+     c38:	697b      	ldr	r3, [r7, #20]
+     c3a:	4293      	cmp	r3, r2
+     c3c:	d010      	beq.n	c60 <ProcessTCPFrame+0x2e0>
+     c3e:	8b7b      	ldrh	r3, [r7, #26]
+     c40:	f003 0304 	and.w	r3, r3, #4	; 0x4
+     c44:	2b00      	cmp	r3, #0
+     c46:	f040 8239 	bne.w	10bc <ProcessTCPFrame+0x73c>
+     c4a:	f240 0300 	movw	r3, #0	; 0x0
+     c4e:	f2c0 0300 	movt	r3, #0	; 0x0
+     c52:	697a      	ldr	r2, [r7, #20]
+     c54:	601a      	str	r2, [r3, #0]
+     c56:	f04f 0004 	mov.w	r0, #4	; 0x4
+     c5a:	f7ff fffe 	bl	1484 <PrepareTCP_FRAME>
+     c5e:	e22d      	b.n	10bc <ProcessTCPFrame+0x73c>
+     c60:	8b7b      	ldrh	r3, [r7, #26]
+     c62:	f003 0304 	and.w	r3, r3, #4	; 0x4
+     c66:	2b00      	cmp	r3, #0
+     c68:	d01b      	beq.n	ca2 <ProcessTCPFrame+0x322>
+     c6a:	8b7b      	ldrh	r3, [r7, #26]
+     c6c:	f003 0310 	and.w	r3, r3, #16	; 0x10
+     c70:	2b00      	cmp	r3, #0
+     c72:	f000 8223 	beq.w	10bc <ProcessTCPFrame+0x73c>
+     c76:	f240 0300 	movw	r3, #0	; 0x0
+     c7a:	f2c0 0300 	movt	r3, #0	; 0x0
+     c7e:	f04f 0200 	mov.w	r2, #0	; 0x0
+     c82:	701a      	strb	r2, [r3, #0]
+     c84:	f240 0300 	movw	r3, #0	; 0x0
+     c88:	f2c0 0300 	movt	r3, #0	; 0x0
+     c8c:	f04f 0200 	mov.w	r2, #0	; 0x0
+     c90:	701a      	strb	r2, [r3, #0]
+     c92:	f240 0300 	movw	r3, #0	; 0x0
+     c96:	f2c0 0300 	movt	r3, #0	; 0x0
+     c9a:	f04f 0230 	mov.w	r2, #48	; 0x30
+     c9e:	701a      	strb	r2, [r3, #0]
+     ca0:	e20c      	b.n	10bc <ProcessTCPFrame+0x73c>
+     ca2:	8b7b      	ldrh	r3, [r7, #26]
+     ca4:	f003 0302 	and.w	r3, r3, #2	; 0x2
+     ca8:	2b00      	cmp	r3, #0
+     caa:	f000 8207 	beq.w	10bc <ProcessTCPFrame+0x73c>
+     cae:	f240 0300 	movw	r3, #0	; 0x0
+     cb2:	f2c0 0300 	movt	r3, #0	; 0x0
+     cb6:	693a      	ldr	r2, [r7, #16]
+     cb8:	601a      	str	r2, [r3, #0]
+     cba:	f240 0300 	movw	r3, #0	; 0x0
+     cbe:	f2c0 0300 	movt	r3, #0	; 0x0
+     cc2:	681b      	ldr	r3, [r3, #0]
+     cc4:	f103 0201 	add.w	r2, r3, #1	; 0x1
+     cc8:	f240 0300 	movw	r3, #0	; 0x0
+     ccc:	f2c0 0300 	movt	r3, #0	; 0x0
+     cd0:	601a      	str	r2, [r3, #0]
+     cd2:	8b7b      	ldrh	r3, [r7, #26]
+     cd4:	f003 0310 	and.w	r3, r3, #16	; 0x10
+     cd8:	2b00      	cmp	r3, #0
+     cda:	d031      	beq.n	d40 <ProcessTCPFrame+0x3c0>
+     cdc:	f7ff fffe 	bl	19f4 <TCPStopTimer>
+     ce0:	f240 0300 	movw	r3, #0	; 0x0
+     ce4:	f2c0 0300 	movt	r3, #0	; 0x0
+     ce8:	681a      	ldr	r2, [r3, #0]
+     cea:	f240 0300 	movw	r3, #0	; 0x0
+     cee:	f2c0 0300 	movt	r3, #0	; 0x0
+     cf2:	601a      	str	r2, [r3, #0]
+     cf4:	f04f 0010 	mov.w	r0, #16	; 0x10
+     cf8:	f7ff fffe 	bl	1484 <PrepareTCP_FRAME>
+     cfc:	f240 0300 	movw	r3, #0	; 0x0
+     d00:	f2c0 0300 	movt	r3, #0	; 0x0
+     d04:	f04f 0204 	mov.w	r2, #4	; 0x4
+     d08:	701a      	strb	r2, [r3, #0]
+     d0a:	f240 0300 	movw	r3, #0	; 0x0
+     d0e:	f2c0 0300 	movt	r3, #0	; 0x0
+     d12:	781b      	ldrb	r3, [r3, #0]
+     d14:	f043 0302 	orr.w	r3, r3, #2	; 0x2
+     d18:	b2da      	uxtb	r2, r3
+     d1a:	f240 0300 	movw	r3, #0	; 0x0
+     d1e:	f2c0 0300 	movt	r3, #0	; 0x0
+     d22:	701a      	strb	r2, [r3, #0]
+     d24:	f240 0300 	movw	r3, #0	; 0x0
+     d28:	f2c0 0300 	movt	r3, #0	; 0x0
+     d2c:	781b      	ldrb	r3, [r3, #0]
+     d2e:	f043 0308 	orr.w	r3, r3, #8	; 0x8
+     d32:	b2da      	uxtb	r2, r3
+     d34:	f240 0300 	movw	r3, #0	; 0x0
+     d38:	f2c0 0300 	movt	r3, #0	; 0x0
+     d3c:	701a      	strb	r2, [r3, #0]
+     d3e:	e1bd      	b.n	10bc <ProcessTCPFrame+0x73c>
+     d40:	f7ff fffe 	bl	19f4 <TCPStopTimer>
+     d44:	f04f 0012 	mov.w	r0, #18	; 0x12
+     d48:	f7ff fffe 	bl	1484 <PrepareTCP_FRAME>
+     d4c:	f240 0300 	movw	r3, #0	; 0x0
+     d50:	f2c0 0300 	movt	r3, #0	; 0x0
+     d54:	f04f 0202 	mov.w	r2, #2	; 0x2
+     d58:	701a      	strb	r2, [r3, #0]
+     d5a:	f7ff fffe 	bl	1934 <TCPStartRetryTimer>
+     d5e:	f240 0300 	movw	r3, #0	; 0x0
+     d62:	f2c0 0300 	movt	r3, #0	; 0x0
+     d66:	f04f 0203 	mov.w	r2, #3	; 0x3
+     d6a:	701a      	strb	r2, [r3, #0]
+     d6c:	e1a6      	b.n	10bc <ProcessTCPFrame+0x73c>
+     d6e:	f240 0000 	movw	r0, #0	; 0x0
+     d72:	f2c0 0000 	movt	r0, #0	; 0x0
+     d76:	f240 0100 	movw	r1, #0	; 0x0
+     d7a:	f2c0 0100 	movt	r1, #0	; 0x0
+     d7e:	f04f 0204 	mov.w	r2, #4	; 0x4
+     d82:	f7ff fffe 	bl	0 <memcmp>
+     d86:	4603      	mov	r3, r0
+     d88:	2b00      	cmp	r3, #0
+     d8a:	f040 8197 	bne.w	10bc <ProcessTCPFrame+0x73c>
+     d8e:	f240 0300 	movw	r3, #0	; 0x0
+     d92:	f2c0 0300 	movt	r3, #0	; 0x0
+     d96:	881a      	ldrh	r2, [r3, #0]
+     d98:	89bb      	ldrh	r3, [r7, #12]
+     d9a:	4293      	cmp	r3, r2
+     d9c:	f040 818e 	bne.w	10bc <ProcessTCPFrame+0x73c>
+     da0:	f240 0300 	movw	r3, #0	; 0x0
+     da4:	f2c0 0300 	movt	r3, #0	; 0x0
+     da8:	681a      	ldr	r2, [r3, #0]
+     daa:	693b      	ldr	r3, [r7, #16]
+     dac:	4293      	cmp	r3, r2
+     dae:	f040 8185 	bne.w	10bc <ProcessTCPFrame+0x73c>
+     db2:	8b7b      	ldrh	r3, [r7, #26]
+     db4:	f003 0304 	and.w	r3, r3, #4	; 0x4
+     db8:	2b00      	cmp	r3, #0
+     dba:	d015      	beq.n	de8 <ProcessTCPFrame+0x468>
+     dbc:	f240 0300 	movw	r3, #0	; 0x0
+     dc0:	f2c0 0300 	movt	r3, #0	; 0x0
+     dc4:	f04f 0200 	mov.w	r2, #0	; 0x0
+     dc8:	701a      	strb	r2, [r3, #0]
+     dca:	f240 0300 	movw	r3, #0	; 0x0
+     dce:	f2c0 0300 	movt	r3, #0	; 0x0
+     dd2:	f04f 0200 	mov.w	r2, #0	; 0x0
+     dd6:	701a      	strb	r2, [r3, #0]
+     dd8:	f240 0300 	movw	r3, #0	; 0x0
+     ddc:	f2c0 0300 	movt	r3, #0	; 0x0
+     de0:	f04f 0230 	mov.w	r2, #48	; 0x30
+     de4:	701a      	strb	r2, [r3, #0]
+     de6:	e169      	b.n	10bc <ProcessTCPFrame+0x73c>
+     de8:	8b7b      	ldrh	r3, [r7, #26]
+     dea:	f003 0302 	and.w	r3, r3, #2	; 0x2
+     dee:	2b00      	cmp	r3, #0
+     df0:	d019      	beq.n	e26 <ProcessTCPFrame+0x4a6>
+     df2:	f04f 0004 	mov.w	r0, #4	; 0x4
+     df6:	f7ff fffe 	bl	1484 <PrepareTCP_FRAME>
+     dfa:	f240 0300 	movw	r3, #0	; 0x0
+     dfe:	f2c0 0300 	movt	r3, #0	; 0x0
+     e02:	f04f 0200 	mov.w	r2, #0	; 0x0
+     e06:	701a      	strb	r2, [r3, #0]
+     e08:	f240 0300 	movw	r3, #0	; 0x0
+     e0c:	f2c0 0300 	movt	r3, #0	; 0x0
+     e10:	f04f 0200 	mov.w	r2, #0	; 0x0
+     e14:	701a      	strb	r2, [r3, #0]
+     e16:	f240 0300 	movw	r3, #0	; 0x0
+     e1a:	f2c0 0300 	movt	r3, #0	; 0x0
+     e1e:	f04f 0240 	mov.w	r2, #64	; 0x40
+     e22:	701a      	strb	r2, [r3, #0]
+     e24:	e14a      	b.n	10bc <ProcessTCPFrame+0x73c>
+     e26:	8b7b      	ldrh	r3, [r7, #26]
+     e28:	f003 0310 	and.w	r3, r3, #16	; 0x10
+     e2c:	2b00      	cmp	r3, #0
+     e2e:	f000 8145 	beq.w	10bc <ProcessTCPFrame+0x73c>
+     e32:	f240 0300 	movw	r3, #0	; 0x0
+     e36:	f2c0 0300 	movt	r3, #0	; 0x0
+     e3a:	681a      	ldr	r2, [r3, #0]
+     e3c:	697b      	ldr	r3, [r7, #20]
+     e3e:	4293      	cmp	r3, r2
+     e40:	f040 8083 	bne.w	f4a <ProcessTCPFrame+0x5ca>
+     e44:	f7ff fffe 	bl	19f4 <TCPStopTimer>
+     e48:	f240 0300 	movw	r3, #0	; 0x0
+     e4c:	f2c0 0300 	movt	r3, #0	; 0x0
+     e50:	681a      	ldr	r2, [r3, #0]
+     e52:	f240 0300 	movw	r3, #0	; 0x0
+     e56:	f2c0 0300 	movt	r3, #0	; 0x0
+     e5a:	601a      	str	r2, [r3, #0]
+     e5c:	f240 0300 	movw	r3, #0	; 0x0
+     e60:	f2c0 0300 	movt	r3, #0	; 0x0
+     e64:	781b      	ldrb	r3, [r3, #0]
+     e66:	f1a3 0303 	sub.w	r3, r3, #3	; 0x3
+     e6a:	2b07      	cmp	r3, #7
+     e6c:	d859      	bhi.n	f22 <ProcessTCPFrame+0x5a2>
+     e6e:	a201      	add	r2, pc, #4	(adr r2, e74 <ProcessTCPFrame+0x4f4>)
+     e70:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
+     e74:	00000e95 	.word	0x00000e95
+     e78:	00000f23 	.word	0x00000f23
+     e7c:	00000ebf 	.word	0x00000ebf
+     e80:	00000f23 	.word	0x00000f23
+     e84:	00000f23 	.word	0x00000f23
+     e88:	00000ecf 	.word	0x00000ecf
+     e8c:	00000edf 	.word	0x00000edf
+     e90:	00000f17 	.word	0x00000f17
+     e94:	f240 0300 	movw	r3, #0	; 0x0
+     e98:	f2c0 0300 	movt	r3, #0	; 0x0
+     e9c:	f04f 0204 	mov.w	r2, #4	; 0x4
+     ea0:	701a      	strb	r2, [r3, #0]
+     ea2:	f240 0300 	movw	r3, #0	; 0x0
+     ea6:	f2c0 0300 	movt	r3, #0	; 0x0
+     eaa:	781b      	ldrb	r3, [r3, #0]
+     eac:	f043 0302 	orr.w	r3, r3, #2	; 0x2
+     eb0:	b2da      	uxtb	r2, r3
+     eb2:	f240 0300 	movw	r3, #0	; 0x0
+     eb6:	f2c0 0300 	movt	r3, #0	; 0x0
+     eba:	701a      	strb	r2, [r3, #0]
+     ebc:	e031      	b.n	f22 <ProcessTCPFrame+0x5a2>
+     ebe:	f240 0300 	movw	r3, #0	; 0x0
+     ec2:	f2c0 0300 	movt	r3, #0	; 0x0
+     ec6:	f04f 0206 	mov.w	r2, #6	; 0x6
+     eca:	701a      	strb	r2, [r3, #0]
+     ecc:	e029      	b.n	f22 <ProcessTCPFrame+0x5a2>
+     ece:	f240 0300 	movw	r3, #0	; 0x0
+     ed2:	f2c0 0300 	movt	r3, #0	; 0x0
+     ed6:	f04f 020a 	mov.w	r2, #10	; 0xa
+     eda:	701a      	strb	r2, [r3, #0]
+     edc:	e021      	b.n	f22 <ProcessTCPFrame+0x5a2>
+     ede:	f240 0300 	movw	r3, #0	; 0x0
+     ee2:	f2c0 0300 	movt	r3, #0	; 0x0
+     ee6:	f04f 0200 	mov.w	r2, #0	; 0x0
+     eea:	701a      	strb	r2, [r3, #0]
+     eec:	f240 0300 	movw	r3, #0	; 0x0
+     ef0:	f2c0 0300 	movt	r3, #0	; 0x0
+     ef4:	f04f 0200 	mov.w	r2, #0	; 0x0
+     ef8:	701a      	strb	r2, [r3, #0]
+     efa:	f240 0300 	movw	r3, #0	; 0x0
+     efe:	f2c0 0300 	movt	r3, #0	; 0x0
+     f02:	781b      	ldrb	r3, [r3, #0]
+     f04:	461a      	mov	r2, r3
+     f06:	f002 0204 	and.w	r2, r2, #4	; 0x4
+     f0a:	f240 0300 	movw	r3, #0	; 0x0
+     f0e:	f2c0 0300 	movt	r3, #0	; 0x0
+     f12:	701a      	strb	r2, [r3, #0]
+     f14:	e005      	b.n	f22 <ProcessTCPFrame+0x5a2>
+     f16:	f04f 0010 	mov.w	r0, #16	; 0x10
+     f1a:	f7ff fffe 	bl	1484 <PrepareTCP_FRAME>
+     f1e:	f7ff fffe 	bl	19dc <TCPRestartTimer>
+     f22:	f240 0300 	movw	r3, #0	; 0x0
+     f26:	f2c0 0300 	movt	r3, #0	; 0x0
+     f2a:	781b      	ldrb	r3, [r3, #0]
+     f2c:	2b04      	cmp	r3, #4
+     f2e:	d10c      	bne.n	f4a <ProcessTCPFrame+0x5ca>
+     f30:	f240 0300 	movw	r3, #0	; 0x0
+     f34:	f2c0 0300 	movt	r3, #0	; 0x0
+     f38:	781b      	ldrb	r3, [r3, #0]
+     f3a:	f043 0308 	orr.w	r3, r3, #8	; 0x8
+     f3e:	b2da      	uxtb	r2, r3
+     f40:	f240 0300 	movw	r3, #0	; 0x0
+     f44:	f2c0 0300 	movt	r3, #0	; 0x0
+     f48:	701a      	strb	r2, [r3, #0]
+     f4a:	f240 0300 	movw	r3, #0	; 0x0
+     f4e:	f2c0 0300 	movt	r3, #0	; 0x0
+     f52:	781b      	ldrb	r3, [r3, #0]
+     f54:	2b04      	cmp	r3, #4
+     f56:	d00d      	beq.n	f74 <ProcessTCPFrame+0x5f4>
+     f58:	f240 0300 	movw	r3, #0	; 0x0
+     f5c:	f2c0 0300 	movt	r3, #0	; 0x0
+     f60:	781b      	ldrb	r3, [r3, #0]
+     f62:	2b05      	cmp	r3, #5
+     f64:	d006      	beq.n	f74 <ProcessTCPFrame+0x5f4>
+     f66:	f240 0300 	movw	r3, #0	; 0x0
+     f6a:	f2c0 0300 	movt	r3, #0	; 0x0
+     f6e:	781b      	ldrb	r3, [r3, #0]
+     f70:	2b06      	cmp	r3, #6
+     f72:	d13a      	bne.n	fea <ProcessTCPFrame+0x66a>
+     f74:	8bfb      	ldrh	r3, [r7, #30]
+     f76:	2b00      	cmp	r3, #0
+     f78:	d037      	beq.n	fea <ProcessTCPFrame+0x66a>
+     f7a:	f240 0300 	movw	r3, #0	; 0x0
+     f7e:	f2c0 0300 	movt	r3, #0	; 0x0
+     f82:	781b      	ldrb	r3, [r3, #0]
+     f84:	f003 0304 	and.w	r3, r3, #4	; 0x4
+     f88:	2b00      	cmp	r3, #0
+     f8a:	d12e      	bne.n	fea <ProcessTCPFrame+0x66a>
+     f8c:	f04f 0006 	mov.w	r0, #6	; 0x6
+     f90:	f7ff fffe 	bl	0 <DummyReadFrame_EMAC>
+     f94:	8bfb      	ldrh	r3, [r7, #30]
+     f96:	f240 0000 	movw	r0, #0	; 0x0
+     f9a:	f2c0 0000 	movt	r0, #0	; 0x0
+     f9e:	4619      	mov	r1, r3
+     fa0:	f7ff fffe 	bl	0 <CopyFromFrame_EMAC>
+     fa4:	f240 0300 	movw	r3, #0	; 0x0
+     fa8:	f2c0 0300 	movt	r3, #0	; 0x0
+     fac:	8bfa      	ldrh	r2, [r7, #30]
+     fae:	801a      	strh	r2, [r3, #0]
+     fb0:	f240 0300 	movw	r3, #0	; 0x0
+     fb4:	f2c0 0300 	movt	r3, #0	; 0x0
+     fb8:	781b      	ldrb	r3, [r3, #0]
+     fba:	f043 0304 	orr.w	r3, r3, #4	; 0x4
+     fbe:	b2da      	uxtb	r2, r3
+     fc0:	f240 0300 	movw	r3, #0	; 0x0
+     fc4:	f2c0 0300 	movt	r3, #0	; 0x0
+     fc8:	701a      	strb	r2, [r3, #0]
+     fca:	8bfa      	ldrh	r2, [r7, #30]
+     fcc:	f240 0300 	movw	r3, #0	; 0x0
+     fd0:	f2c0 0300 	movt	r3, #0	; 0x0
+     fd4:	681b      	ldr	r3, [r3, #0]
+     fd6:	441a      	add	r2, r3
+     fd8:	f240 0300 	movw	r3, #0	; 0x0
+     fdc:	f2c0 0300 	movt	r3, #0	; 0x0
+     fe0:	601a      	str	r2, [r3, #0]
+     fe2:	f04f 0010 	mov.w	r0, #16	; 0x10
+     fe6:	f7ff fffe 	bl	1484 <PrepareTCP_FRAME>
+     fea:	8b7b      	ldrh	r3, [r7, #26]
+     fec:	f003 0301 	and.w	r3, r3, #1	; 0x1
+     ff0:	b2db      	uxtb	r3, r3
+     ff2:	2b00      	cmp	r3, #0
+     ff4:	d062      	beq.n	10bc <ProcessTCPFrame+0x73c>
+     ff6:	f240 0300 	movw	r3, #0	; 0x0
+     ffa:	f2c0 0300 	movt	r3, #0	; 0x0
+     ffe:	781b      	ldrb	r3, [r3, #0]
+    1000:	f1a3 0303 	sub.w	r3, r3, #3	; 0x3
+    1004:	2b07      	cmp	r3, #7
+    1006:	d849      	bhi.n	109c <ProcessTCPFrame+0x71c>
+    1008:	a201      	add	r2, pc, #4	(adr r2, 1010 <ProcessTCPFrame+0x690>)
+    100a:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
+    100e:	bf00      	nop
+    1010:	00001031 	.word	0x00001031
+    1014:	00001031 	.word	0x00001031
+    1018:	00001041 	.word	0x00001041
+    101c:	0000106b 	.word	0x0000106b
+    1020:	0000109d 	.word	0x0000109d
+    1024:	0000109d 	.word	0x0000109d
+    1028:	0000109d 	.word	0x0000109d
+    102c:	00001099 	.word	0x00001099
+    1030:	f240 0300 	movw	r3, #0	; 0x0
+    1034:	f2c0 0300 	movt	r3, #0	; 0x0
+    1038:	f04f 0207 	mov.w	r2, #7	; 0x7
+    103c:	701a      	strb	r2, [r3, #0]
+    103e:	e02d      	b.n	109c <ProcessTCPFrame+0x71c>
+    1040:	f240 0300 	movw	r3, #0	; 0x0
+    1044:	f2c0 0300 	movt	r3, #0	; 0x0
+    1048:	f04f 0208 	mov.w	r2, #8	; 0x8
+    104c:	701a      	strb	r2, [r3, #0]
+    104e:	f240 0300 	movw	r3, #0	; 0x0
+    1052:	f2c0 0300 	movt	r3, #0	; 0x0
+    1056:	781b      	ldrb	r3, [r3, #0]
+    1058:	461a      	mov	r2, r3
+    105a:	f002 02fd 	and.w	r2, r2, #253	; 0xfd
+    105e:	f240 0300 	movw	r3, #0	; 0x0
+    1062:	f2c0 0300 	movt	r3, #0	; 0x0
+    1066:	701a      	strb	r2, [r3, #0]
+    1068:	e018      	b.n	109c <ProcessTCPFrame+0x71c>
+    106a:	f7ff fffe 	bl	1990 <TCPStartTimeWaitTimer>
+    106e:	f240 0300 	movw	r3, #0	; 0x0
+    1072:	f2c0 0300 	movt	r3, #0	; 0x0
+    1076:	f04f 020a 	mov.w	r2, #10	; 0xa
+    107a:	701a      	strb	r2, [r3, #0]
+    107c:	f240 0300 	movw	r3, #0	; 0x0
+    1080:	f2c0 0300 	movt	r3, #0	; 0x0
+    1084:	781b      	ldrb	r3, [r3, #0]
+    1086:	461a      	mov	r2, r3
+    1088:	f002 02fd 	and.w	r2, r2, #253	; 0xfd
+    108c:	f240 0300 	movw	r3, #0	; 0x0
+    1090:	f2c0 0300 	movt	r3, #0	; 0x0
+    1094:	701a      	strb	r2, [r3, #0]
+    1096:	e001      	b.n	109c <ProcessTCPFrame+0x71c>
+    1098:	f7ff fffe 	bl	19dc <TCPRestartTimer>
+    109c:	f240 0300 	movw	r3, #0	; 0x0
+    10a0:	f2c0 0300 	movt	r3, #0	; 0x0
+    10a4:	681b      	ldr	r3, [r3, #0]
+    10a6:	f103 0201 	add.w	r2, r3, #1	; 0x1
+    10aa:	f240 0300 	movw	r3, #0	; 0x0
+    10ae:	f2c0 0300 	movt	r3, #0	; 0x0
+    10b2:	601a      	str	r2, [r3, #0]
+    10b4:	f04f 0010 	mov.w	r0, #16	; 0x10
+    10b8:	f7ff fffe 	bl	1484 <PrepareTCP_FRAME>
+    10bc:	f107 0720 	add.w	r7, r7, #32	; 0x20
+    10c0:	46bd      	mov	sp, r7
+    10c2:	bd80      	pop	{r7, pc}
+
+000010c4 <PrepareARP_REQUEST>:
+    10c4:	b580      	push	{r7, lr}
+    10c6:	af00      	add	r7, sp, #0
+    10c8:	f240 0000 	movw	r0, #0	; 0x0
+    10cc:	f2c0 0000 	movt	r0, #0	; 0x0
+    10d0:	f04f 01ff 	mov.w	r1, #255	; 0xff
+    10d4:	f04f 0206 	mov.w	r2, #6	; 0x6
+    10d8:	f7ff fffe 	bl	0 <memset>
+    10dc:	4846      	ldr	r0, [pc, #280]	(11c <NVIC_EnableIRQ+0x24>)
+    10de:	f240 0100 	movw	r1, #0	; 0x0
+    10e2:	f2c0 0100 	movt	r1, #0	; 0x0
+    10e6:	f04f 0206 	mov.w	r2, #6	; 0x6
+    10ea:	f7ff fffe 	bl	0 <memcpy>
+    10ee:	4a43      	ldr	r2, [pc, #268]	(11fc <PrepareARP_REQUEST+0x138>)
+    10f0:	f44f 63c1 	mov.w	r3, #1544	; 0x608
+    10f4:	8013      	strh	r3, [r2, #0]
+    10f6:	4a42      	ldr	r2, [pc, #264]	(1200 <PrepareARP_REQUEST+0x13c>)
+    10f8:	f44f 7380 	mov.w	r3, #256	; 0x100
+    10fc:	8013      	strh	r3, [r2, #0]
+    10fe:	4a41      	ldr	r2, [pc, #260]	(1204 <PrepareARP_REQUEST+0x140>)
+    1100:	f04f 0308 	mov.w	r3, #8	; 0x8
+    1104:	8013      	strh	r3, [r2, #0]
+    1106:	4a40      	ldr	r2, [pc, #256]	(1208 <PrepareARP_REQUEST+0x144>)
+    1108:	f240 4306 	movw	r3, #1030	; 0x406
+    110c:	8013      	strh	r3, [r2, #0]
+    110e:	4a3f      	ldr	r2, [pc, #252]	(120c <PrepareARP_REQUEST+0x148>)
+    1110:	f44f 7380 	mov.w	r3, #256	; 0x100
+    1114:	8013      	strh	r3, [r2, #0]
+    1116:	483e      	ldr	r0, [pc, #248]	(1210 <PrepareARP_REQUEST+0x14c>)
+    1118:	f240 0100 	movw	r1, #0	; 0x0
+    111c:	f2c0 0100 	movt	r1, #0	; 0x0
+    1120:	f04f 0206 	mov.w	r2, #6	; 0x6
+    1124:	f7ff fffe 	bl	0 <memcpy>
+    1128:	483a      	ldr	r0, [pc, #232]	(ec <MyIP+0xec>)
+    112a:	f240 0100 	movw	r1, #0	; 0x0
+    112e:	f2c0 0100 	movt	r1, #0	; 0x0
+    1132:	f04f 0204 	mov.w	r2, #4	; 0x4
+    1136:	f7ff fffe 	bl	0 <memcpy>
+    113a:	4837      	ldr	r0, [pc, #220]	(1218 <PrepareARP_REQUEST+0x154>)
+    113c:	f04f 0100 	mov.w	r1, #0	; 0x0
+    1140:	f04f 0206 	mov.w	r2, #6	; 0x6
+    1144:	f7ff fffe 	bl	0 <memset>
+    1148:	f240 0300 	movw	r3, #0	; 0x0
+    114c:	f2c0 0300 	movt	r3, #0	; 0x0
+    1150:	881a      	ldrh	r2, [r3, #0]
+    1152:	f240 0300 	movw	r3, #0	; 0x0
+    1156:	f2c0 0300 	movt	r3, #0	; 0x0
+    115a:	881b      	ldrh	r3, [r3, #0]
+    115c:	ea82 0303 	eor.w	r3, r2, r3
+    1160:	b29a      	uxth	r2, r3
+    1162:	f240 0300 	movw	r3, #0	; 0x0
+    1166:	f2c0 0300 	movt	r3, #0	; 0x0
+    116a:	881b      	ldrh	r3, [r3, #0]
+    116c:	ea02 0303 	and.w	r3, r2, r3
+    1170:	b29b      	uxth	r3, r3
+    1172:	2b00      	cmp	r3, #0
+    1174:	d116      	bne.n	11a4 <PrepareARP_REQUEST+0xe0>
+    1176:	f240 0300 	movw	r3, #0	; 0x0
+    117a:	f2c0 0300 	movt	r3, #0	; 0x0
+    117e:	885a      	ldrh	r2, [r3, #2]
+    1180:	f240 0300 	movw	r3, #0	; 0x0
+    1184:	f2c0 0300 	movt	r3, #0	; 0x0
+    1188:	885b      	ldrh	r3, [r3, #2]
+    118a:	ea82 0303 	eor.w	r3, r2, r3
+    118e:	b29a      	uxth	r2, r3
+    1190:	f240 0300 	movw	r3, #0	; 0x0
+    1194:	f2c0 0300 	movt	r3, #0	; 0x0
+    1198:	885b      	ldrh	r3, [r3, #2]
+    119a:	ea02 0303 	and.w	r3, r2, r3
+    119e:	b29b      	uxth	r3, r3
+    11a0:	2b00      	cmp	r3, #0
+    11a2:	d009      	beq.n	11b8 <PrepareARP_REQUEST+0xf4>
+    11a4:	481d      	ldr	r0, [pc, #116]	(121c <PrepareARP_REQUEST+0x158>)
+    11a6:	f240 0100 	movw	r1, #0	; 0x0
+    11aa:	f2c0 0100 	movt	r1, #0	; 0x0
+    11ae:	f04f 0204 	mov.w	r2, #4	; 0x4
+    11b2:	f7ff fffe 	bl	0 <memcpy>
+    11b6:	e008      	b.n	11ca <PrepareARP_REQUEST+0x106>
+    11b8:	4818      	ldr	r0, [pc, #96]	(121c <PrepareARP_REQUEST+0x158>)
+    11ba:	f240 0100 	movw	r1, #0	; 0x0
+    11be:	f2c0 0100 	movt	r1, #0	; 0x0
+    11c2:	f04f 0204 	mov.w	r2, #4	; 0x4
+    11c6:	f7ff fffe 	bl	0 <memcpy>
+    11ca:	f240 0300 	movw	r3, #0	; 0x0
+    11ce:	f2c0 0300 	movt	r3, #0	; 0x0
+    11d2:	f04f 022a 	mov.w	r2, #42	; 0x2a
+    11d6:	701a      	strb	r2, [r3, #0]
+    11d8:	f240 0300 	movw	r3, #0	; 0x0
+    11dc:	f2c0 0300 	movt	r3, #0	; 0x0
+    11e0:	781b      	ldrb	r3, [r3, #0]
+    11e2:	f043 0302 	orr.w	r3, r3, #2	; 0x2
+    11e6:	b2da      	uxtb	r2, r3
+    11e8:	f240 0300 	movw	r3, #0	; 0x0
+    11ec:	f2c0 0300 	movt	r3, #0	; 0x0
+    11f0:	701a      	strb	r2, [r3, #0]
+    11f2:	46bd      	mov	sp, r7
+    11f4:	bd80      	pop	{r7, pc}
+    11f6:	bf00      	nop
+    11f8:	00000006 	.word	0x00000006
+    11fc:	0000000c 	.word	0x0000000c
+    1200:	0000000e 	.word	0x0000000e
+    1204:	00000010 	.word	0x00000010
+    1208:	00000012 	.word	0x00000012
+    120c:	00000014 	.word	0x00000014
+    1210:	00000016 	.word	0x00000016
+    1214:	0000001c 	.word	0x0000001c
+    1218:	00000020 	.word	0x00000020
+    121c:	00000026 	.word	0x00000026
+
+00001220 <PrepareARP_ANSWER>:
+    1220:	b580      	push	{r7, lr}
+    1222:	af00      	add	r7, sp, #0
+    1224:	f240 0000 	movw	r0, #0	; 0x0
+    1228:	f2c0 0000 	movt	r0, #0	; 0x0
+    122c:	f240 0100 	movw	r1, #0	; 0x0
+    1230:	f2c0 0100 	movt	r1, #0	; 0x0
+    1234:	f04f 0206 	mov.w	r2, #6	; 0x6
+    1238:	f7ff fffe 	bl	0 <memcpy>
+    123c:	482b      	ldr	r0, [pc, #172]	(b0 <TCPLowLevelInit+0xb0>)
+    123e:	f240 0100 	movw	r1, #0	; 0x0
+    1242:	f2c0 0100 	movt	r1, #0	; 0x0
+    1246:	f04f 0206 	mov.w	r2, #6	; 0x6
+    124a:	f7ff fffe 	bl	0 <memcpy>
+    124e:	4a28      	ldr	r2, [pc, #160]	(12f0 <PrepareARP_ANSWER+0xd0>)
+    1250:	f44f 63c1 	mov.w	r3, #1544	; 0x608
+    1254:	8013      	strh	r3, [r2, #0]
+    1256:	4a27      	ldr	r2, [pc, #156]	(12f4 <PrepareARP_ANSWER+0xd4>)
+    1258:	f44f 7380 	mov.w	r3, #256	; 0x100
+    125c:	8013      	strh	r3, [r2, #0]
+    125e:	4a26      	ldr	r2, [pc, #152]	(12f8 <PrepareARP_ANSWER+0xd8>)
+    1260:	f04f 0308 	mov.w	r3, #8	; 0x8
+    1264:	8013      	strh	r3, [r2, #0]
+    1266:	4a25      	ldr	r2, [pc, #148]	(12fc <PrepareARP_ANSWER+0xdc>)
+    1268:	f240 4306 	movw	r3, #1030	; 0x406
+    126c:	8013      	strh	r3, [r2, #0]
+    126e:	4a24      	ldr	r2, [pc, #144]	(1300 <PrepareARP_ANSWER+0xe0>)
+    1270:	f44f 7300 	mov.w	r3, #512	; 0x200
+    1274:	8013      	strh	r3, [r2, #0]
+    1276:	4823      	ldr	r0, [pc, #140]	(1304 <PrepareARP_ANSWER+0xe4>)
+    1278:	f240 0100 	movw	r1, #0	; 0x0
+    127c:	f2c0 0100 	movt	r1, #0	; 0x0
+    1280:	f04f 0206 	mov.w	r2, #6	; 0x6
+    1284:	f7ff fffe 	bl	0 <memcpy>
+    1288:	481f      	ldr	r0, [pc, #124]	(80 <MyIP+0x80>)
+    128a:	f240 0100 	movw	r1, #0	; 0x0
+    128e:	f2c0 0100 	movt	r1, #0	; 0x0
+    1292:	f04f 0204 	mov.w	r2, #4	; 0x4
+    1296:	f7ff fffe 	bl	0 <memcpy>
+    129a:	481c      	ldr	r0, [pc, #112]	(74 <RecdFrameMAC+0x74>)
+    129c:	f240 0100 	movw	r1, #0	; 0x0
+    12a0:	f2c0 0100 	movt	r1, #0	; 0x0
+    12a4:	f04f 0206 	mov.w	r2, #6	; 0x6
+    12a8:	f7ff fffe 	bl	0 <memcpy>
+    12ac:	4818      	ldr	r0, [pc, #96]	(64 <RecdFrameIP+0x64>)
+    12ae:	f240 0100 	movw	r1, #0	; 0x0
+    12b2:	f2c0 0100 	movt	r1, #0	; 0x0
+    12b6:	f04f 0204 	mov.w	r2, #4	; 0x4
+    12ba:	f7ff fffe 	bl	0 <memcpy>
+    12be:	f240 0300 	movw	r3, #0	; 0x0
+    12c2:	f2c0 0300 	movt	r3, #0	; 0x0
+    12c6:	f04f 022a 	mov.w	r2, #42	; 0x2a
+    12ca:	701a      	strb	r2, [r3, #0]
+    12cc:	f240 0300 	movw	r3, #0	; 0x0
+    12d0:	f2c0 0300 	movt	r3, #0	; 0x0
+    12d4:	781b      	ldrb	r3, [r3, #0]
+    12d6:	f043 0302 	orr.w	r3, r3, #2	; 0x2
+    12da:	b2da      	uxtb	r2, r3
+    12dc:	f240 0300 	movw	r3, #0	; 0x0
+    12e0:	f2c0 0300 	movt	r3, #0	; 0x0
+    12e4:	701a      	strb	r2, [r3, #0]
+    12e6:	46bd      	mov	sp, r7
+    12e8:	bd80      	pop	{r7, pc}
+    12ea:	bf00      	nop
+    12ec:	00000006 	.word	0x00000006
+    12f0:	0000000c 	.word	0x0000000c
+    12f4:	0000000e 	.word	0x0000000e
+    12f8:	00000010 	.word	0x00000010
+    12fc:	00000012 	.word	0x00000012
+    1300:	00000014 	.word	0x00000014
+    1304:	00000016 	.word	0x00000016
+    1308:	0000001c 	.word	0x0000001c
+    130c:	00000020 	.word	0x00000020
+    1310:	00000026 	.word	0x00000026
+
+00001314 <PrepareICMP_ECHO_REPLY>:
+    1314:	b590      	push	{r4, r7, lr}
+    1316:	b083      	sub	sp, #12
+    1318:	af00      	add	r7, sp, #0
+    131a:	f240 0300 	movw	r3, #0	; 0x0
+    131e:	f2c0 0300 	movt	r3, #0	; 0x0
+    1322:	881b      	ldrh	r3, [r3, #0]
+    1324:	2b3c      	cmp	r3, #60
+    1326:	d903      	bls.n	1330 <PrepareICMP_ECHO_REPLY+0x1c>
+    1328:	f04f 0324 	mov.w	r3, #36	; 0x24
+    132c:	80fb      	strh	r3, [r7, #6]
+    132e:	e007      	b.n	1340 <PrepareICMP_ECHO_REPLY+0x2c>
+    1330:	f240 0300 	movw	r3, #0	; 0x0
+    1334:	f2c0 0300 	movt	r3, #0	; 0x0
+    1338:	881b      	ldrh	r3, [r3, #0]
+    133a:	f1a3 0318 	sub.w	r3, r3, #24	; 0x18
+    133e:	80fb      	strh	r3, [r7, #6]
+    1340:	f240 0000 	movw	r0, #0	; 0x0
+    1344:	f2c0 0000 	movt	r0, #0	; 0x0
+    1348:	f240 0100 	movw	r1, #0	; 0x0
+    134c:	f2c0 0100 	movt	r1, #0	; 0x0
+    1350:	f04f 0206 	mov.w	r2, #6	; 0x6
+    1354:	f7ff fffe 	bl	0 <memcpy>
+    1358:	483d      	ldr	r0, [pc, #244]	(f8 <NVIC_EnableIRQ>)
+    135a:	f240 0100 	movw	r1, #0	; 0x0
+    135e:	f2c0 0100 	movt	r1, #0	; 0x0
+    1362:	f04f 0206 	mov.w	r2, #6	; 0x6
+    1366:	f7ff fffe 	bl	0 <memcpy>
+    136a:	4a3a      	ldr	r2, [pc, #232]	(1454 <PrepareICMP_ECHO_REPLY+0x140>)
+    136c:	f04f 0308 	mov.w	r3, #8	; 0x8
+    1370:	8013      	strh	r3, [r2, #0]
+    1372:	4a39      	ldr	r2, [pc, #228]	(1458 <PrepareICMP_ECHO_REPLY+0x144>)
+    1374:	f04f 0345 	mov.w	r3, #69	; 0x45
+    1378:	8013      	strh	r3, [r2, #0]
+    137a:	4a38      	ldr	r2, [pc, #224]	(145c <PrepareICMP_ECHO_REPLY+0x148>)
+    137c:	88fb      	ldrh	r3, [r7, #6]
+    137e:	f103 0318 	add.w	r3, r3, #24	; 0x18
+    1382:	b29b      	uxth	r3, r3
+    1384:	4610      	mov	r0, r2
+    1386:	4619      	mov	r1, r3
+    1388:	f7ff fffe 	bl	1b6c <WriteWBE>
+    138c:	4a34      	ldr	r2, [pc, #208]	(1460 <PrepareICMP_ECHO_REPLY+0x14c>)
+    138e:	f04f 0300 	mov.w	r3, #0	; 0x0
+    1392:	8013      	strh	r3, [r2, #0]
+    1394:	4a33      	ldr	r2, [pc, #204]	(1464 <PrepareICMP_ECHO_REPLY+0x150>)
+    1396:	f04f 0300 	mov.w	r3, #0	; 0x0
+    139a:	8013      	strh	r3, [r2, #0]
+    139c:	4a32      	ldr	r2, [pc, #200]	(1468 <PrepareICMP_ECHO_REPLY+0x154>)
+    139e:	f44f 73a0 	mov.w	r3, #320	; 0x140
+    13a2:	8013      	strh	r3, [r2, #0]
+    13a4:	4a31      	ldr	r2, [pc, #196]	(146c <PrepareICMP_ECHO_REPLY+0x158>)
+    13a6:	f04f 0300 	mov.w	r3, #0	; 0x0
+    13aa:	8013      	strh	r3, [r2, #0]
+    13ac:	4830      	ldr	r0, [pc, #192]	(1470 <PrepareICMP_ECHO_REPLY+0x15c>)
+    13ae:	f240 0100 	movw	r1, #0	; 0x0
+    13b2:	f2c0 0100 	movt	r1, #0	; 0x0
+    13b6:	f04f 0204 	mov.w	r2, #4	; 0x4
+    13ba:	f7ff fffe 	bl	0 <memcpy>
+    13be:	482d      	ldr	r0, [pc, #180]	(b8 <RecdFrameIP+0xb8>)
+    13c0:	f240 0100 	movw	r1, #0	; 0x0
+    13c4:	f2c0 0100 	movt	r1, #0	; 0x0
+    13c8:	f04f 0204 	mov.w	r2, #4	; 0x4
+    13cc:	f7ff fffe 	bl	0 <memcpy>
+    13d0:	4c26      	ldr	r4, [pc, #152]	(146c <PrepareICMP_ECHO_REPLY+0x158>)
+    13d2:	4821      	ldr	r0, [pc, #132]	(1458 <PrepareICMP_ECHO_REPLY+0x144>)
+    13d4:	f04f 0114 	mov.w	r1, #20	; 0x14
+    13d8:	f04f 0200 	mov.w	r2, #0	; 0x0
+    13dc:	f7ff fffe 	bl	1848 <CalcChecksum>
+    13e0:	4603      	mov	r3, r0
+    13e2:	8023      	strh	r3, [r4, #0]
+    13e4:	4a24      	ldr	r2, [pc, #144]	(1478 <PrepareICMP_ECHO_REPLY+0x164>)
+    13e6:	f04f 0300 	mov.w	r3, #0	; 0x0
+    13ea:	8013      	strh	r3, [r2, #0]
+    13ec:	4a23      	ldr	r2, [pc, #140]	(147c <PrepareICMP_ECHO_REPLY+0x168>)
+    13ee:	f04f 0300 	mov.w	r3, #0	; 0x0
+    13f2:	8013      	strh	r3, [r2, #0]
+    13f4:	88fb      	ldrh	r3, [r7, #6]
+    13f6:	4822      	ldr	r0, [pc, #136]	(1480 <PrepareICMP_ECHO_REPLY+0x16c>)
+    13f8:	4619      	mov	r1, r3
+    13fa:	f7ff fffe 	bl	0 <CopyFromFrame_EMAC>
+    13fe:	4c1f      	ldr	r4, [pc, #124]	(147c <PrepareICMP_ECHO_REPLY+0x168>)
+    1400:	88fb      	ldrh	r3, [r7, #6]
+    1402:	f103 0304 	add.w	r3, r3, #4	; 0x4
+    1406:	b29b      	uxth	r3, r3
+    1408:	481b      	ldr	r0, [pc, #108]	(1478 <PrepareICMP_ECHO_REPLY+0x164>)
+    140a:	4619      	mov	r1, r3
+    140c:	f04f 0200 	mov.w	r2, #0	; 0x0
+    1410:	f7ff fffe 	bl	1848 <CalcChecksum>
+    1414:	4603      	mov	r3, r0
+    1416:	8023      	strh	r3, [r4, #0]
+    1418:	88fb      	ldrh	r3, [r7, #6]
+    141a:	b2db      	uxtb	r3, r3
+    141c:	f103 0326 	add.w	r3, r3, #38	; 0x26
+    1420:	b2da      	uxtb	r2, r3
+    1422:	f240 0300 	movw	r3, #0	; 0x0
+    1426:	f2c0 0300 	movt	r3, #0	; 0x0
+    142a:	701a      	strb	r2, [r3, #0]
+    142c:	f240 0300 	movw	r3, #0	; 0x0
+    1430:	f2c0 0300 	movt	r3, #0	; 0x0
+    1434:	781b      	ldrb	r3, [r3, #0]
+    1436:	f043 0302 	orr.w	r3, r3, #2	; 0x2
+    143a:	b2da      	uxtb	r2, r3
+    143c:	f240 0300 	movw	r3, #0	; 0x0
+    1440:	f2c0 0300 	movt	r3, #0	; 0x0
+    1444:	701a      	strb	r2, [r3, #0]
+    1446:	f107 070c 	add.w	r7, r7, #12	; 0xc
+    144a:	46bd      	mov	sp, r7
+    144c:	bd90      	pop	{r4, r7, pc}
+    144e:	bf00      	nop
+    1450:	00000006 	.word	0x00000006
+    1454:	0000000c 	.word	0x0000000c
+    1458:	0000000e 	.word	0x0000000e
+    145c:	00000010 	.word	0x00000010
+    1460:	00000012 	.word	0x00000012
+    1464:	00000014 	.word	0x00000014
+    1468:	00000016 	.word	0x00000016
+    146c:	00000018 	.word	0x00000018
+    1470:	0000001a 	.word	0x0000001a
+    1474:	0000001e 	.word	0x0000001e
+    1478:	00000022 	.word	0x00000022
+    147c:	00000024 	.word	0x00000024
+    1480:	00000026 	.word	0x00000026
+
+00001484 <PrepareTCP_FRAME>:
+    1484:	b590      	push	{r4, r7, lr}
+    1486:	b083      	sub	sp, #12
+    1488:	af00      	add	r7, sp, #0
+    148a:	4603      	mov	r3, r0
+    148c:	80fb      	strh	r3, [r7, #6]
+    148e:	f240 0000 	movw	r0, #0	; 0x0
+    1492:	f2c0 0000 	movt	r0, #0	; 0x0
+    1496:	f240 0100 	movw	r1, #0	; 0x0
+    149a:	f2c0 0100 	movt	r1, #0	; 0x0
+    149e:	f04f 0206 	mov.w	r2, #6	; 0x6
+    14a2:	f7ff fffe 	bl	0 <memcpy>
+    14a6:	4870      	ldr	r0, [pc, #448]	(1c4 <TCPActiveOpen+0x44>)
+    14a8:	f240 0100 	movw	r1, #0	; 0x0
+    14ac:	f2c0 0100 	movt	r1, #0	; 0x0
+    14b0:	f04f 0206 	mov.w	r2, #6	; 0x6
+    14b4:	f7ff fffe 	bl	0 <memcpy>
+    14b8:	4a6c      	ldr	r2, [pc, #432]	(166c <PrepareTCP_FRAME+0x1e8>)
+    14ba:	f04f 0308 	mov.w	r3, #8	; 0x8
+    14be:	8013      	strh	r3, [r2, #0]
+    14c0:	4a6b      	ldr	r2, [pc, #428]	(1670 <PrepareTCP_FRAME+0x1ec>)
+    14c2:	f241 0345 	movw	r3, #4165	; 0x1045
+    14c6:	8013      	strh	r3, [r2, #0]
+    14c8:	88fb      	ldrh	r3, [r7, #6]
+    14ca:	f003 0302 	and.w	r3, r3, #2	; 0x2
+    14ce:	2b00      	cmp	r3, #0
+    14d0:	d004      	beq.n	14dc <PrepareTCP_FRAME+0x58>
+    14d2:	4b68      	ldr	r3, [pc, #416]	(1674 <PrepareTCP_FRAME+0x1f0>)
+    14d4:	f44f 5230 	mov.w	r2, #11264	; 0x2c00
+    14d8:	801a      	strh	r2, [r3, #0]
+    14da:	e003      	b.n	14e4 <PrepareTCP_FRAME+0x60>
+    14dc:	4b65      	ldr	r3, [pc, #404]	(1674 <PrepareTCP_FRAME+0x1f0>)
+    14de:	f44f 5220 	mov.w	r2, #10240	; 0x2800
+    14e2:	801a      	strh	r2, [r3, #0]
+    14e4:	4a64      	ldr	r2, [pc, #400]	(1678 <PrepareTCP_FRAME+0x1f4>)
+    14e6:	f04f 0300 	mov.w	r3, #0	; 0x0
+    14ea:	8013      	strh	r3, [r2, #0]
+    14ec:	4a63      	ldr	r2, [pc, #396]	(167c <PrepareTCP_FRAME+0x1f8>)
+    14ee:	f04f 0300 	mov.w	r3, #0	; 0x0
+    14f2:	8013      	strh	r3, [r2, #0]
+    14f4:	4a62      	ldr	r2, [pc, #392]	(1680 <PrepareTCP_FRAME+0x1fc>)
+    14f6:	f44f 63c8 	mov.w	r3, #1600	; 0x640
+    14fa:	8013      	strh	r3, [r2, #0]
+    14fc:	4a61      	ldr	r2, [pc, #388]	(1684 <PrepareTCP_FRAME+0x200>)
+    14fe:	f04f 0300 	mov.w	r3, #0	; 0x0
+    1502:	8013      	strh	r3, [r2, #0]
+    1504:	4860      	ldr	r0, [pc, #384]	(1688 <PrepareTCP_FRAME+0x204>)
+    1506:	f240 0100 	movw	r1, #0	; 0x0
+    150a:	f2c0 0100 	movt	r1, #0	; 0x0
+    150e:	f04f 0204 	mov.w	r2, #4	; 0x4
+    1512:	f7ff fffe 	bl	0 <memcpy>
+    1516:	485d      	ldr	r0, [pc, #372]	(178 <RemoteIP+0x178>)
+    1518:	f240 0100 	movw	r1, #0	; 0x0
+    151c:	f2c0 0100 	movt	r1, #0	; 0x0
+    1520:	f04f 0204 	mov.w	r2, #4	; 0x4
+    1524:	f7ff fffe 	bl	0 <memcpy>
+    1528:	4c56      	ldr	r4, [pc, #344]	(1684 <PrepareTCP_FRAME+0x200>)
+    152a:	4851      	ldr	r0, [pc, #324]	(1670 <PrepareTCP_FRAME+0x1ec>)
+    152c:	f04f 0114 	mov.w	r1, #20	; 0x14
+    1530:	f04f 0200 	mov.w	r2, #0	; 0x0
+    1534:	f7ff fffe 	bl	1848 <CalcChecksum>
+    1538:	4603      	mov	r3, r0
+    153a:	8023      	strh	r3, [r4, #0]
+    153c:	4a54      	ldr	r2, [pc, #336]	(1690 <PrepareTCP_FRAME+0x20c>)
+    153e:	f240 0300 	movw	r3, #0	; 0x0
+    1542:	f2c0 0300 	movt	r3, #0	; 0x0
+    1546:	881b      	ldrh	r3, [r3, #0]
+    1548:	4610      	mov	r0, r2
+    154a:	4619      	mov	r1, r3
+    154c:	f7ff fffe 	bl	1b6c <WriteWBE>
+    1550:	4a50      	ldr	r2, [pc, #320]	(144 <TCPRemotePort+0x144>)
+    1552:	f240 0300 	movw	r3, #0	; 0x0
+    1556:	f2c0 0300 	movt	r3, #0	; 0x0
+    155a:	881b      	ldrh	r3, [r3, #0]
+    155c:	4610      	mov	r0, r2
+    155e:	4619      	mov	r1, r3
+    1560:	f7ff fffe 	bl	1b6c <WriteWBE>
+    1564:	4a4c      	ldr	r2, [pc, #304]	(134 <TCPSeqNr+0x134>)
+    1566:	f240 0300 	movw	r3, #0	; 0x0
+    156a:	f2c0 0300 	movt	r3, #0	; 0x0
+    156e:	681b      	ldr	r3, [r3, #0]
+    1570:	4610      	mov	r0, r2
+    1572:	4619      	mov	r1, r3
+    1574:	f7ff fffe 	bl	1ba0 <WriteDWBE>
+    1578:	4a48      	ldr	r2, [pc, #288]	(124 <TCPAckNr+0x124>)
+    157a:	f240 0300 	movw	r3, #0	; 0x0
+    157e:	f2c0 0300 	movt	r3, #0	; 0x0
+    1582:	681b      	ldr	r3, [r3, #0]
+    1584:	4610      	mov	r0, r2
+    1586:	4619      	mov	r1, r3
+    1588:	f7ff fffe 	bl	1ba0 <WriteDWBE>
+    158c:	4a44      	ldr	r2, [pc, #272]	(16a0 <PrepareTCP_FRAME+0x21c>)
+    158e:	f04f 0301 	mov.w	r3, #1	; 0x1
+    1592:	8013      	strh	r3, [r2, #0]
+    1594:	4a43      	ldr	r2, [pc, #268]	(16a4 <PrepareTCP_FRAME+0x220>)
+    1596:	f04f 0300 	mov.w	r3, #0	; 0x0
+    159a:	8013      	strh	r3, [r2, #0]
+    159c:	4a42      	ldr	r2, [pc, #264]	(16a8 <PrepareTCP_FRAME+0x224>)
+    159e:	f04f 0300 	mov.w	r3, #0	; 0x0
+    15a2:	8013      	strh	r3, [r2, #0]
+    15a4:	88fb      	ldrh	r3, [r7, #6]
+    15a6:	f003 0302 	and.w	r3, r3, #2	; 0x2
+    15aa:	2b00      	cmp	r3, #0
+    15ac:	d029      	beq.n	1602 <PrepareTCP_FRAME+0x17e>
+    15ae:	483f      	ldr	r0, [pc, #252]	(16ac <PrepareTCP_FRAME+0x228>)
+    15b0:	88fa      	ldrh	r2, [r7, #6]
+    15b2:	b293      	uxth	r3, r2
+    15b4:	ea4f 2313 	mov.w	r3, r3, lsr #8
+    15b8:	ea4f 2202 	mov.w	r2, r2, lsl #8
+    15bc:	4619      	mov	r1, r3
+    15be:	4613      	mov	r3, r2
+    15c0:	ea41 0303 	orr.w	r3, r1, r3
+    15c4:	b29b      	uxth	r3, r3
+    15c6:	f043 0360 	orr.w	r3, r3, #96	; 0x60
+    15ca:	b29b      	uxth	r3, r3
+    15cc:	8003      	strh	r3, [r0, #0]
+    15ce:	4a38      	ldr	r2, [pc, #224]	(16b0 <PrepareTCP_FRAME+0x22c>)
+    15d0:	f240 4302 	movw	r3, #1026	; 0x402
+    15d4:	8013      	strh	r3, [r2, #0]
+    15d6:	4a37      	ldr	r2, [pc, #220]	(16b4 <PrepareTCP_FRAME+0x230>)
+    15d8:	f04f 0301 	mov.w	r3, #1	; 0x1
+    15dc:	8013      	strh	r3, [r2, #0]
+    15de:	4c31      	ldr	r4, [pc, #196]	(16a4 <PrepareTCP_FRAME+0x220>)
+    15e0:	482b      	ldr	r0, [pc, #172]	(1690 <PrepareTCP_FRAME+0x20c>)
+    15e2:	f04f 0118 	mov.w	r1, #24	; 0x18
+    15e6:	f04f 0201 	mov.w	r2, #1	; 0x1
+    15ea:	f7ff fffe 	bl	1848 <CalcChecksum>
+    15ee:	4603      	mov	r3, r0
+    15f0:	8023      	strh	r3, [r4, #0]
+    15f2:	f240 0300 	movw	r3, #0	; 0x0
+    15f6:	f2c0 0300 	movt	r3, #0	; 0x0
+    15fa:	f04f 023a 	mov.w	r2, #58	; 0x3a
+    15fe:	701a      	strb	r2, [r3, #0]
+    1600:	e020      	b.n	1644 <PrepareTCP_FRAME+0x1c0>
+    1602:	482a      	ldr	r0, [pc, #168]	(16ac <PrepareTCP_FRAME+0x228>)
+    1604:	88fa      	ldrh	r2, [r7, #6]
+    1606:	b293      	uxth	r3, r2
+    1608:	ea4f 2313 	mov.w	r3, r3, lsr #8
+    160c:	ea4f 2202 	mov.w	r2, r2, lsl #8
+    1610:	4619      	mov	r1, r3
+    1612:	4613      	mov	r3, r2
+    1614:	ea41 0303 	orr.w	r3, r1, r3
+    1618:	b29b      	uxth	r3, r3
+    161a:	f043 0350 	orr.w	r3, r3, #80	; 0x50
+    161e:	b29b      	uxth	r3, r3
+    1620:	8003      	strh	r3, [r0, #0]
+    1622:	4c20      	ldr	r4, [pc, #128]	(16a4 <PrepareTCP_FRAME+0x220>)
+    1624:	481a      	ldr	r0, [pc, #104]	(1690 <PrepareTCP_FRAME+0x20c>)
+    1626:	f04f 0114 	mov.w	r1, #20	; 0x14
+    162a:	f04f 0201 	mov.w	r2, #1	; 0x1
+    162e:	f7ff fffe 	bl	1848 <CalcChecksum>
+    1632:	4603      	mov	r3, r0
+    1634:	8023      	strh	r3, [r4, #0]
+    1636:	f240 0300 	movw	r3, #0	; 0x0
+    163a:	f2c0 0300 	movt	r3, #0	; 0x0
+    163e:	f04f 0236 	mov.w	r2, #54	; 0x36
+    1642:	701a      	strb	r2, [r3, #0]
+    1644:	f240 0300 	movw	r3, #0	; 0x0
+    1648:	f2c0 0300 	movt	r3, #0	; 0x0
+    164c:	781b      	ldrb	r3, [r3, #0]
+    164e:	f043 0302 	orr.w	r3, r3, #2	; 0x2
+    1652:	b2da      	uxtb	r2, r3
+    1654:	f240 0300 	movw	r3, #0	; 0x0
+    1658:	f2c0 0300 	movt	r3, #0	; 0x0
+    165c:	701a      	strb	r2, [r3, #0]
+    165e:	f107 070c 	add.w	r7, r7, #12	; 0xc
+    1662:	46bd      	mov	sp, r7
+    1664:	bd90      	pop	{r4, r7, pc}
+    1666:	bf00      	nop
+    1668:	00000006 	.word	0x00000006
+    166c:	0000000c 	.word	0x0000000c
+    1670:	0000000e 	.word	0x0000000e
+    1674:	00000010 	.word	0x00000010
+    1678:	00000012 	.word	0x00000012
+    167c:	00000014 	.word	0x00000014
+    1680:	00000016 	.word	0x00000016
+    1684:	00000018 	.word	0x00000018
+    1688:	0000001a 	.word	0x0000001a
+    168c:	0000001e 	.word	0x0000001e
+    1690:	00000022 	.word	0x00000022
+    1694:	00000024 	.word	0x00000024
+    1698:	00000026 	.word	0x00000026
+    169c:	0000002a 	.word	0x0000002a
+    16a0:	00000030 	.word	0x00000030
+    16a4:	00000032 	.word	0x00000032
+    16a8:	00000034 	.word	0x00000034
+    16ac:	0000002e 	.word	0x0000002e
+    16b0:	00000036 	.word	0x00000036
+    16b4:	00000038 	.word	0x00000038
+
+000016b8 <PrepareTCP_DATA_FRAME>:
+    16b8:	b5b0      	push	{r4, r5, r7, lr}
+    16ba:	af00      	add	r7, sp, #0
+    16bc:	f240 0000 	movw	r0, #0	; 0x0
+    16c0:	f2c0 0000 	movt	r0, #0	; 0x0
+    16c4:	f240 0100 	movw	r1, #0	; 0x0
+    16c8:	f2c0 0100 	movt	r1, #0	; 0x0
+    16cc:	f04f 0206 	mov.w	r2, #6	; 0x6
+    16d0:	f7ff fffe 	bl	0 <memcpy>
+    16d4:	484a      	ldr	r0, [pc, #296]	(12c <NVIC_EnableIRQ+0x34>)
+    16d6:	f240 0100 	movw	r1, #0	; 0x0
+    16da:	f2c0 0100 	movt	r1, #0	; 0x0
+    16de:	f04f 0206 	mov.w	r2, #6	; 0x6
+    16e2:	f7ff fffe 	bl	0 <memcpy>
+    16e6:	4a47      	ldr	r2, [pc, #284]	(1804 <PrepareTCP_DATA_FRAME+0x14c>)
+    16e8:	f04f 0308 	mov.w	r3, #8	; 0x8
+    16ec:	8013      	strh	r3, [r2, #0]
+    16ee:	4a46      	ldr	r2, [pc, #280]	(1808 <PrepareTCP_DATA_FRAME+0x150>)
+    16f0:	f241 0345 	movw	r3, #4165	; 0x1045
+    16f4:	8013      	strh	r3, [r2, #0]
+    16f6:	4a45      	ldr	r2, [pc, #276]	(180c <PrepareTCP_DATA_FRAME+0x154>)
+    16f8:	f240 0300 	movw	r3, #0	; 0x0
+    16fc:	f2c0 0300 	movt	r3, #0	; 0x0
+    1700:	881b      	ldrh	r3, [r3, #0]
+    1702:	f103 0328 	add.w	r3, r3, #40	; 0x28
+    1706:	b29b      	uxth	r3, r3
+    1708:	4610      	mov	r0, r2
+    170a:	4619      	mov	r1, r3
+    170c:	f7ff fffe 	bl	1b6c <WriteWBE>
+    1710:	4a3f      	ldr	r2, [pc, #252]	(1810 <PrepareTCP_DATA_FRAME+0x158>)
+    1712:	f04f 0300 	mov.w	r3, #0	; 0x0
+    1716:	8013      	strh	r3, [r2, #0]
+    1718:	4a3e      	ldr	r2, [pc, #248]	(1814 <PrepareTCP_DATA_FRAME+0x15c>)
+    171a:	f04f 0300 	mov.w	r3, #0	; 0x0
+    171e:	8013      	strh	r3, [r2, #0]
+    1720:	4a3d      	ldr	r2, [pc, #244]	(1818 <PrepareTCP_DATA_FRAME+0x160>)
+    1722:	f44f 63c8 	mov.w	r3, #1600	; 0x640
+    1726:	8013      	strh	r3, [r2, #0]
+    1728:	4a3c      	ldr	r2, [pc, #240]	(181c <PrepareTCP_DATA_FRAME+0x164>)
+    172a:	f04f 0300 	mov.w	r3, #0	; 0x0
+    172e:	8013      	strh	r3, [r2, #0]
+    1730:	483b      	ldr	r0, [pc, #236]	(1820 <PrepareTCP_DATA_FRAME+0x168>)
+    1732:	f240 0100 	movw	r1, #0	; 0x0
+    1736:	f2c0 0100 	movt	r1, #0	; 0x0
+    173a:	f04f 0204 	mov.w	r2, #4	; 0x4
+    173e:	f7ff fffe 	bl	0 <memcpy>
+    1742:	4838      	ldr	r0, [pc, #224]	(e4 <RemoteIP+0xe4>)
+    1744:	f240 0100 	movw	r1, #0	; 0x0
+    1748:	f2c0 0100 	movt	r1, #0	; 0x0
+    174c:	f04f 0204 	mov.w	r2, #4	; 0x4
+    1750:	f7ff fffe 	bl	0 <memcpy>
+    1754:	4c31      	ldr	r4, [pc, #196]	(181c <PrepareTCP_DATA_FRAME+0x164>)
+    1756:	482c      	ldr	r0, [pc, #176]	(1808 <PrepareTCP_DATA_FRAME+0x150>)
+    1758:	f04f 0114 	mov.w	r1, #20	; 0x14
+    175c:	f04f 0200 	mov.w	r2, #0	; 0x0
+    1760:	f7ff fffe 	bl	1848 <CalcChecksum>
+    1764:	4603      	mov	r3, r0
+    1766:	8023      	strh	r3, [r4, #0]
+    1768:	4a2f      	ldr	r2, [pc, #188]	(1828 <PrepareTCP_DATA_FRAME+0x170>)
+    176a:	f240 0300 	movw	r3, #0	; 0x0
+    176e:	f2c0 0300 	movt	r3, #0	; 0x0
+    1772:	881b      	ldrh	r3, [r3, #0]
+    1774:	4610      	mov	r0, r2
+    1776:	4619      	mov	r1, r3
+    1778:	f7ff fffe 	bl	1b6c <WriteWBE>
+    177c:	4a2b      	ldr	r2, [pc, #172]	(b0 <TCPRemotePort+0xb0>)
+    177e:	f240 0300 	movw	r3, #0	; 0x0
+    1782:	f2c0 0300 	movt	r3, #0	; 0x0
+    1786:	881b      	ldrh	r3, [r3, #0]
+    1788:	4610      	mov	r0, r2
+    178a:	4619      	mov	r1, r3
+    178c:	f7ff fffe 	bl	1b6c <WriteWBE>
+    1790:	4a27      	ldr	r2, [pc, #156]	(a0 <TCPSeqNr+0xa0>)
+    1792:	f240 0300 	movw	r3, #0	; 0x0
+    1796:	f2c0 0300 	movt	r3, #0	; 0x0
+    179a:	681b      	ldr	r3, [r3, #0]
+    179c:	4610      	mov	r0, r2
+    179e:	4619      	mov	r1, r3
+    17a0:	f7ff fffe 	bl	1ba0 <WriteDWBE>
+    17a4:	4a23      	ldr	r2, [pc, #140]	(90 <TCPAckNr+0x90>)
+    17a6:	f240 0300 	movw	r3, #0	; 0x0
+    17aa:	f2c0 0300 	movt	r3, #0	; 0x0
+    17ae:	681b      	ldr	r3, [r3, #0]
+    17b0:	4610      	mov	r0, r2
+    17b2:	4619      	mov	r1, r3
+    17b4:	f7ff fffe 	bl	1ba0 <WriteDWBE>
+    17b8:	4a1f      	ldr	r2, [pc, #124]	(1838 <PrepareTCP_DATA_FRAME+0x180>)
+    17ba:	f241 0350 	movw	r3, #4176	; 0x1050
+    17be:	8013      	strh	r3, [r2, #0]
+    17c0:	4a1e      	ldr	r2, [pc, #120]	(183c <PrepareTCP_DATA_FRAME+0x184>)
+    17c2:	f04f 0301 	mov.w	r3, #1	; 0x1
+    17c6:	8013      	strh	r3, [r2, #0]
+    17c8:	4a1d      	ldr	r2, [pc, #116]	(1840 <PrepareTCP_DATA_FRAME+0x188>)
+    17ca:	f04f 0300 	mov.w	r3, #0	; 0x0
+    17ce:	8013      	strh	r3, [r2, #0]
+    17d0:	4a1c      	ldr	r2, [pc, #112]	(1844 <PrepareTCP_DATA_FRAME+0x18c>)
+    17d2:	f04f 0300 	mov.w	r3, #0	; 0x0
+    17d6:	8013      	strh	r3, [r2, #0]
+    17d8:	4c19      	ldr	r4, [pc, #100]	(1840 <PrepareTCP_DATA_FRAME+0x188>)
+    17da:	f240 0300 	movw	r3, #0	; 0x0
+    17de:	f2c0 0300 	movt	r3, #0	; 0x0
+    17e2:	881b      	ldrh	r3, [r3, #0]
+    17e4:	f103 0314 	add.w	r3, r3, #20	; 0x14
+    17e8:	b29b      	uxth	r3, r3
+    17ea:	480f      	ldr	r0, [pc, #60]	(1828 <PrepareTCP_DATA_FRAME+0x170>)
+    17ec:	4619      	mov	r1, r3
+    17ee:	f04f 0201 	mov.w	r2, #1	; 0x1
+    17f2:	f7ff fffe 	bl	1848 <CalcChecksum>
+    17f6:	4603      	mov	r3, r0
+    17f8:	8023      	strh	r3, [r4, #0]
+    17fa:	46bd      	mov	sp, r7
+    17fc:	bdb0      	pop	{r4, r5, r7, pc}
+    17fe:	bf00      	nop
+    1800:	00000006 	.word	0x00000006
+    1804:	0000000c 	.word	0x0000000c
+    1808:	0000000e 	.word	0x0000000e
+    180c:	00000010 	.word	0x00000010
+    1810:	00000012 	.word	0x00000012
+    1814:	00000014 	.word	0x00000014
+    1818:	00000016 	.word	0x00000016
+    181c:	00000018 	.word	0x00000018
+    1820:	0000001a 	.word	0x0000001a
+    1824:	0000001e 	.word	0x0000001e
+    1828:	00000022 	.word	0x00000022
+    182c:	00000024 	.word	0x00000024
+    1830:	00000026 	.word	0x00000026
+    1834:	0000002a 	.word	0x0000002a
+    1838:	0000002e 	.word	0x0000002e
+    183c:	00000030 	.word	0x00000030
+    1840:	00000032 	.word	0x00000032
+    1844:	00000034 	.word	0x00000034
+
+00001848 <CalcChecksum>:
+    1848:	b580      	push	{r7, lr}
+    184a:	b084      	sub	sp, #16
+    184c:	af00      	add	r7, sp, #0
+    184e:	6078      	str	r0, [r7, #4]
+    1850:	460b      	mov	r3, r1
+    1852:	807b      	strh	r3, [r7, #2]
+    1854:	4613      	mov	r3, r2
+    1856:	707b      	strb	r3, [r7, #1]
+    1858:	f04f 0300 	mov.w	r3, #0	; 0x0
+    185c:	60bb      	str	r3, [r7, #8]
+    185e:	787b      	ldrb	r3, [r7, #1]
+    1860:	2b00      	cmp	r3, #0
+    1862:	d030      	beq.n	18c6 <CalcChecksum+0x7e>
+    1864:	f240 0300 	movw	r3, #0	; 0x0
+    1868:	f2c0 0300 	movt	r3, #0	; 0x0
+    186c:	881b      	ldrh	r3, [r3, #0]
+    186e:	461a      	mov	r2, r3
+    1870:	68bb      	ldr	r3, [r7, #8]
+    1872:	4413      	add	r3, r2
+    1874:	60bb      	str	r3, [r7, #8]
+    1876:	f240 0300 	movw	r3, #0	; 0x0
+    187a:	f2c0 0300 	movt	r3, #0	; 0x0
+    187e:	885b      	ldrh	r3, [r3, #2]
+    1880:	461a      	mov	r2, r3
+    1882:	68bb      	ldr	r3, [r7, #8]
+    1884:	4413      	add	r3, r2
+    1886:	60bb      	str	r3, [r7, #8]
+    1888:	f240 0300 	movw	r3, #0	; 0x0
+    188c:	f2c0 0300 	movt	r3, #0	; 0x0
+    1890:	881b      	ldrh	r3, [r3, #0]
+    1892:	461a      	mov	r2, r3
+    1894:	68bb      	ldr	r3, [r7, #8]
+    1896:	4413      	add	r3, r2
+    1898:	60bb      	str	r3, [r7, #8]
+    189a:	f240 0300 	movw	r3, #0	; 0x0
+    189e:	f2c0 0300 	movt	r3, #0	; 0x0
+    18a2:	885b      	ldrh	r3, [r3, #2]
+    18a4:	461a      	mov	r2, r3
+    18a6:	68bb      	ldr	r3, [r7, #8]
+    18a8:	4413      	add	r3, r2
+    18aa:	60bb      	str	r3, [r7, #8]
+    18ac:	887b      	ldrh	r3, [r7, #2]
+    18ae:	4618      	mov	r0, r3
+    18b0:	f7ff fffe 	bl	1bf8 <SwapBytes>
+    18b4:	4603      	mov	r3, r0
+    18b6:	461a      	mov	r2, r3
+    18b8:	68bb      	ldr	r3, [r7, #8]
+    18ba:	4413      	add	r3, r2
+    18bc:	60bb      	str	r3, [r7, #8]
+    18be:	68bb      	ldr	r3, [r7, #8]
+    18c0:	f503 63c0 	add.w	r3, r3, #1536	; 0x600
+    18c4:	60bb      	str	r3, [r7, #8]
+    18c6:	687b      	ldr	r3, [r7, #4]
+    18c8:	60fb      	str	r3, [r7, #12]
+    18ca:	e00d      	b.n	18e8 <CalcChecksum+0xa0>
+    18cc:	68fb      	ldr	r3, [r7, #12]
+    18ce:	881b      	ldrh	r3, [r3, #0]
+    18d0:	461a      	mov	r2, r3
+    18d2:	68bb      	ldr	r3, [r7, #8]
+    18d4:	4413      	add	r3, r2
+    18d6:	60bb      	str	r3, [r7, #8]
+    18d8:	68fb      	ldr	r3, [r7, #12]
+    18da:	f103 0302 	add.w	r3, r3, #2	; 0x2
+    18de:	60fb      	str	r3, [r7, #12]
+    18e0:	887b      	ldrh	r3, [r7, #2]
+    18e2:	f1a3 0302 	sub.w	r3, r3, #2	; 0x2
+    18e6:	807b      	strh	r3, [r7, #2]
+    18e8:	887b      	ldrh	r3, [r7, #2]
+    18ea:	2b01      	cmp	r3, #1
+    18ec:	d8ee      	bhi.n	18cc <CalcChecksum+0x84>
+    18ee:	887b      	ldrh	r3, [r7, #2]
+    18f0:	2b00      	cmp	r3, #0
+    18f2:	d010      	beq.n	1916 <CalcChecksum+0xce>
+    18f4:	68fb      	ldr	r3, [r7, #12]
+    18f6:	781b      	ldrb	r3, [r3, #0]
+    18f8:	461a      	mov	r2, r3
+    18fa:	68bb      	ldr	r3, [r7, #8]
+    18fc:	4413      	add	r3, r2
+    18fe:	60bb      	str	r3, [r7, #8]
+    1900:	e009      	b.n	1916 <CalcChecksum+0xce>
+    1902:	68bb      	ldr	r3, [r7, #8]
+    1904:	ea4f 4303 	mov.w	r3, r3, lsl #16
+    1908:	ea4f 4313 	mov.w	r3, r3, lsr #16
+    190c:	68ba      	ldr	r2, [r7, #8]
+    190e:	ea4f 4212 	mov.w	r2, r2, lsr #16
+    1912:	4413      	add	r3, r2
+    1914:	60bb      	str	r3, [r7, #8]
+    1916:	68bb      	ldr	r3, [r7, #8]
+    1918:	ea4f 4313 	mov.w	r3, r3, lsr #16
+    191c:	2b00      	cmp	r3, #0
+    191e:	d1f0      	bne.n	1902 <CalcChecksum+0xba>
+    1920:	68bb      	ldr	r3, [r7, #8]
+    1922:	b29b      	uxth	r3, r3
+    1924:	ea6f 0303 	mvn.w	r3, r3
+    1928:	b29b      	uxth	r3, r3
+    192a:	4618      	mov	r0, r3
+    192c:	f107 0710 	add.w	r7, r7, #16	; 0x10
+    1930:	46bd      	mov	sp, r7
+    1932:	bd80      	pop	{r7, pc}
+
+00001934 <TCPStartRetryTimer>:
+    1934:	b480      	push	{r7}
+    1936:	af00      	add	r7, sp, #0
+    1938:	f240 0300 	movw	r3, #0	; 0x0
+    193c:	f2c0 0300 	movt	r3, #0	; 0x0
+    1940:	f04f 0200 	mov.w	r2, #0	; 0x0
+    1944:	701a      	strb	r2, [r3, #0]
+    1946:	f240 0300 	movw	r3, #0	; 0x0
+    194a:	f2c0 0300 	movt	r3, #0	; 0x0
+    194e:	f04f 0204 	mov.w	r2, #4	; 0x4
+    1952:	701a      	strb	r2, [r3, #0]
+    1954:	f240 0300 	movw	r3, #0	; 0x0
+    1958:	f2c0 0300 	movt	r3, #0	; 0x0
+    195c:	781b      	ldrb	r3, [r3, #0]
+    195e:	f043 0304 	orr.w	r3, r3, #4	; 0x4
+    1962:	b2da      	uxtb	r2, r3
+    1964:	f240 0300 	movw	r3, #0	; 0x0
+    1968:	f2c0 0300 	movt	r3, #0	; 0x0
+    196c:	701a      	strb	r2, [r3, #0]
+    196e:	f240 0300 	movw	r3, #0	; 0x0
+    1972:	f2c0 0300 	movt	r3, #0	; 0x0
+    1976:	781b      	ldrb	r3, [r3, #0]
+    1978:	f043 0308 	orr.w	r3, r3, #8	; 0x8
+    197c:	b2da      	uxtb	r2, r3
+    197e:	f240 0300 	movw	r3, #0	; 0x0
+    1982:	f2c0 0300 	movt	r3, #0	; 0x0
+    1986:	701a      	strb	r2, [r3, #0]
+    1988:	46bd      	mov	sp, r7
+    198a:	bc80      	pop	{r7}
+    198c:	4770      	bx	lr
+    198e:	bf00      	nop
+
+00001990 <TCPStartTimeWaitTimer>:
+    1990:	b480      	push	{r7}
+    1992:	af00      	add	r7, sp, #0
+    1994:	f240 0300 	movw	r3, #0	; 0x0
+    1998:	f2c0 0300 	movt	r3, #0	; 0x0
+    199c:	f04f 0200 	mov.w	r2, #0	; 0x0
+    19a0:	701a      	strb	r2, [r3, #0]
+    19a2:	f240 0300 	movw	r3, #0	; 0x0
+    19a6:	f2c0 0300 	movt	r3, #0	; 0x0
+    19aa:	781b      	ldrb	r3, [r3, #0]
+    19ac:	f043 0304 	orr.w	r3, r3, #4	; 0x4
+    19b0:	b2da      	uxtb	r2, r3
+    19b2:	f240 0300 	movw	r3, #0	; 0x0
+    19b6:	f2c0 0300 	movt	r3, #0	; 0x0
+    19ba:	701a      	strb	r2, [r3, #0]
+    19bc:	f240 0300 	movw	r3, #0	; 0x0
+    19c0:	f2c0 0300 	movt	r3, #0	; 0x0
+    19c4:	781b      	ldrb	r3, [r3, #0]
+    19c6:	461a      	mov	r2, r3
+    19c8:	f002 02f7 	and.w	r2, r2, #247	; 0xf7
+    19cc:	f240 0300 	movw	r3, #0	; 0x0
+    19d0:	f2c0 0300 	movt	r3, #0	; 0x0
+    19d4:	701a      	strb	r2, [r3, #0]
+    19d6:	46bd      	mov	sp, r7
+    19d8:	bc80      	pop	{r7}
+    19da:	4770      	bx	lr
+
+000019dc <TCPRestartTimer>:
+    19dc:	b480      	push	{r7}
+    19de:	af00      	add	r7, sp, #0
+    19e0:	f240 0300 	movw	r3, #0	; 0x0
+    19e4:	f2c0 0300 	movt	r3, #0	; 0x0
+    19e8:	f04f 0200 	mov.w	r2, #0	; 0x0
+    19ec:	701a      	strb	r2, [r3, #0]
+    19ee:	46bd      	mov	sp, r7
+    19f0:	bc80      	pop	{r7}
+    19f2:	4770      	bx	lr
+
+000019f4 <TCPStopTimer>:
+    19f4:	b480      	push	{r7}
+    19f6:	af00      	add	r7, sp, #0
+    19f8:	f240 0300 	movw	r3, #0	; 0x0
+    19fc:	f2c0 0300 	movt	r3, #0	; 0x0
+    1a00:	781b      	ldrb	r3, [r3, #0]
+    1a02:	461a      	mov	r2, r3
+    1a04:	f002 02fb 	and.w	r2, r2, #251	; 0xfb
+    1a08:	f240 0300 	movw	r3, #0	; 0x0
+    1a0c:	f2c0 0300 	movt	r3, #0	; 0x0
+    1a10:	701a      	strb	r2, [r3, #0]
+    1a12:	46bd      	mov	sp, r7
+    1a14:	bc80      	pop	{r7}
+    1a16:	4770      	bx	lr
+
+00001a18 <TCPHandleRetransmission>:
+    1a18:	b580      	push	{r7, lr}
+    1a1a:	af00      	add	r7, sp, #0
+    1a1c:	f240 0300 	movw	r3, #0	; 0x0
+    1a20:	f2c0 0300 	movt	r3, #0	; 0x0
+    1a24:	781b      	ldrb	r3, [r3, #0]
+    1a26:	2b04      	cmp	r3, #4
+    1a28:	d82b      	bhi.n	1a82 <TCPHandleRetransmission+0x6a>
+    1a2a:	a201      	add	r2, pc, #4	(adr r2, 1a30 <TCPHandleRetransmission+0x18>)
+    1a2c:	f852 f023 	ldr.w	pc, [r2, r3, lsl #2]
+    1a30:	00001a45 	.word	0x00001a45
+    1a34:	00001a4b 	.word	0x00001a4b
+    1a38:	00001a55 	.word	0x00001a55
+    1a3c:	00001a5f 	.word	0x00001a5f
+    1a40:	00001a69 	.word	0x00001a69
+    1a44:	f7ff fffe 	bl	10c4 <PrepareARP_REQUEST>
+    1a48:	e01b      	b.n	1a82 <TCPHandleRetransmission+0x6a>
+    1a4a:	f04f 0002 	mov.w	r0, #2	; 0x2
+    1a4e:	f7ff fffe 	bl	1484 <PrepareTCP_FRAME>
+    1a52:	e016      	b.n	1a82 <TCPHandleRetransmission+0x6a>
+    1a54:	f04f 0012 	mov.w	r0, #18	; 0x12
+    1a58:	f7ff fffe 	bl	1484 <PrepareTCP_FRAME>
+    1a5c:	e011      	b.n	1a82 <TCPHandleRetransmission+0x6a>
+    1a5e:	f04f 0011 	mov.w	r0, #17	; 0x11
+    1a62:	f7ff fffe 	bl	1484 <PrepareTCP_FRAME>
+    1a66:	e00c      	b.n	1c <TransmitControl+0x1c>
+    1a68:	f240 0300 	movw	r3, #0	; 0x0
+    1a6c:	f2c0 0300 	movt	r3, #0	; 0x0
+    1a70:	781b      	ldrb	r3, [r3, #0]
+    1a72:	f043 0301 	orr.w	r3, r3, #1	; 0x1
+    1a76:	b2da      	uxtb	r2, r3
+    1a78:	f240 0300 	movw	r3, #0	; 0x0
+    1a7c:	f2c0 0300 	movt	r3, #0	; 0x0
+    1a80:	701a      	strb	r2, [r3, #0]
+    1a82:	46bd      	mov	sp, r7
+    1a84:	bd80      	pop	{r7, pc}
+    1a86:	bf00      	nop
+
+00001a88 <TCPHandleTimeout>:
+    1a88:	b480      	push	{r7}
+    1a8a:	af00      	add	r7, sp, #0
+    1a8c:	f240 0300 	movw	r3, #0	; 0x0
+    1a90:	f2c0 0300 	movt	r3, #0	; 0x0
+    1a94:	f04f 0200 	mov.w	r2, #0	; 0x0
+    1a98:	701a      	strb	r2, [r3, #0]
+    1a9a:	f240 0300 	movw	r3, #0	; 0x0
+    1a9e:	f2c0 0300 	movt	r3, #0	; 0x0
+    1aa2:	781b      	ldrb	r3, [r3, #0]
+    1aa4:	f003 0303 	and.w	r3, r3, #3	; 0x3
+    1aa8:	2b01      	cmp	r3, #1
+    1aaa:	d107      	bne.n	1abc <TCPHandleTimeout+0x34>
+    1aac:	f240 0300 	movw	r3, #0	; 0x0
+    1ab0:	f2c0 0300 	movt	r3, #0	; 0x0
+    1ab4:	f04f 0210 	mov.w	r2, #16	; 0x10
+    1ab8:	701a      	strb	r2, [r3, #0]
+    1aba:	e006      	b.n	1aca <TCPHandleTimeout+0x42>
+    1abc:	f240 0300 	movw	r3, #0	; 0x0
+    1ac0:	f2c0 0300 	movt	r3, #0	; 0x0
+    1ac4:	f04f 0220 	mov.w	r2, #32	; 0x20
+    1ac8:	701a      	strb	r2, [r3, #0]
+    1aca:	f240 0300 	movw	r3, #0	; 0x0
+    1ace:	f2c0 0300 	movt	r3, #0	; 0x0
+    1ad2:	f04f 0200 	mov.w	r2, #0	; 0x0
+    1ad6:	701a      	strb	r2, [r3, #0]
+    1ad8:	46bd      	mov	sp, r7
+    1ada:	bc80      	pop	{r7}
+    1adc:	4770      	bx	lr
+    1ade:	bf00      	nop
+
+00001ae0 <TIMER0_IRQHandler>:
+    1ae0:	b480      	push	{r7}
+    1ae2:	af00      	add	r7, sp, #0
+    1ae4:	f240 0300 	movw	r3, #0	; 0x0
+    1ae8:	f2c0 0300 	movt	r3, #0	; 0x0
+    1aec:	881b      	ldrh	r3, [r3, #0]
+    1aee:	f103 0301 	add.w	r3, r3, #1	; 0x1
+    1af2:	b29a      	uxth	r2, r3
+    1af4:	f240 0300 	movw	r3, #0	; 0x0
+    1af8:	f2c0 0300 	movt	r3, #0	; 0x0
+    1afc:	801a      	strh	r2, [r3, #0]
+    1afe:	f240 0300 	movw	r3, #0	; 0x0
+    1b02:	f2c0 0300 	movt	r3, #0	; 0x0
+    1b06:	781b      	ldrb	r3, [r3, #0]
+    1b08:	f103 0301 	add.w	r3, r3, #1	; 0x1
+    1b0c:	b2da      	uxtb	r2, r3
+    1b0e:	f240 0300 	movw	r3, #0	; 0x0
+    1b12:	f2c0 0300 	movt	r3, #0	; 0x0
+    1b16:	701a      	strb	r2, [r3, #0]
+    1b18:	f244 0300 	movw	r3, #16384	; 0x4000
+    1b1c:	f2c4 0300 	movt	r3, #16384	; 0x4000
+    1b20:	f04f 0201 	mov.w	r2, #1	; 0x1
+    1b24:	601a      	str	r2, [r3, #0]
+    1b26:	46bd      	mov	sp, r7
+    1b28:	bc80      	pop	{r7}
+    1b2a:	4770      	bx	lr
+
+00001b2c <SendFrame1>:
+    1b2c:	b580      	push	{r7, lr}
+    1b2e:	af00      	add	r7, sp, #0
+    1b30:	f240 0300 	movw	r3, #0	; 0x0
+    1b34:	f2c0 0300 	movt	r3, #0	; 0x0
+    1b38:	881b      	ldrh	r3, [r3, #0]
+    1b3a:	f240 0000 	movw	r0, #0	; 0x0
+    1b3e:	f2c0 0000 	movt	r0, #0	; 0x0
+    1b42:	4619      	mov	r1, r3
+    1b44:	f7ff fffe 	bl	0 <CopyToFrame_EMAC>
+    1b48:	46bd      	mov	sp, r7
+    1b4a:	bd80      	pop	{r7, pc}
+
+00001b4c <SendFrame2>:
+    1b4c:	b580      	push	{r7, lr}
+    1b4e:	af00      	add	r7, sp, #0
+    1b50:	f240 0300 	movw	r3, #0	; 0x0
+    1b54:	f2c0 0300 	movt	r3, #0	; 0x0
+    1b58:	781b      	ldrb	r3, [r3, #0]
+    1b5a:	f240 0000 	movw	r0, #0	; 0x0
+    1b5e:	f2c0 0000 	movt	r0, #0	; 0x0
+    1b62:	4619      	mov	r1, r3
+    1b64:	f7ff fffe 	bl	0 <CopyToFrame_EMAC>
+    1b68:	46bd      	mov	sp, r7
+    1b6a:	bd80      	pop	{r7, pc}
+
+00001b6c <WriteWBE>:
+    1b6c:	b480      	push	{r7}
+    1b6e:	b083      	sub	sp, #12
+    1b70:	af00      	add	r7, sp, #0
+    1b72:	6078      	str	r0, [r7, #4]
+    1b74:	460b      	mov	r3, r1
+    1b76:	807b      	strh	r3, [r7, #2]
+    1b78:	887b      	ldrh	r3, [r7, #2]
+    1b7a:	ea4f 2313 	mov.w	r3, r3, lsr #8
+    1b7e:	b29b      	uxth	r3, r3
+    1b80:	b2db      	uxtb	r3, r3
+    1b82:	687a      	ldr	r2, [r7, #4]
+    1b84:	7013      	strb	r3, [r2, #0]
+    1b86:	687b      	ldr	r3, [r7, #4]
+    1b88:	f103 0301 	add.w	r3, r3, #1	; 0x1
+    1b8c:	607b      	str	r3, [r7, #4]
+    1b8e:	887b      	ldrh	r3, [r7, #2]
+    1b90:	b2db      	uxtb	r3, r3
+    1b92:	687a      	ldr	r2, [r7, #4]
+    1b94:	7013      	strb	r3, [r2, #0]
+    1b96:	f107 070c 	add.w	r7, r7, #12	; 0xc
+    1b9a:	46bd      	mov	sp, r7
+    1b9c:	bc80      	pop	{r7}
+    1b9e:	4770      	bx	lr
+
+00001ba0 <WriteDWBE>:
+    1ba0:	b480      	push	{r7}
+    1ba2:	b083      	sub	sp, #12
+    1ba4:	af00      	add	r7, sp, #0
+    1ba6:	6078      	str	r0, [r7, #4]
+    1ba8:	6039      	str	r1, [r7, #0]
+    1baa:	683b      	ldr	r3, [r7, #0]
+    1bac:	ea4f 6313 	mov.w	r3, r3, lsr #24
+    1bb0:	b2db      	uxtb	r3, r3
+    1bb2:	687a      	ldr	r2, [r7, #4]
+    1bb4:	7013      	strb	r3, [r2, #0]
+    1bb6:	687b      	ldr	r3, [r7, #4]
+    1bb8:	f103 0301 	add.w	r3, r3, #1	; 0x1
+    1bbc:	607b      	str	r3, [r7, #4]
+    1bbe:	683b      	ldr	r3, [r7, #0]
+    1bc0:	ea4f 4313 	mov.w	r3, r3, lsr #16
+    1bc4:	b2db      	uxtb	r3, r3
+    1bc6:	687a      	ldr	r2, [r7, #4]
+    1bc8:	7013      	strb	r3, [r2, #0]
+    1bca:	687b      	ldr	r3, [r7, #4]
+    1bcc:	f103 0301 	add.w	r3, r3, #1	; 0x1
+    1bd0:	607b      	str	r3, [r7, #4]
+    1bd2:	683b      	ldr	r3, [r7, #0]
+    1bd4:	ea4f 2313 	mov.w	r3, r3, lsr #8
+    1bd8:	b2db      	uxtb	r3, r3
+    1bda:	687a      	ldr	r2, [r7, #4]
+    1bdc:	7013      	strb	r3, [r2, #0]
+    1bde:	687b      	ldr	r3, [r7, #4]
+    1be0:	f103 0301 	add.w	r3, r3, #1	; 0x1
+    1be4:	607b      	str	r3, [r7, #4]
+    1be6:	683b      	ldr	r3, [r7, #0]
+    1be8:	b2db      	uxtb	r3, r3
+    1bea:	687a      	ldr	r2, [r7, #4]
+    1bec:	7013      	strb	r3, [r2, #0]
+    1bee:	f107 070c 	add.w	r7, r7, #12	; 0xc
+    1bf2:	46bd      	mov	sp, r7
+    1bf4:	bc80      	pop	{r7}
+    1bf6:	4770      	bx	lr
+
+00001bf8 <SwapBytes>:
+    1bf8:	b480      	push	{r7}
+    1bfa:	b083      	sub	sp, #12
+    1bfc:	af00      	add	r7, sp, #0
+    1bfe:	4603      	mov	r3, r0
+    1c00:	80fb      	strh	r3, [r7, #6]
+    1c02:	88fb      	ldrh	r3, [r7, #6]
+    1c04:	ea4f 2313 	mov.w	r3, r3, lsr #8
+    1c08:	b29b      	uxth	r3, r3
+    1c0a:	461a      	mov	r2, r3
+    1c0c:	88fb      	ldrh	r3, [r7, #6]
+    1c0e:	ea4f 2303 	mov.w	r3, r3, lsl #8
+    1c12:	b29b      	uxth	r3, r3
+    1c14:	ea42 0303 	orr.w	r3, r2, r3
+    1c18:	b29b      	uxth	r3, r3
+    1c1a:	b29b      	uxth	r3, r3
+    1c1c:	4618      	mov	r0, r3
+    1c1e:	f107 070c 	add.w	r7, r7, #12	; 0xc
+    1c22:	46bd      	mov	sp, r7
+    1c24:	bc80      	pop	{r7}
+    1c26:	4770      	bx	lr
+
+Disassembly of section .rodata:
+
+00000000 <MyMAC>:
+   0:	1e          	.byte	0x1e
+   1:	30          	.byte	0x30
+   2:	a26c      	.short	0xa26c
+   4:	Address 0x00000004 is out of bounds.
+
+
+Disassembly of section .comment:
+
+00000000 <.comment>:
+   0:	43434700 	movtmi	r4, #14080	; 0x3700
+   4:	5328203a 	.word	0x5328203a
+   8:	6372756f 	.word	0x6372756f
+   c:	20797265 	.word	0x20797265
+  10:	202b2b47 	.word	0x202b2b47
+  14:	6574694c 	.word	0x6574694c
+  18:	30303220 	.word	0x30303220
+  1c:	2d317139 	.word	0x2d317139
+  20:	29313631 	.word	0x29313631
+  24:	332e3420 	.word	0x332e3420
+  28:	Address 0x00000028 is out of bounds.
+
+
+Disassembly of section .ARM.attributes:
+
+00000000 <.ARM.attributes>:
+   0:	00003041 	andeq	r3, r0, r1, asr #32
+   4:	61656100 	cmnvs	r5, r0, lsl #2
+   8:	01006962 	tsteq	r0, r2, ror #18
+   c:	00000026 	andeq	r0, r0, r6, lsr #32
+  10:	524f4305 	subpl	r4, pc, #335544320	; 0x14000000
+  14:	2d584554 	cfldr64cs	mvdx4, [r8, #-336]
+  18:	0600334d 	streq	r3, [r0], -sp, asr #6
+  1c:	094d070a 	stmdbeq	sp, {r1, r3, r8, r9, sl}^
+  20:	14041202 	strne	r1, [r4], #-514
+  24:	17011501 	strne	r1, [r1, -r1, lsl #10]
+  28:	19011803 	stmdbne	r1, {r0, r1, fp, ip}
+  2c:	1e011a01 	vmlane.f32	s2, s2, s2
+  30:	Address 0x00000030 is out of bounds.
+
