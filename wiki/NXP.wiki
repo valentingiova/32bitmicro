@@ -1,13 +1,21 @@
-#NXP
+#summary NXP page
 
 = Introduction =
 
-All NXP related projects
+= Supported MCUs =
 
+LP1C7xx Series:
+ * lpc1751
+ * lpc1752
+ * lpc1754
+ * lpc1756
+ * lpc1758
+ * lpc1765
+ * lpc1766
+ * lpc1768
+ * lpc1764
 
 = Projects =
-
-lpc13xx
 
 lpc17xx
   * [http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/nxp LPC17xxSampleSoftware ]
