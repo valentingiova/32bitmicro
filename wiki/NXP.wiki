@@ -2,9 +2,17 @@
 
 = Introduction =
 
-= Supported MCUs =
 
-LP1C7xx Series:
+= Supported MCU Families =
+
+== LPC1000 ==
+
+[http://www.standardics.nxp.com/products/lpc1000/ NXP LPC1000 Home Page]
+
+[http://tech.groups.yahoo.com/group/lpc1000/ LPC1000 User group]
+
+=== LP1C7xx series MCUs ===
+[http://www.standardics.nxp.com/products/lpc1000/lpc17xx/ NXP LPC17xx Home Page]
  * lpc1751
  * lpc1752
  * lpc1754
