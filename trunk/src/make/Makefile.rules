@@ -128,14 +128,21 @@ PROJECT_OUT=
 # Poject output
 ifeq ($(PROJECT_TYPE),APP)
 PROJECT_OUT=${PROJECT}.out
-${PROJECT}.out :
+${PROJECT}.out : ${ALL_OBJ}
 	$(LD)  ${ALL_LDFLAGS}  ${ALL_OBJ} ${ALL_LIBS} -o ${PROJECT}.out
+# HEX output
+ifdef TARGET_GEN_HEX
 	$(OBJDUMP)  -S -D  ${PROJECT}.out  > ${PROJECT}.out.lst
+endif
+# listing
+ifdef TARGET_GEN_LST
+	$(OBJDUMP)  -S -D  ${PROJECT}.out  > ${PROJECT}.out.lst
+endif
 endif
 
 ifeq ($(PROJECT_TYPE),LIB)
 PROJECT_OUT=lib${PROJECT}.a
-lib${PROJECT}.a:
+lib${PROJECT}.a: ${ALL_OBJ}
 	$(AR) r lib${PROJECT}.a ${ALL_OBJ}
 endif
 
@@ -151,43 +158,50 @@ ${PROJECT}: ${ALL_OBJ} ${PROJECT_OUT}
 %.o: %.c
 	@echo Compiling $<
 	$(CC) $(ALL_CFLAGS) -c $< -o $@ 
+ifdef TARGET_GEN_LST
 	$(OBJDUMP)  -S -D  $@  > $@.lst
-
+endif
 
 %.o: %.s
 	@echo Assembling $< 
 	$(AS) $(ALL_AFLAGS) $< -o $@
+ifdef TARGET_GEN_LST
 	$(OBJDUMP)  -S -D $@  > $@.lst
+endif
 
 %.o: %.S
 	@echo Assembling $< 
-	$(AS) $(ALL_AFLAGS) $< -o $@
+	$(ASPP) $(ALL_AFLAGS) $< -o $@
+#	$(ACPP) $(ALL_AFLAGS) | $(AS) -- $(ALL_AFLAGS) -o $
+ifdef TARGET_GEN_LST
 	$(OBJDUMP)  -S -D $@  > $@.lst
+endif
 
 clean_aobj:
-	rm -f ${AOBJ}
-	rm -f ${AOBJ_LST}
+	-$(RM) -f ${AOBJ}
+	-$(RM) -f ${AOBJ_LST}
 
 clean_cobj:
-	rm -f ${COBJ}
-	rm -f ${COBJ_LST}
+	-$(RM) -f ${COBJ}
+	-$(RM) -f ${COBJ_LST}
 
 clean_obj: clean_aobj clean_cobj
 
 
 clean_all_aobj:
-	rm -f ${ALL_AOBJ}
-	rm -f ${ALL_AOBJ_LST}
+	-$(RM) -f ${ALL_AOBJ}
+	-$(RM) -f ${ALL_AOBJ_LST}
 
 clean_all_cobj:
-	rm -f ${ALL_COBJ}
-	rm -f ${ALL_COBJ_LST}
+	-$(RM) -f ${ALL_COBJ}
+	-$(RM) -f ${ALL_COBJ_LST}
 
 clean_all_obj: clean_all_aobj clean_all_cobj
 
 clean: clean_all_obj
-	rm -f ${PROJECT_OUT}
-	rm -f ${PROJECT_OUT}.lst
+	-$(RM) -f ${PROJECT_OUT}
+	-$(RM) -f ${PROJECT_OUT}.lst
+	-$(RM) -f ${PROJECT_OUT}.map
 
 
 # Phony targets
