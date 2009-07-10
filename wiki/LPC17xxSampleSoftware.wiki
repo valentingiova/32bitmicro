@@ -12,9 +12,9 @@ The orignal code can be downloaded from NXP support page here:
 
 = Included Samples =
 /32bitmicro/src/nxp/lpc17xx/LPC17xxSampleSoftware/gcc
-  * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/32bitmicro/readme.txt  readme.txt]
-  * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/32bitmicro/Makefile Makefile]
-  * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/32bitmicro/Makefile.rules Makefile.rules]
+  * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc17xx/LPC17xxSampleSoftware/gcc/readme.txt  readme.txt]
+  * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc17xx/LPC17xxSampleSoftware/gcc/Makefile Makefile]
+  * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc17xx/LPC17xxSampleSoftware/gcc/Makefile.rules Makefile.rules]
   * ADC
   * CAN
   * DAC
