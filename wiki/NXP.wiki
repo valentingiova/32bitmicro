@@ -10,4 +10,4 @@ All NXP related projects
 lpc13xx
 
 lpc17xx
-  * LPC17xxSampleSoftware http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/nxp
+  * [ http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/nxp LPC17xxSampleSoftware ]
