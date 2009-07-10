@@ -28,8 +28,21 @@ ifndef TARGET_SDK_PREFIX
 ${error TARGET_SDK_PREFIX is not defined!}
 endif
 
+ifndef TARGET_LIBC
+${error TARGET_LIBC is not defined!}
+endif
+
+# Compiler
 TARGET_COMPILER=GCC
-AR=${TARGET_SDK_PREFIX}${EXE}
+
+# sdk paths
+TARGET_SDK_LIBC_INCLUDE_PATH=${TARGET_SDK_ROOT}/${GCC_PREFIX}/include
+TARGET_SDK_LIBC_LINK_PATH=${TARGET_SDK_ROOT}/${GCC_PREFIX}/lib
+TARGET_SDK_STARTUP_PATH=${TARGET_SDK_ROOT}/lib/gcc/${GCC_PREFIX}/${GCC_VERSION}
+
+# Tools
+# 
+AR=${TARGET_SDK_PREFIX}ar${EXE}
 AS=${TARGET_SDK_PREFIX}as${EXE}
 GCC=${TARGET_SDK_PREFIX}gcc${EXE}
 GXX=${TARGET_SDK_PREFIX}g++${EXE}
@@ -48,26 +61,34 @@ CXX=${GXX}
 ifeq ($(TARGET_CORE),CM3)
 TARGET_SDK_AFLAGS  =-mcpu=cortex-m3
 TARGET_SDK_CFLAGS  =-mcpu=cortex-m3
-TARGET_SDK_LDFLAGS =-mcpu=cortex-m3
+TARGET_SDK_LDFLAGS =
 endif
 
 ifndef TARGET_SDK_AFLAGS
-${error TARGET_CORE is not supported by SDK}
+${error TARGET_SDK_AFLAGS is not defined}
 endif
 
 ifndef TARGET_SDK_CFLAGS
-${error TARGET_CORE is not supported by SDK}
+${error TARGET_SDK_CFLAGS is not defined}
 endif
 
-ifndef TARGET_SDK_LDFLAGS
-${error TARGET_CORE is not supported by SDK}
-endif
+#ifndef TARGET_SDK_LDFLAGS
+#${error TARGET_SDK_LDFLAGS is not defined}
+#endif
 
 # ARM related settings
 # link script arm flash
 TARGET_SDK_LDSCRIPT +=-L$(32BITMICRO)/src/make -T$(32BITMICRO)/src/make/${TARGET_MCU}-gcc-flash.ld
 
+# Target specific libries
+TARGET_SDK_LIBS    =
+
 # Target defines
+
+ifdef TARGET
+TARGET_SDK_CFLAGS  +=-D${TARGET}
+endif
+
 ifdef TARGET_SERIES
 TARGET_SDK_CFLAGS  +=-D${TARGET_SERIES}
 endif
@@ -93,24 +114,37 @@ endif
 ifeq ($(TARGET_ARCH),ARMv7M)
 TARGET_SDK_AFLAGS  +=-march=armv7-m
 TARGET_SDK_CFLAGS  +=-march=armv7-m
-TARGET_SDK_LDFLAGS +=-march=armv7-m
+#TARGET_SDK_LDFLAGS +=
 endif
 
 ifeq ($(TARGET_CODE_MODE),ARM)
-TARGET_SDK_AFLAGS  +=
-TARGET_SDK_CFLAGS  +=
-TARGET_SDK_LDFLAGS +=
+#TARGET_SDK_AFLAGS  +=
+#TARGET_SDK_CFLAGS  +=
+#TARGET_SDK_LDFLAGS +=
 endif
 
 ifeq ($(TARGET_CODE_MODE),THUMB)
 TARGET_SDK_AFLAGS  +=-mthumb
 TARGET_SDK_CFLAGS  +=-mthumb
-TARGET_SDK_LDFLAGS +=-mthumb
+#TARGET_SDK_LDFLAGS +=
 endif
 
 ifeq ($(TARGET_CODE_MODE),THUMB2)
 TARGET_SDK_AFLAGS  +=-mthumb
 TARGET_SDK_CFLAGS  +=-mthumb
-TARGET_SDK_LDFLAGS +=-mthumb
+#TARGET_SDK_LDFLAGS +=
 endif
+
+# libc - default for gcc is newlib
+ifeq ($(TARGET_LIBC),default)
+-include $(32BITMICRO)/src/make/Makefile.newlib
+else
+-include $(32BITMICRO)/src/make/Makefile.$(TARGET_LIBC)
+endif
+
+# add libc flags to sdk flags
+TARGET_SDK_AFLAGS  +=${TARGET_LIBC_AFLAGS}
+TARGET_SDK_CFLAGS  +=${TARGET_LIBC_CFLAGS}
+TARGET_SDK_LDFLAGS +=${TARGET_LIBC_LDFLAGS}
+TARGET_SDK_LIBS    +=${TARGET_LIBC_LIBS}
 
