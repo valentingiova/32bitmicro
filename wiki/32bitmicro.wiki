@@ -14,4 +14,4 @@
 32bitmicro/src/arch
 
 
-[Makefile]
+[Makefile Project Makefile]
