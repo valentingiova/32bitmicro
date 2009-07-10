@@ -1,0 +1,34 @@
+#NXP LPC17xxSampleSoftware
+
+= Introduction =
+
+NXP LPC17xxSampleSoftware ported to GCC.
+The orignal code can be downloaded from NXP support page here:
+
+[http://www.standardics.nxp.com/support/documents/microcontrollers/zip/code.bundle.lpc17xx.keil.zip Sample Code Bundle for LPC17xx Peripherals using Keil's MDK-ARM, V1.0 (Jun 24, 2009)]
+
+= Status =
+2009.05.25  ver 1.00    Prelimnary version, first Release
+
+= Included Samples =
+/32bitmicro/src/nxp/lpc17xx/LPC17xxSampleSoftware/gcc
+  * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/32bitmicro/readme.txt  readme.txt]
+  * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/32bitmicro/Makefile Makefile]
+  * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/32bitmicro/Makefile.rules Makefile.rules]
+  * ADC
+  * CAN
+  * DAC
+  * DMA
+  * EMAC
+  * EXTINT
+  * GPIO
+  * I2C
+  * I2S
+  * PWM
+  * RTC
+  * UART
+  * USBHID
+  * USBMem
+  * WDT
+  * common
+  * timer
