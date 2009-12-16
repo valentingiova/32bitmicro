@@ -1,7 +1,7 @@
 #summary NXP page
 
 = Introduction =
-[http://www.32bitmicro.com/nxp NX Page]
+[http://www.32bitmicro.com/nxp NXP Page]
 
 = Supported MCU Families =
 
