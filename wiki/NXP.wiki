@@ -1,27 +1,17 @@
 #summary NXP page
 
 = Introduction =
-
+[http://www.32bitmicro.com/nxp NX Page]
 
 = Supported MCU Families =
 
-== LPC1000 ==
+[http://www.32bitmicro.com/lpc1100 LPC1100]
 
-[http://www.standardics.nxp.com/products/lpc1000/ NXP LPC1000 Home Page]
+[http://www.32bitmicro.com/lpc1300 LPC1300]
+
+[http://www.32bitmicro.com/lpc1700 LPC1700]
 
 [http://tech.groups.yahoo.com/group/lpc1000/ LPC1000 User group]
-
-=== LP1C7xx series MCUs ===
-[http://www.standardics.nxp.com/products/lpc1000/lpc17xx/ NXP LPC17xx Home Page]
- * lpc1751
- * lpc1752
- * lpc1754
- * lpc1756
- * lpc1758
- * lpc1765
- * lpc1766
- * lpc1768
- * lpc1764
 
 = Projects =
 
