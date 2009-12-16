@@ -1,13 +1,17 @@
-#summary One-sentence summary of this page.
+#summary 32bitmicro build environment
 
 = Introduction =
 
-Add your content here.
+32bitmicro build environment is a make based build tool.
 
 
-= Details =
+= Files and Directories =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+32bitmicro/
+  * Makefile.rules
+32bitmicro/src
+  * syscals.c - newlib system calls
+32bitmicro/src/arch
+
+
+[Makefile Project Makefile]
