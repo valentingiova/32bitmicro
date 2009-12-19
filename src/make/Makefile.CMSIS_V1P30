@@ -1,5 +1,5 @@
 #
-# * 32bitmicro newlib libc Makefile include
+# * 32bitmicro CMSIS_V1P30 Makefile include
 # * $URL$
 # * $ID$
 #
@@ -20,57 +20,40 @@
 #OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
 #NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-ifndef TARGET_LIBC
-  ${error TARGET_LIBC is not defined!}
+ifndef ADD_CMSIS
+  ${error ADD_CMSIS is not defined!}
 endif
 
-#NEWLIB_VERSION=
+CMSIS_VERSION=CMSIS_V1P30
 
-ifeq ($(TARGET_CORE),CM3)
+include $(32BITMICRO)/src/make/Makefile.cmsis
 
+
+ifeq ($(CMSIS_CORE),cm0)
+CMSIS_CSRC+=${CMSIS_CORE_ROOT}/core_cm0.c
+CMSIS_CSRC+=${CMSIS_SYSTEM_ROOT}/system_${CMSIS_SERIES}.c
 endif
 
-ifndef TARGET_STARTUP
-${error TARGET_STARTUP is not defined!}
+ifeq ($(CMSIS_CORE),cm3)
+CMSIS_CSRC+=${CMSIS_CORE_ROOT}/core_cm3.c
+CMSIS_CSRC+=${CMSIS_SYSTEM_ROOT}/system_${CMSIS_SERIES}.c
 endif
 
-# global flags, should be compiler specific
 
-# gcc only !!!
-
-ifeq ($(TARGET_LIBC),default)
-NEWLIB_LIBC_INCLUDE_PATH=${TARGET_SDK_LIBC_INCLUDE_PATH}
-NEWLIB_LIBC_LINK_PATH=${TARGET_SDK_LIBC_LINK_PATH}
-NEWLIB_STARTUP_PATH=${TARGET_SDK_STARTUP_PATH}
+ifeq ($(CMSIS_SERIES),stm32f10x)
+CMSIS_ASRC+=${CMSIS_CORE_ROOT}/startup_stm32f10x.s
+# FIXME choose High,Low and Medium density
+# !defined (STM32F10X_LD) && !defined (STM32F10X_MD) && !defined (STM32F10X_HD)
+#CMSIS_ASRC+=${CMSIS_CORE_ROOT}/startup_stm32f10x_cl.s
+#CMSIS_ASRC+=${CMSIS_CORE_ROOT}/startup_stm32f10x_hd.s
+#CMSIS_ASRC+=${CMSIS_CORE_ROOT}/startup_stm32f10x_ld.s
+#CMSIS_ASRC+=${CMSIS_CORE_ROOT}/startup_stm32f10x_md.s
 else
-${error TARGET_LIBC is unknown!}
+CMSIS_ASRC+=${CMSIS_STARTUP_ROOT}/startup_${CMSIS_SERIES}.s
 endif
 
-
-TARGET_LIBC_ICLUDE_PATH=${NEWLIB_LIBC_INCLUDE_PATH}
-
-ifeq ($(TARGET_CODE_MODE),ARM)
-TARGET_LIBC_LINK_PATH=${NEWLIB_LIBC_LINK_PATH}
-TARGET_STARTUP_PATH=${NEWLIB_STARTUP_PATH}
+# fix for bad include in LPC17xx.h
+ifeq ($(CMSIS_SERIES),LPC17xx)
+#CMSIS_CFLAGS+=-I${CMSIS_CORE_ROOT}/System
 endif
-
-ifeq ($(TARGET_CODE_MODE),THUMB)
-TARGET_LIBC_LINK_PATH=${NEWLIB_LIBC_LINK_PATH}/thumb
-TARGET_STARTUP_PATH  =${NEWLIB_STARTUP_PATH}/thumb
-endif
-
-ifeq ($(TARGET_CODE_MODE),THUMB2)
-TARGET_LIBC_LINK_PATH=${NEWLIB_LIBC_LINK_PATH}/thumb
-TARGET_STARTUP_PATH  =${NEWLIB_STARTUP_PATH}/thumb
-endif
-
-
-TARGET_LIBC_AFLAGS  +=
-TARGET_LIBC_CFLAGS  +=-ffreestanding
-TARGET_LIBC_LDFLAGS +=-nostartfiles -nostdlib -L${TARGET_STARTUP_PATH} -L${TARGET_LIBC_LINK_PATH}
-TARGET_LIBC_LIBS    +=-lgcc -lc -lgcc -lm
-
-# Syscalls from 32bimicro
-#CSRC+=$(32BITMICRO)/src/32bitmicro/src/syscalls.c
-include $(32BITMICRO)/src/32bitmicro/Makefile.rules
 

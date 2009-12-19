@@ -1,6 +1,5 @@
 /*
- *
- * CMSIS GCC linker script
+ * LPC1111 MCU gcc flash linker 
  * $URL$
  * $ID$
 
@@ -22,12 +21,13 @@ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* 
- not needed ???
-_etext = 0x20005000;
-_data  = 0x20005000;
-_edata = 0x20005000;
-_bss   = 0x20005000;
-_ebss  = 0x20005000;
+INCLUDE lpc11xx-gcc-common.ld
 
-*/
+MEMORY
+{
+     rom (rx)  : ORIGIN = 0x00000000, LENGTH = 0x00002000
+     ram (rwx) : ORIGIN = 0x10000000, LENGTH = 0x00000800
+}
+
+INCLUDE lpc11xx-gcc-flash.ld
+

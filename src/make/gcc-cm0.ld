@@ -1,6 +1,6 @@
-/*
+/* 
  *
- * CMSIS GCC linker script
+ * GCC CM0 linker script
  * $URL$
  * $ID$
 
@@ -22,12 +22,19 @@ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-/* 
- not needed ???
-_etext = 0x20005000;
-_data  = 0x20005000;
-_edata = 0x20005000;
-_bss   = 0x20005000;
-_ebss  = 0x20005000;
+PROVIDE Reset_Handler_Vector 		= 0x00000004 ;
+PROVIDE NMI_Handler_Vector   		= 0x00000008 ;
+PROVIDE HardFault_Handler_Vector	= 0x0000000C ;
+PROVIDE MemManage_Handler_Vector	= 0x00000010 ;
+PROVIDE BusFault_Handler_Vector		= 0x00000014 ;
+PROVIDE UsageFault_Handler_Vector	= 0x00000018 ;
+PROVIDE Reserved1_Handler_Vector	= 0x00000020 ;
+PROVIDE Reserved2_Handler_Vector	= 0x00000024 ;
+PROVIDE Reserved3_Handler_Vector	= 0x00000028 ;
+PROVIDE Reserved4_Handler_Vector	= 0x0000002C ;
+PROVIDE SVC_Handler_Vector			= 0x00000030 ;
+PROVIDE DebugMon_Handler_Vector		= 0x00000034 ;
+PROVIDE Reserved5_Handler_Vector	= 0x00000038 ;
+PROVIDE PendSV_Handler_Vector		= 0x0000003C ;
+PROVIDE SysTick_Handler_Vector		= 0x00000040 ;
 
-*/

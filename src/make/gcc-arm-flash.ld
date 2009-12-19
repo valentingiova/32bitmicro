@@ -30,7 +30,13 @@ SECTIONS
     _vector = . ;
     KEEP(*(.isr_vector))
     _evector = . ;
-    _start = .;
+    KEEP (*(.text.handler.*))
+
+    /* NXP only CRP location */
+    . = 0x02FC ; 
+    KEEP (*(.CRP.*))
+    . = ALIGN(4);
+
     *(.text .text.* .gnu.linkonce.t.*)
     *(.plt)
     *(.gnu.warning)
