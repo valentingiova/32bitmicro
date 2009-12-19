@@ -67,6 +67,14 @@ TARGET_SDK_CFLAGS  =-mcpu=cortex-m3
 TARGET_SDK_LDFLAGS =
 endif
 
+#-m32 or -m64 code type?
+# -mcmodel=medium | large code model
+ifeq ($(TARGET_CORE),X86)
+TARGET_SDK_AFLAGS  =-march=i386
+TARGET_SDK_CFLAGS  =-march=i386
+TARGET_SDK_LDFLAGS =
+endif
+
 ifndef TARGET_SDK_AFLAGS
 ${error TARGET_SDK_AFLAGS is not defined}
 endif
@@ -152,6 +160,9 @@ ifeq ($(TARGET_LIBC),default)
 else
 -include $(32BITMICRO)/src/make/Makefile.$(TARGET_LIBC)
 endif
+
+# FIXME! need to handle libgcc which lives in
+#TARGET_SDK_STARTUP_PATH + code mode
 
 # add libc flags to sdk flags
 TARGET_SDK_AFLAGS  +=${TARGET_LIBC_AFLAGS}
