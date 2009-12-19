@@ -19,7 +19,9 @@
 #ifndef __USB_H__
 #define __USB_H__
 
+#ifdef GCC
 #define __packed
+#endif
 
 typedef __packed union {
   uint16_t W;
