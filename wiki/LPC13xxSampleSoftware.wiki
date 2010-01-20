@@ -9,9 +9,9 @@ The orignal code can be downloaded from NXP support page here:
 
 = Status =
 2010.01.19  ver 1.00    Prelimnary version, first Release
-[http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware SV]
+[http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware/ SVN trunk]
 = Included Samples =
-  * [http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/nxp/lpc13xx/LPC13xxSampleSoftware/readme.txt  readme.txt]
+  * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware/readme.txt  readme.txt]
   * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware/Makefile Makefile]
   * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware/Makefile.rules Makefile.rules]
   * ADC
