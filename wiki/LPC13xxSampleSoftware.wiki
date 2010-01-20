@@ -1,0 +1,37 @@
+#NXP LPC13xxSampleSoftware
+
+= Introduction =
+
+NXP LPC13xxSampleSoftware ported to GCC.
+The orignal code can be downloaded from NXP support page here:
+
+[http://ics.nxp.com/support/documents/microcontrollers/zip/code.bundle.lpc13xx.keil.zip Sample Code Bundle for LPC13xx Peripherals using Keil's MDK-ARM, V1.01 (Oct 21, 2009) ]
+
+= Status =
+2010.01.19  ver 1.00    Prelimnary version, first Release
+
+= Included Samples =
+/g/32bitmicro/src/nxp/lpc13xx/LPC13xx_SampleSoftware
+  * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xxSampleSoftware/readme.txt  readme.txt]
+  * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xxSampleSoftware/Makefile Makefile]
+  * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xxSampleSoftware/Makefile.rules Makefile.rules]
+  * ADC
+  * Blinky
+  * Common
+  * RS485
+  * SSP
+  * UART
+  * USB
+  * USBCDC
+  * USBHID
+  * USBHID_rom
+  * USBMem
+  * USBMem_rom
+  * gpio
+  * i2c
+  * i2cslave
+  * pmu
+  * systick
+  * timer32
+  * wdt
+ 
