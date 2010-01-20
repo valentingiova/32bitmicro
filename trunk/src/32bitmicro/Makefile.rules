@@ -22,8 +22,12 @@
 
 
 #  Sources
-32BIT_ASRC=
+32BIT_ASRC= 
+32BIT_CSRC=
+
+ifeq ($(TARGET_ADD_SYSCALLS),1)
 32BIT_CSRC= syscalls.c
+endif
 
 32BIT_ASRC_FULL = $(addprefix $(32BITMICRO)/src/32bitmicro/src/, $(32BIT_ASRC))
 32BIT_CSRC_FULL = $(addprefix $(32BITMICRO)/src/32bitmicro/src/, $(32BIT_CSRC))
@@ -32,8 +36,10 @@ ASRC+=$(32BIT_ASRC_FULL)
 CSRC+=$(32BIT_CSRC_FULL)
 
 # Arch Sources
-32BIT_ARCH_ASRC=
+ifeq ($(TARGET_ADD_CRT0),1)
+32BIT_ARCH_ASRC= crt0.S 
 32BIT_ARCH_CSRC=
+endif
 
 32BIT_ARCH_ASRC_FULL = $(addprefix $(32BITMICRO)/src/32bitmicro/src/arch/$(TARGET_ARCH)/, $(32BIT_ARCH_ASRC))
 32BIT_ARCH_CSRC_FULL = $(addprefix $(32BITMICRO)/src/32bitmicro/src/arch/$(TARGET_ARCH)/, $(32BIT_ARCH_CSRC))
