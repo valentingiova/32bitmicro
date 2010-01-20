@@ -35,6 +35,9 @@ endif
 # Compiler
 TARGET_COMPILER=GCC
 
+# Otput extension
+TARGET_SDK_OUT=elf
+
 # sdk paths
 TARGET_SDK_LIBC_INCLUDE_PATH=${TARGET_SDK_ROOT}/${GCC_PREFIX}/include
 TARGET_SDK_LIBC_LINK_PATH=${TARGET_SDK_ROOT}/${GCC_PREFIX}/lib
@@ -60,6 +63,12 @@ CC=${GCC}
 CXX=${GXX}
 
 # Flags
+
+ifeq ($(TARGET_CORE),CM0)
+TARGET_SDK_AFLAGS  =-mcpu=cortex-m0
+TARGET_SDK_CFLAGS  =-mcpu=cortex-m0
+TARGET_SDK_LDFLAGS =
+endif
 
 ifeq ($(TARGET_CORE),CM3)
 TARGET_SDK_AFLAGS  =-mcpu=cortex-m3
@@ -120,6 +129,12 @@ endif
 
 ifdef TARGET_ARCH
 TARGET_SDK_CFLAGS  +=-D${TARGET_ARCH}
+endif
+
+ifeq ($(TARGET_ARCH),ARMv6M)
+TARGET_SDK_AFLAGS  +=-march=armv6-m
+TARGET_SDK_CFLAGS  +=-march=armv6-m
+#TARGET_SDK_LDFLAGS +=
 endif
 
 ifeq ($(TARGET_ARCH),ARMv7M)
