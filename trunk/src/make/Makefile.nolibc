@@ -32,8 +32,11 @@ ifndef TARGET_STARTUP
   ${error TARGET_STARTUP is not defined!}
 endif
 
-# global flags, should be compiler specific
-AFLAGS=
-CFLAGS=-ffreestanding -nostdinc
-LDFLAGS=-nostdlib
+# global flags, should be compiler specific, right now only gcc
+AFLAGS+=
+CFLAGS+=-ffreestanding -nostdinc -I$(32BITMICRO)/src/32bitmicro/include 
+LDFLAGS+=-nostdlib
 
+
+# 32bitmicro
+include $(32BITMICRO)/src/32bitmicro/Makefile.rules
