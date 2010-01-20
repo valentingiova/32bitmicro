@@ -70,7 +70,9 @@ TARGET_LIBC_CFLAGS  +=-ffreestanding
 TARGET_LIBC_LDFLAGS +=-nostartfiles -nostdlib -L${TARGET_STARTUP_PATH} -L${TARGET_LIBC_LINK_PATH}
 TARGET_LIBC_LIBS    +=-lgcc -lc -lgcc -lm
 
+# crt0 from 32bimicro
+TARGET_ADD_CRT0=1
 # Syscalls from 32bimicro
-#CSRC+=$(32BITMICRO)/src/32bitmicro/src/syscalls.c
+TARGET_ADD_SYSCALLS=1
 include $(32BITMICRO)/src/32bitmicro/Makefile.rules
 
