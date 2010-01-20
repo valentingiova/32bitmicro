@@ -26,13 +26,19 @@ ASRC+=../common/src/startup_LPC13xx.s
 CSRC+=../common/src/clkconfig.c 
 CSRC+=../common/src/core_cm3.c
 CSRC+=../common/src/gpio.c  
-CSRC+=../common/src/system_LPC13xx.c  
+CSRC+=../common/src/system_LPC13xx.c
+ifndef NO_TIMER16
 CSRC+=../common/src/timer16.c  
-CSRC+=../common/src/timer32.c  
+endif
+ifndef NO_TIMER32
+CSRC+=../common/src/timer32.c 
+endif
+ifndef NO_UART
 CSRC+=../common/src/uart.c
+endif
 # Flags
-CFLAGS=-I../common/inc
-LDFLAGS=
+CFLAGS+=-I../common/inc
+LDFLAGS+=
 
 
 

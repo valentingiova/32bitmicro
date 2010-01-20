@@ -7,7 +7,7 @@
  *
  *   History
  *   2009.04.01  ver 1.00    Preliminary version, first Release
- *
+ *   2009.12.12  ver 1.01    Fixed types 32bitmicro
 ******************************************************************************/
 #ifndef __TYPE_H__
 #define __TYPE_H__
@@ -33,18 +33,18 @@ typedef   signed       __int64 int64_t;
 #endif
 
 /* exact-width unsigned integer types */
-#if !__int8_t_defined
+#if !__uint8_t_defined
 typedef unsigned          char uint8_t;
 #endif
-#if !__int16_t_defined
+#if !__uint16_t_defined
 typedef unsigned short     int uint16_t;
 #endif
-#if !__int32_t_defined
+#if !__uint32_t_defined
 typedef unsigned           int uint32_t;
 #endif
-#if !__int64_defined
+#if !__uint64_defined
 #if defined(__GNUC__)
-#if !__int64_t_defined
+#if !__uint64_t_defined
 typedef   unsigned long   uint64_t;
 #endif
 #else

@@ -11,6 +11,9 @@
 #include "LPC13xx.h"
 #include "uart.h"
 
+/* CMSIS 1.30 change */
+#define SystemFrequency SystemCoreClock
+
 volatile uint32_t UARTStatus;
 volatile uint8_t  UARTTxEmpty = 1;
 volatile uint8_t  UARTBuffer[BUFSIZE];
