@@ -11,6 +11,14 @@
 #include "LPC13xx.h"			/* LPC13xx Peripheral Registers */
 #include "gpio.h"
 
+/* ===================
+ * CodeRed - Modified file to extract out interrupt handler related code,
+ * which is really application project specific.
+ * Set TIMER16_GENERIC_INTS to 1 to reenable original code.
+ * =================== */
+//#define GPIO_GENERIC_INTS 1
+
+#ifdef GPIO_GENERIC_INTS
 volatile uint32_t gpio0_counter = 0;
 volatile uint32_t gpio1_counter = 0;
 volatile uint32_t gpio2_counter = 0;
@@ -111,6 +119,7 @@ void PIOINT3_IRQHandler(void)
   }		
   return;
 }
+#endif //GPIO_GENERIC_INTS
 
 /*****************************************************************************
 ** Function name:		GPIOInit

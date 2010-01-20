@@ -11,8 +11,18 @@
 #include "LPC13xx.h"
 #include "timer32.h"
 
+/* ===================
+ * CodeRed - Modified file to extract out interrupt handler related code,
+ * which is really application project specific.
+ * Set TIMER32_GENERIC_INTS to 1 to reenable original code.
+ * =================== */
+#ifdef TIMER32_0_DEFAULT_HANDLER
 volatile uint32_t timer32_0_counter = 0;
+#endif //TIMER32_0_DEFAULT_HANDLER
+
+#ifdef TIMER32_1_DEFAULT_HANDLER
 volatile uint32_t timer32_1_counter = 0;
+#endif //TIMER32_1_DEFAULT_HANDLER
 
 /*****************************************************************************
 ** Function name:		delay32Ms
@@ -56,6 +66,8 @@ void delay32Ms(uint8_t timer_num, uint32_t delayInMs)
   return;
 }
 
+
+#ifdef TIMER32_0_DEFAULT_HANDLER
 /******************************************************************************
 ** Function name:		TIMER32_0_IRQHandler
 **
@@ -72,7 +84,9 @@ void TIMER32_0_IRQHandler(void)
   timer32_0_counter++;
   return;
 }
+#endif //TIMER32_0_DEFAULT_HANDLER
 
+#ifdef TIMER32_1_DEFAULT_HANDLER
 /******************************************************************************
 ** Function name:		TIMER32_1_IRQHandler
 **
@@ -89,6 +103,7 @@ void TIMER32_1_IRQHandler(void)
   timer32_1_counter++;
   return;
 }
+#endif //TIMER32_1_DEFAULT_HANDLER
 
 /******************************************************************************
 ** Function name:		enable_timer
@@ -176,7 +191,7 @@ void init_timer32(uint8_t timer_num, uint32_t TimerInterval)
 {
   if ( timer_num == 0 )
   {
-    /* Some of the I/O pins need to be clearfully planned if
+    /* Some of the I/O pins need to be carefully planned if
     you use below module because JTAG and TIMER CAP/MAT pins are muxed. */
     LPC_SYSCON->SYSAHBCLKCTRL |= (1<<9);
     LPC_IOCON->PIO1_5 &= ~0x07;	/*  Timer0_32 I/O config */
@@ -191,8 +206,9 @@ void init_timer32(uint8_t timer_num, uint32_t TimerInterval)
     LPC_IOCON->JTAG_TDI_PIO0_11 &= ~0x07;	
     LPC_IOCON->JTAG_TDI_PIO0_11 |= 0x03;	/* Timer0_32 MAT3 */
 #endif
-
+#ifdef TIMER32_0_DEFAULT_HANDLER
     timer32_0_counter = 0;
+#endif //TIMER32_0_DEFAULT_HANDLER
     LPC_TMR32B0->MR0 = TimerInterval;
 //	LPC_TMR32B0->EMR &= ~(0xFF<<4);
 //	LPC_TMR32B0->EMR |= (0x03<<4);	/* MR0 Toggle */
@@ -219,7 +235,10 @@ void init_timer32(uint8_t timer_num, uint32_t TimerInterval)
     LPC_IOCON->PIO1_4 &= ~0x07;
     LPC_IOCON->PIO1_4 |= 0x02;		/* Timer0_32 MAT3 */
 
+#ifdef TIMER32_1_DEFAULT_HANDLER
     timer32_1_counter = 0;
+#endif //TIMER32_1_DEFAULT_HANDLER
+
     LPC_TMR32B1->MR0 = TimerInterval;
 //	LPC_TMR32B1->EMR &= ~(0xFF<<4);
 //	LPC_TMR32B1->EMR |= (0x03<<10);	/* MR3 Toggle */

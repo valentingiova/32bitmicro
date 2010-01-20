@@ -11,6 +11,9 @@
 #ifndef __TIMER16_H 
 #define __TIMER16_H
 
+// variable name changed in CMSIS 1.3
+#define SystemFrequency SystemCoreClock
+
 #define TIME_INTERVAL	((SystemFrequency/LPC_SYSCON->SYSAHBCLKDIV)/100 - 1)
 /* depending on the SystemFrequency and AHB clock divider setting, 
 if SystemFrequency = 60Mhz, SYSAHBCLKDIV = 4, SystemAHBFrequency = 1/4 SystemFrequency, 

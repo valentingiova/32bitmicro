@@ -1,17 +1,19 @@
-/******************************************************************************
- * @file:    LPC13xx.h
- * @purpose: CMSIS Cortex-M3 Core Peripheral Access Layer Header File for 
- *           NXP LPC13xx Device Series 
- * @version: V1.0
- * @date:    25. Aug. 2009
- *----------------------------------------------------------------------------
+/**************************************************************************//**
+ * @file     LPC13xx.h
+ * @brief    CMSIS Cortex-M3 Core Peripheral Access Layer Header File for 
+ *           NXP LPC13xx Device Series
+ * @version  V1.01
+ * @date     19. October 2009
  *
- * Copyright (C) 2009 NXP Semiconductors. All rights reserved.
+ * @note
+ * Copyright (C) 2009 ARM Limited. All rights reserved.
  *
- * NXP Semiconductors is supplying this software for use with Cortex-M3 
+ * @par
+ * ARM Limited (ARM) is supplying this software for use with Cortex-M 
  * processor based microcontrollers.  This file can be freely distributed 
  * within development tools that are supporting such ARM based processors. 
  *
+ * @par
  * THIS SOFTWARE IS PROVIDED "AS IS".  NO WARRANTIES, WHETHER EXPRESS, IMPLIED
  * OR STATUTORY, INCLUDING, BUT NOT LIMITED TO, IMPLIED WARRANTIES OF
  * MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE APPLY TO THIS SOFTWARE.
@@ -95,7 +97,6 @@ typedef enum IRQn
   ADC_IRQn                      = 49,       /*!< A/D Converter Interrupt                          */
   WDT_IRQn                      = 50,       /*!< Watchdog timer Interrupt                         */  
   BOD_IRQn                      = 51,       /*!< Brown Out Detect(BOD) Interrupt                  */
-  RESERVED_IRQn                 = 52,       /*!< Reserved Interrupt                               */
   EINT3_IRQn                    = 53,       /*!< External Interrupt 3 Interrupt                   */
   EINT2_IRQn                    = 54,       /*!< External Interrupt 2 Interrupt                   */
   EINT1_IRQn                    = 55,       /*!< External Interrupt 1 Interrupt                   */
@@ -123,7 +124,9 @@ typedef enum IRQn
 /*                Device Specific Peripheral registers structures             */
 /******************************************************************************/
 
+#if defined ( __CC_ARM   )
 #pragma anon_unions
+#endif
 
 /*------------- System Control (SYSCON) --------------------------------------*/
 typedef struct
@@ -430,7 +433,10 @@ typedef struct
   __O  uint32_t DevFIQSel;
 } LPC_USB_TypeDef;
 
+#if defined ( __CC_ARM   )
 #pragma no_anon_unions
+#endif
+
 
 /******************************************************************************/
 /*                         Peripheral memory map                              */
