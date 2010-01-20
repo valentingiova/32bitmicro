@@ -22,6 +22,8 @@ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+_ram_end = ORIGIN(ram) + LENGTH(ram) - 4;
+
 SECTIONS
 {
   .text :
@@ -30,12 +32,13 @@ SECTIONS
     _vector = . ;
     KEEP(*(.isr_vector))
     _evector = . ;
-    KEEP (*(.text.handler.*))
 
     /* NXP only CRP location */
-    . = 0x02FC ; 
-    KEEP (*(.CRP.*))
+/*    . = 0x02FC ; */
+/*    KEEP (*(.CRP.*)) */
     . = ALIGN(4);
+
+    KEEP (*(.text.handler.*))
 
     *(.text .text.* .gnu.linkonce.t.*)
     *(.plt)
@@ -98,10 +101,14 @@ SECTIONS
     . = ALIGN(8);
     _etext = .;
   } >rom
+  
+  . = ALIGN(8);
+  _ldata = ABSOLUTE(.);
 
   .data : ALIGN(8)
   {
     _data = .;
+   /* LOADADDR (.data); */
     KEEP(*(.jcr))
     *(.got.plt) *(.got)
     *(.shdata)
@@ -110,6 +117,7 @@ SECTIONS
     *(.ram)
     _edata = .;
   } >ram
+
 
   .bss :
   {
@@ -135,11 +143,15 @@ SECTIONS
     . = ALIGN(8);
     _stack = .;
    *(.stack)
-    _estack = .;
-    _end = .;
-    __end = .;
+   
   } >ram
 
+  . = _ram_end - 16;
+  _estack = .;
+  . = _ram_end;
+  _end = .;
+   __end = .;
+  
   .stab 0 (NOLOAD) : { *(.stab) }
   .stabstr 0 (NOLOAD) : { *(.stabstr) }
   /* DWARF debug sections.
