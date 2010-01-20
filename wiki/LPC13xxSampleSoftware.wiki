@@ -12,8 +12,8 @@ The orignal code can be downloaded from NXP support page here:
 [http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware SV]
 = Included Samples =
   * [http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/nxp/lpc13xx/LPC13xxSampleSoftware/readme.txt  readme.txt]
-  * [http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/nxp/lpc13xx/LPC13xxSampleSoftware/Makefile Makefile]
-  * [http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/nxp/lpc13xx/LPC13xxSampleSoftware/Makefile.rules Makefile.rules]
+  * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware/Makefile Makefile]
+  * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware/Makefile.rules Makefile.rules]
   * ADC
   * Blinky
   * Common
