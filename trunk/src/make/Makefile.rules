@@ -64,6 +64,12 @@ include $(32BITMICRO)/src/make/Makefile.${TARGET_SDK}
 endif
 
 
+ifndef TARGET_SDK_OUT
+OUT=out
+else
+OUT=${TARGET_SDK_OUT}
+endif
+
 ifndef PROJECT
   ${error PROJECT is not defined!}
 endif
@@ -122,21 +128,32 @@ ALL_OBJ      +=${ALL_COBJ}
 ALL_AOBJ_LST  =$(patsubst %.o,%.o.lst,$(ALL_AOBJ))
 ALL_COBJ_LST  =$(patsubst %.o,%.o.lst,$(ALL_COBJ))
 ALL_OBJ_LST   =$(patsubst %.o,%.o.lst,$(ALL_OBJ))
+ALL_AOBJ_SYM  =$(patsubst %.o,%.o.sym,$(ALL_AOBJ))
+ALL_COBJ_SYM  =$(patsubst %.o,%.o.sym,$(ALL_COBJ))
+ALL_OBJ_SYM   =$(patsubst %.o,%.o.sym,$(ALL_OBJ))
 
 PROJECT_OUT=
 
 # Poject output
 ifeq ($(PROJECT_TYPE),APP)
-PROJECT_OUT=${PROJECT}.out
-${PROJECT}.out : ${ALL_OBJ}
-	$(LD)  ${ALL_LDFLAGS}  ${ALL_OBJ} ${ALL_LIBS} -o ${PROJECT}.out
+PROJECT_OUT=${PROJECT}.${OUT}
+${PROJECT}.${OUT} : ${ALL_OBJ}
+	$(LD)  ${ALL_LDFLAGS}  ${ALL_OBJ} ${ALL_LIBS} -o ${PROJECT}.${OUT}
+# BIN output
+ifdef TARGET_GEN_BIN
+#	$(OBJCOPY) -O binary ${PROJECT}.${OUT}   ${PROJECT}.${OUT}.bin
+endif
 # HEX output
 ifdef TARGET_GEN_HEX
-	$(OBJDUMP)  -S -D  ${PROJECT}.out  > ${PROJECT}.out.lst
+	$(OBJCOPY) -O ihex   ${PROJECT}.${OUT}   ${PROJECT}.${OUT}.hex
+endif
+# symbols
+ifdef TARGET_GEN_SYM
+	$(OBJDUMP)  -t       ${PROJECT}.${OUT}  > ${PROJECT}.${OUT}.sym
 endif
 # listing
 ifdef TARGET_GEN_LST
-	$(OBJDUMP)  -S -D  ${PROJECT}.out  > ${PROJECT}.out.lst
+	$(OBJDUMP)  -S -D    ${PROJECT}.${OUT}  > ${PROJECT}.${OUT}.lst
 endif
 endif
 
@@ -158,6 +175,9 @@ ${PROJECT}: ${ALL_OBJ} ${PROJECT_OUT}
 %.o: %.c
 	@echo Compiling $<
 	$(CC) $(ALL_CFLAGS) -c $< -o $@ 
+ifdef TARGET_GEN_SYM
+	$(OBJDUMP)  -t $@  > $@.sym
+endif
 ifdef TARGET_GEN_LST
 	$(OBJDUMP)  -S -D  $@  > $@.lst
 endif
@@ -165,6 +185,9 @@ endif
 %.o: %.s
 	@echo Assembling $< 
 	$(AS) $(ALL_AFLAGS) $< -o $@
+ifdef TARGET_GEN_SYM
+	$(OBJDUMP)  -t $@  > $@.sym
+endif
 ifdef TARGET_GEN_LST
 	$(OBJDUMP)  -S -D $@  > $@.lst
 endif
@@ -173,6 +196,9 @@ endif
 	@echo Assembling $< 
 	$(ASPP) $(ALL_AFLAGS) $< -o $@
 #	$(ACPP) $(ALL_AFLAGS) | $(AS) -- $(ALL_AFLAGS) -o $
+ifdef TARGET_GEN_SYM
+	$(OBJDUMP)  -t $@  > $@.sym
+endif
 ifdef TARGET_GEN_LST
 	$(OBJDUMP)  -S -D $@  > $@.lst
 endif
@@ -180,10 +206,12 @@ endif
 clean_aobj:
 	-$(RM) -f ${AOBJ}
 	-$(RM) -f ${AOBJ_LST}
+	-$(RM) -f ${AOBJ_SYM}
 
 clean_cobj:
 	-$(RM) -f ${COBJ}
 	-$(RM) -f ${COBJ_LST}
+	-$(RM) -f ${COBJ_SYM}
 
 clean_obj: clean_aobj clean_cobj
 
@@ -191,16 +219,21 @@ clean_obj: clean_aobj clean_cobj
 clean_all_aobj:
 	-$(RM) -f ${ALL_AOBJ}
 	-$(RM) -f ${ALL_AOBJ_LST}
+	-$(RM) -f ${ALL_AOBJ_SYM}
 
 clean_all_cobj:
 	-$(RM) -f ${ALL_COBJ}
 	-$(RM) -f ${ALL_COBJ_LST}
+	-$(RM) -f ${ALL_COBJ_SYM}
 
 clean_all_obj: clean_all_aobj clean_all_cobj
 
 clean: clean_all_obj
 	-$(RM) -f ${PROJECT_OUT}
+	-$(RM) -f ${PROJECT_OUT}.bin
+	-$(RM) -f ${PROJECT_OUT}.hex
 	-$(RM) -f ${PROJECT_OUT}.lst
+	-$(RM) -f ${PROJECT_OUT}.sym
 	-$(RM) -f ${PROJECT_OUT}.map
 
 
