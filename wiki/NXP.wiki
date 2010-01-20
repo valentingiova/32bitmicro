@@ -15,5 +15,8 @@
 
 = Projects =
 
+lpc13xx
+  * [http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware LPC13xxSampleSoftware ]
+
 lpc17xx
   * [http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/nxp LPC17xxSampleSoftware ]
