@@ -28,19 +28,7 @@ extern volatile uint32_t timer16_1_counter;
 #define LED_OFF 0		// Level to set port to turn off led
 #define LED_TOGGLE_TICKS 100 // 100 ticks = 1 Hz flash rate
 
-extern char _bss;
-extern char _ebss;
 /* Main Program */
-void x_start() 
-{
-  char* r0 = &_bss;
-  char* r1 = &_ebss;
-  char  r2 =0;
-  while(r0<r1) {
-	*r0++ = r2;
- }
-   main();
-}
 
 int main (void) {
 
