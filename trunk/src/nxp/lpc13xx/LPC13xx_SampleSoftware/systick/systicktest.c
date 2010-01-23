@@ -6,6 +6,7 @@
  *
  *   History
  *   2008.08.20  ver 1.00    Preliminary version, first Release
+ *   2010.01.20  ver 1.00.A  32bitmicro fixes for CMSIS1.30
  *
 ******************************************************************************/
 #include "LPC13xx.h"                        /* LPC13xx definitions */
@@ -28,14 +29,19 @@ void delaySysTick(uint32_t tick)
   /* Clear SysTick Counter */
   SysTick->VAL = 0;
   /* Enable the SysTick Counter */
-  SysTick->CTRL |= SYSTICK_ENABLE;
+  /* CMSIS1.30 change */
+  /* SysTick->CTRL |= SYSTICK_ENABLE; */
+  SysTick->CTRL  |= SysTick_CTRL_ENABLE_Msk;
 
   timetick = TimeTick;
   while ((TimeTick - timetick) < tick);
   
   /* Disable SysTick Counter */
-  SysTick->CTRL &= ~SYSTICK_ENABLE;
-  /* Clear SysTick Counter */
+  /* CMSIS1.30 change */
+  /* SysTick->CTRL &= ~SYSTICK_ENABLE; */
+  SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk;
+  
+/* Clear SysTick Counter */
   SysTick->VAL = 0;
   return;
 }
@@ -47,9 +53,12 @@ int main (void) {
   SystemInit();
 
   /* Called for system library in core_cmx.h(x=0 or 3). */
-  SysTick_Config( SYSTICK_DELAY );
-  
-  if ( !(SysTick->CTRL & (1<<SYSTICK_CLKSOURCE)) )
+  /* SysTick_Config( SYSTICK_DELAY ); */
+  while(SysTick_Config( SystemCoreClock / 100 )); /* 10 ms period, reverse logic SysTick_Config returns 1 when failed */ 
+ 
+  /* CMSIS1.30 change */ 
+  /* if ( !(SysTick->CTRL & (1<<SYSTICK_CLKSOURCE)) ) */
+  if ( !(SysTick->CTRL & (1<<SysTick_CTRL_CLKSOURCE_Msk)) )
   {
 	/* When external reference clock is used(CLKSOURCE in
 	Systick Control and register bit 2 is set to 0), the 

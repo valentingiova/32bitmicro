@@ -26,6 +26,12 @@ PROJECT=ADC_demo
 # Sources
 CSRC=adc.c adctest.c
 
+# Debug using UART
+CFLAGS+=-DADC_DEBUG
+# Enable burst mode
+#CFLAGS+=-DBURST_MODE
+# Use interrupt driven conversion or polling
+#CFLAGS+=-DADC_INTERRUPT_FLAG
 # Top rules
 include ../Makefile.rules
 

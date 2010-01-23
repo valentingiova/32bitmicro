@@ -17,6 +17,8 @@
 #include "type.h"
 #include "serial.h"
 
+/* CMSIS 1.30 change */
+#define SystemFrequency SystemCoreClock
 
 /*----------------------------------------------------------------------------
   Defines for ring buffers

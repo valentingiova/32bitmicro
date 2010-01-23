@@ -11,6 +11,9 @@
 #include "LPC13xx.h"			/* LPC13xx Peripheral Registers */
 #include "adc.h"
 
+/* CMSIS 1.30 change */
+#define SystemFrequency SystemCoreClock
+
 volatile uint32_t ADCValue[ADC_NUM];
 volatile uint32_t ADCIntDone = 0;
 
