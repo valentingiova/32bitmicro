@@ -11,6 +11,9 @@
 #include "LPC13xx.h"
 #include "timer16.h"
 
+/* CMSIS 1.30 change */
+#define SystemFrequency SystemCoreClock
+
 volatile uint32_t timer16_0_counter = 0;
 volatile uint32_t timer16_1_counter = 0;
 

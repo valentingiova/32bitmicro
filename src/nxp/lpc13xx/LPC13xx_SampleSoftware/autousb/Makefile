@@ -28,6 +28,7 @@ CSRC=autousb.c  serial.c   usbdesc.c  usbuser.c \
 cdcuser.c  usbcore.c  usbhw.c 
 
 # Top rules
+NO_UART=1
 include ../Makefile.rules
 CFLAGS+=-DUSB_CDC=1
 

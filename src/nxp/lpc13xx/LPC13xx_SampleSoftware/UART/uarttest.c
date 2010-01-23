@@ -11,13 +11,23 @@
 #include "LPC13xx.h"
 #include "uart.h"
 
+#include "timer16.h"
+#include "clkconfig.h"
+#include "gpio.h"
+
 extern volatile uint32_t UARTCount;
 extern volatile uint8_t UARTBuffer[BUFSIZE];
 
+
 int main (void) {
 
-  SystemInit();
+  /* SystemInit(); */
 
+  /* need to call it to update SystemCoreClock in case it gets corrupted */
+
+  SystemCoreClockUpdate();
+
+ 
   /* NVIC is installed inside UARTInit file. */
   UARTInit(115200);
 

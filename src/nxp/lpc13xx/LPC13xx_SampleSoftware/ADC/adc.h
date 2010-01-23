@@ -6,14 +6,20 @@
  *
  *   History
  *   2008.07.19  ver 1.00    Preliminary version, first Release
- *
+ *   2009.12.12  ver 1.01    Allow defines from Makefile
 ******************************************************************************/
 #ifndef __ADC_H 
 #define __ADC_H
 
-#define ADC_INTERRUPT_FLAG	1	/* 1 is interrupt driven, 0 is polling */
-#define BURST_MODE			0   /* Burst mode works in interrupt driven mode only. */
+#if !defined(ADC_INTERRUPT_FLAG)
+#define ADC_INTERRUPT_FLAG		1	/* 1 is interrupt driven, 0 is polling */
+#endif
+#if !defined(BURST_MODE)
+#define BURST_MODE			0	/* Burst mode works in interrupt driven mode only. */
+#endif
+#if !defined(ADC_DEBUG)
 #define ADC_DEBUG			0
+#endif
 
 #define ADC_OFFSET		0x10
 #define ADC_INDEX		4

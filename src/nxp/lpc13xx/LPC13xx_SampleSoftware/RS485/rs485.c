@@ -11,6 +11,9 @@
 #include "LPC13xx.h"
 #include "rs485.h"
 
+/* CMSIS 1.30 change */
+#define SystemFrequency SystemCoreClock
+
 volatile uint32_t UARTStatus;
 volatile uint8_t  UART0TxEmpty = 1;
 volatile uint8_t  UARTBuffer[BUFSIZE];

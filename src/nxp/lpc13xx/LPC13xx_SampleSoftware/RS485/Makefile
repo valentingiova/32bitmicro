@@ -27,5 +27,6 @@ PROJECT=RS485_demo
 CSRC=rs485.c rs485test.c
 
 # Top rules
+NO_UART=1
 include ../Makefile.rules
 

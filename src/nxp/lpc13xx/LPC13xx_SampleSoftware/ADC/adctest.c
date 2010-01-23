@@ -48,6 +48,7 @@ int main (void)
 #if ADC_DEBUG  
   /* NVIC is installed inside UARTInit file. */
   UARTInit(115200);
+  UARTSend("ADC", 3);
 #endif
 
   /* Initialize ADC  */

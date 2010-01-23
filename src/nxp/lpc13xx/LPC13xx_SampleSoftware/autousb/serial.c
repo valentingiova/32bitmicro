@@ -216,8 +216,7 @@ void ser_LineState (unsigned short *lineState) {
 /*----------------------------------------------------------------------------
   serial port 1 interrupt
  *---------------------------------------------------------------------------*/
-/* no used ??? */
-void MY_UART_IRQHandler(void) 
+void UART_IRQHandler(void) 
 { 
   volatile unsigned long iir;
   

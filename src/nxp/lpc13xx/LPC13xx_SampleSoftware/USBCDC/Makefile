@@ -27,5 +27,6 @@ PROJECT=USBCDC_demo
 CSRC=cdcuser.c  serial.c  usbcore.c  usbdesc.c  usbhw.c  usbuser.c  vcomdemo.c
 
 # Top rules
+NO_UART=1
 include ../Makefile.rules
 

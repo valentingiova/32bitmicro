@@ -32,11 +32,14 @@ all: $(PROJECT)
 
 
 # Target SDK configuration
-TARGET_SDK=cs-arm-2009q1
+#TARGET_SDK?=cs-arm-2009q1
+TARGET_SDK?=cs-arm-2009q3
 #TARGET_SDK=sdk-4.3.2-armv7m
 
 # Target libc
-TARGET_LIBC=default
+#TARGET_LIBC=default
+TARGET_LIBC=nolibc
+
 
 # Target startup file
 TARGET_STARTUP=../common/src/startup_LPC13xx.o
@@ -45,20 +48,38 @@ TARGET_STARTUP=../common/src/startup_LPC13xx.o
 #ADD_CMSIS=CMSIS_V1P30
 
 # Host configuration
-HOST_OS=win32
+HOST_OS?=win32
 #HOST_OS=linux 
 
 # Target output options
+#TARGET_GEN_BIN=1
 TARGET_GEN_MAP=1
 TARGET_GEN_CREF=1
-#TARGET_GEN_LST=1
+TARGET_GEN_LST=1
+TARGET_GEN_SYM=1
 TARGET_GEN_HEX=1
+
+
+32BITMICRO=/g/32bitmicro
+# temporary fix for cygwin based build
+32BITMICRO_DOSDISK=g:
+##############################################################
+# cygwin based build needs those
+#CFLAGS=-Ig:/32bitmicro/src/32bitmicro/include 
+#LDFLAGS=-Lg:/32bitmicro/src/make/
+#TARGET_LDSCRIPT=-Tg:/32bitmicro/src/make/lpc1343-gcc-flash.ld
+##############################################################
+
+AFLAGS=-g
+CFLAGS=-g
+LDFLAGS=-g
+
 
 # Common rules
 include ../common/src/Makefile.rules
 
-# 32bitmicro configuration and rules
-32BITMICRO= /32bitmicro
-include $(32BITMICRO)/src/make/Makefile.rules
 
+# 32bitmicro configuration and rules
+#32BITMICRO= /32bitmicro
+include $(32BITMICRO)/src/make/Makefile.rules
 

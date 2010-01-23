@@ -11,6 +11,9 @@
 #include "LPC13xx.h"
 #include "timer32.h"
 
+/* CMSIS 1.30 change */
+#define SystemFrequency SystemCoreClock
+
 /* ===================
  * CodeRed - Modified file to extract out interrupt handler related code,
  * which is really application project specific.
