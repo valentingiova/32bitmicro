@@ -15,23 +15,23 @@ The orignal code can be downloaded from NXP support page here:
   * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware/Makefile Makefile]
   * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware/Makefile.rules Makefile.rules]
 {{{
-  * ADC
-  * Blinky  - compiles, runs
-  * Common  - compiles, runs
-  * RS485
-  * SSP
-  * UART    - compiles
-  * USB
-  * USBCDC
-  * USBHID
-  * USBHID_rom
-  * USBMem
-  * USBMem_rom
-  * gpio
-  * i2c
-  * i2cslave
-  * pmu
-  * systick
-  * timer32
-  * wdt
+  * ADC         - compiles
+  * Blinky      - compiles, runs, binary available
+  * Common      - compiles, runs
+  * RS485       - compiles
+  * SSP         - compiles
+  * UART        - compiles, runs, binary available
+  * USB         - compiles
+  * USBCDC      - compiles
+  * USBHID      - compiles
+  * USBHID_rom  - compiles
+  * USBMem      - compiles
+  * USBMem_rom  - compiles
+  * gpio        - compiles
+  * i2c         - compiles
+  * i2cslave    - compiles
+  * pmu         - compiles
+  * systick     - compiles
+  * timer32     - compiles
+  * wdt         - compiles
  }}}
