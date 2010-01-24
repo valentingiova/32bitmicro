@@ -22,22 +22,22 @@
 
 
 # Commnon Sources
-ASRC+=../common/src/startup_LPC13xx.s
-CSRC+=../common/src/clkconfig.c 
-CSRC+=../common/src/core_cm3.c
-CSRC+=../common/src/gpio.c  
-CSRC+=../common/src/system_LPC13xx.c
+ASRC+=../Common/src/startup_LPC13xx.s
+CSRC+=../Common/src/clkconfig.c 
+CSRC+=../Common/src/core_cm3.c
+CSRC+=../Common/src/gpio.c  
+CSRC+=../Common/src/system_LPC13xx.c
 ifndef NO_TIMER16
-CSRC+=../common/src/timer16.c  
+CSRC+=../Common/src/timer16.c  
 endif
 ifndef NO_TIMER32
-CSRC+=../common/src/timer32.c 
+CSRC+=../Common/src/timer32.c 
 endif
 ifndef NO_UART
-CSRC+=../common/src/uart.c
+CSRC+=../Common/src/uart.c
 endif
 # Flags
-CFLAGS+=-I../common/inc
+CFLAGS+=-I../Common/inc
 LDFLAGS+=
 
 
