@@ -43,7 +43,7 @@ int main (void)
 {
   uint32_t i;
   
-  SystemInit();
+  /* SystemInit(); */
 
 #if ADC_DEBUG  
   /* NVIC is installed inside UARTInit file. */
