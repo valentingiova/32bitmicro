@@ -24,8 +24,7 @@
 GCC_PREFIX=arm-none-eabi
 GCC_VERSION=4.4.1
 
-EXE=.exe
-TARGET_SDK_ROOT=${32BITMICRO}/arm-2009q3
+TARGET_SDK_ROOT=${32BITMICRO}/${HOST_OS}/arm-2009q3
 TARGET_SDK_PREFIX=${TARGET_SDK_ROOT}/bin/arm-none-eabi-
 include  $(32BITMICRO)/src/make/Makefile.gcc
 
