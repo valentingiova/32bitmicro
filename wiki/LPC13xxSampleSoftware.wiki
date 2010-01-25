@@ -8,20 +8,18 @@ The orignal code can be downloaded from NXP support page here:
 [http://ics.nxp.com/support/documents/microcontrollers/zip/code.bundle.lpc13xx.keil.zip Sample Code Bundle for LPC13xx Peripherals using Keil's MDK-ARM, V1.01 (Oct 21, 2009) ]
 
 = Status =
-2010.01.19  ver 1.00    Prelimnary version, first Release
-[http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware/ SVN trunk]
+2010.01.19  ver 1.00    Prelimnary version, first Release [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware/ SVN trunk]
 = Included Samples =
   * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware/readme.txt  readme.txt]
   * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware/Makefile Makefile]
   * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware/Makefile.rules Makefile.rules]
 {{{
   * ADC         - compiles
-  * Blinky      - compiles, runs, binary available [http://www.32bitmicro.com/software/downloads/category/1-lpc13xxsamplesoftware HEX format]
+  * Blinky      - compiles, runs, [http://www.32bitmicro.com/software/downloads/category/1-lpc13xxsamplesoftware HEX format binary available ]  
   * Common      - compiles, runs
-[http://www.32bitmicro.com/software/downloads/category/1-lpc13xxsamplesoftware HEX format]
   * RS485       - compiles
   * SSP         - compiles
-  * UART        - compiles, runs, binary available
+  * UART        - compiles, runs, [http://www.32bitmicro.com/software/downloads/category/1-lpc13xxsamplesoftware HEX format binary available]
   * USB         - compiles
   * USBCDC      - compiles
   * USBHID      - compiles
