@@ -13,13 +13,15 @@ The orignal code can be downloaded from NXP support page here:
   * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware/readme.txt  readme.txt]
   * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware/Makefile Makefile]
   * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/LPC13xx_SampleSoftware/Makefile.rules Makefile.rules]
+
+[http://www.32bitmicro.com/software/downloads/category/1-lpc13xxsamplesoftware Download page ]
 {{{
   * ADC         - compiles
-  * Blinky      - compiles, runs, [http://www.32bitmicro.com/software/downloads/category/1-lpc13xxsamplesoftware HEX format binary available ]  
+  * Blinky      - compiles, runs, binary available
   * Common      - compiles, runs
   * RS485       - compiles
   * SSP         - compiles
-  * UART        - compiles, runs, [http://www.32bitmicro.com/software/downloads/category/1-lpc13xxsamplesoftware HEX format binary available]
+  * UART        - compiles, runs, binary available
   * USB         - compiles
   * USBCDC      - compiles
   * USBHID      - compiles
