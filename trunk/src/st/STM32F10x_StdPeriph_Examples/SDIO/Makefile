@@ -1,5 +1,5 @@
 #
-# * 32bitmicro  STM32F10x_StdPeriph_Examples ADC AnalogWatchdog Makefile
+# * 32bitmicro  STM32F10x_StdPeriph_Examples SDIO Makefile
 # * $URL$
 # * $ID$
 #
@@ -21,14 +21,14 @@
 #NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Project configuration
-PROJECT=AnalogWatchdog
+PROJECT=SDIO
 PROJECT_TYPE=APP
 TARGET_BOARD?=STM3210C_EVAL
 
 # Sources
 ASRC=
-CSRC= main.c  stm32f10x_it.c
+CSRC=main.c stm32f10x_it.c sdcard.c
 
 # Up rules
-include ../../../Makefile.rules
+include ../../Makefile.rules
 
