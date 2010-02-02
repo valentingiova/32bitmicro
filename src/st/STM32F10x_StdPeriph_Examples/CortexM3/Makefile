@@ -1,5 +1,5 @@
 #
-# * 32bitmicro  STM32F10x_StdPeriph_Examples ADC AnalogWatchdog Makefile
+# * 32bitmicro STM32F10x_StdPeriph_Examples CortexM3 Makefile
 # * $URL$
 # * $ID$
 #
@@ -20,15 +20,21 @@
 #OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
 #NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Project configuration
-PROJECT=AnalogWatchdog
-PROJECT_TYPE=APP
-TARGET_BOARD?=STM3210C_EVAL
+# sub-projects
 
-# Sources
-ASRC=
-CSRC= main.c  stm32f10x_it.c
+SUBDIRS = \
+BitBand \
+Mode_Privilege
 
-# Up rules
-include ../../../Makefile.rules
 
+all:
+	@for dir in $(SUBDIRS); do \
+		echo "Building " $$dir;\
+		$(MAKE) -f Makefile -C $$dir;\
+	done
+	
+clean:
+	@for dir in $(SUBDIRS); do \
+		echo "Cleaning " $$dir;\
+		$(MAKE) -f Makefile -C $$dir clean;\
+	done
