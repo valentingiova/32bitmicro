@@ -1,5 +1,5 @@
 #
-# * 32bitmicro NXP lpc13xx SampleSoftware Makefile
+# * 32bitmicro NXP lpc13xx Makefile
 # * $URL$
 # * $ID$
 #
@@ -23,23 +23,10 @@
 # sub-projects
 
 SUBDIRS = \
-ADC  \
-SSP \
-USBHID \
-USBMem_rom \
-i2cslave \
-systick \
-Blinky \
-UART \
-USBHID_rom \
-gpio \
-pmu \
-timer32 \
-RS485 \
-USBCDC \
-USBMem \
-i2c \
-wdt
+an10904/usbhidrom \
+an10905/usbmemrom \
+LPC13xx_SampleSoftware  
+
 
 
 
