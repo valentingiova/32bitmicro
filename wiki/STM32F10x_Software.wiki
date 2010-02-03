@@ -6,6 +6,8 @@ ST STM32F sample software ported to GCC. The orignal code can be downloaded from
 
 [http://www.st.com/mcu/familiesdocs-110.html Documents and files for family STM32 ]
 
+[Supported_STM32F10x_MCUs  Support for 62 STM32F10x MCUs]
+
 
 = Status =
 2010.02.01  ver 1.00    Prelimnary version, first Release [http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/st SVN trunk]
