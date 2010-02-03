@@ -3,7 +3,7 @@
 # * $URL$
 # * $ID$
 #
-#Copyright (c) 2009, 32bitmicro
+#Copyright (c) 2009-2010, 32bitmicro
 #All rights reserved.
 #
 #Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,22 +22,28 @@
 
 
 # Commnon Sources
-ASRC+=../Common/src/startup_LPC13xx.s
-CSRC+=../Common/src/clkconfig.c 
-CSRC+=../Common/src/core_cm3.c
-CSRC+=../Common/src/gpio.c  
-CSRC+=../Common/src/system_LPC13xx.c
+ASRC+= $(LPC13XXROOT)/LPC13xx_SampleSoftware/Common/src/startup_LPC13xx.s
+
+CSRC+= $(LPC13XXROOT)/LPC13xx_SampleSoftware/Common/src/core_cm3.c
+CSRC+= $(LPC13XXROOT)/LPC13xx_SampleSoftware/Common/src/system_LPC13xx.c
+
+ifndef NO_CLKCONFIG
+CSRC+= $(LPC13XXROOT)/LPC13xx_SampleSoftware/Common/src/clkconfig.c 
+endif
+ifndef NO_GPIO
+CSRC+= $(LPC13XXROOT)/LPC13xx_SampleSoftware/Common/src/gpio.c  
+endif
 ifndef NO_TIMER16
-CSRC+=../Common/src/timer16.c  
+CSRC+= $(LPC13XXROOT)/LPC13xx_SampleSoftware/Common/src/timer16.c
 endif
 ifndef NO_TIMER32
-CSRC+=../Common/src/timer32.c 
+CSRC+= $(LPC13XXROOT)/LPC13xx_SampleSoftware/Common/src/timer32.c
 endif
 ifndef NO_UART
-CSRC+=../Common/src/uart.c
+CSRC+= $(LPC13XXROOT)/LPC13xx_SampleSoftware/Common/src/uart.c
 endif
 # Flags
-CFLAGS+=-I../Common/inc
+CFLAGS+=-I $(LPC13XXROOT)/LPC13xx_SampleSoftware/Common/inc
 LDFLAGS+=
 
 

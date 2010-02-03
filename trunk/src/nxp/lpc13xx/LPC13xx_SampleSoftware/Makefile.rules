@@ -1,5 +1,5 @@
 #
-# * 32bitmicro CMSIS demo Makefile
+# * 32bitmicro NXP lpc13xx SampleSoftware Makefile
 # * $URL$
 # * $ID$
 #
@@ -42,14 +42,14 @@ TARGET_LIBC=nolibc
 
 
 # Target startup file
-TARGET_STARTUP=../common/src/startup_LPC13xx.o
+#TARGET_STARTUP=../common/src/startup_LPC13xx.o
 
 # Additional Libraries
 #ADD_CMSIS=CMSIS_V1P30
 
 # Host configuration
-#HOST_OS?=win32
-HOST_OS=linux-x86
+HOST_OS?=win32
+#HOST_OS=linux-x86
 
 # Target output options
 TARGET_GEN_BIN=1
@@ -65,12 +65,12 @@ AFLAGS=-g
 CFLAGS=-g
 LDFLAGS=-g
 
+# 32bitmicro configuration and rules
+# paths
+32BITMICRO= /32bitmicro
+NXPROOT=$(32BITMICRO)/src/nxp/
+LPC13XXROOT=$(NXPROOT)/lpc13xx
 
 # Common rules
-include ../Common/src/Makefile.rules
-
-
-# 32bitmicro configuration and rules
-32BITMICRO= /32bitmicro
-include $(32BITMICRO)/src/make/Makefile.rules
+include $(LPC13XXROOT)/Makefile.rules
 
