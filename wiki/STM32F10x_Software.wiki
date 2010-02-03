@@ -2,12 +2,16 @@
 
 = Introduction =
 
-Add your content here.
+ST STM32F sample software ported to GCC. The orignal code can be downloaded from ST support page here:
+
+[http://www.st.com/mcu/familiesdocs-110.html Documents and files for family STM32 ]
 
 
-= Details =
+= Status =
+2010.02.01  ver 1.00    Prelimnary version, first Release [http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/st SVN trunk]
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+= Included Samples =
+  * [http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/st/STM32F10x_StdPeriph_Driver  STM32F10x_StdPeriph_Driver]
+
+  * [http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/st/STM32F10x_StdPeriph_Examples  STM32F10x_StdPeriph_Examples]
+ 
