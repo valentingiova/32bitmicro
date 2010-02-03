@@ -1,6 +1,5 @@
 #List of supported STM32F10x MCUs
 
-{{{
    *  stm32f101c4
    *  stm32f101c6
    *  stm32f101c8
@@ -63,4 +62,3 @@
    *  stm32f107rc
    *  stm32f107vb
    *  stm32f107vc
-}}}
