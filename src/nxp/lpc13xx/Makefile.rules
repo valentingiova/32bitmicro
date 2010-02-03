@@ -1,9 +1,9 @@
 #
-# * 32bitmicro NXP LPC13xx SampleSoftware USBMem Makefile
+# * 32bitmicro lpc13xx Makefile Rules
 # * $URL$
 # * $ID$
 #
-#Copyright (c) 2009-2010, 32bitmicro
+#Copyright (c) 2009, 32bitmicro
 #All rights reserved.
 #
 #Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,13 +20,60 @@
 #OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
 #NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
+# paths
+32BITMICRO= /32bitmicro
+NXPROOT=$(32BITMICRO)/src/nxp/
+LPC13XXROOT=$(NXPROOT)/lpc13xx
+
+# Target configuration
+TARGET_MCU?=lpc1343
+TARGET_CLOCK?=12000000
+TARGET_OS?=standalone
+
 # Project configuration
-PROJECT=USBMem_demo
-TARGET_MCU=lpc1343usb
+PROJECT?=lpc13xx_demo
+PROJECT_TYPE?=APP
+all: $(PROJECT)
 
-# Sources
-CSRC=DiskImg.c  memory.c  mscuser.c  usbcore.c  usbdesc.c  usbhw.c  usbuser.c
 
-# Top rules
-include ../Makefile.rules
+# Target SDK configuration
+#TARGET_SDK?=cs-arm-2009q1
+TARGET_SDK?=cs-arm-2009q3
+#TARGET_SDK=sdk-4.3.2-armv7m
+
+# Target libc
+#TARGET_LIBC=default
+TARGET_LIBC=nolibc
+
+
+# Target startup file
+TARGET_STARTUP= $(LPC13XXROOT)/LPC13xx_SampleSoftware/Common/src/startup_LPC13xx.o
+
+# Additional Libraries
+#ADD_CMSIS=CMSIS_V1P30
+
+# Host configuration
+HOST_OS?=win32
+#HOST_OS=linux-x86
+
+# Target output options
+TARGET_GEN_BIN=1
+TARGET_GEN_MAP=1
+TARGET_GEN_CREF=1
+TARGET_GEN_LST=1
+TARGET_GEN_SYM=1
+TARGET_GEN_HEX=1
+
+
+# Flags for
+AFLAGS=-g
+CFLAGS=-g
+LDFLAGS=-g
+
+# 32bitmicro configuration and rules
+# LPC13xx common
+include $(LPC13XXROOT)/LPC13xx_SampleSoftware/Common/src/Makefile.rules
+# Top level
+include $(32BITMICRO)/src/make/Makefile.rules
 

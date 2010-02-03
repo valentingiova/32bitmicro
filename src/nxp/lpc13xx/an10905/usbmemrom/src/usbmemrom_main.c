@@ -36,12 +36,6 @@ ROM ** rom = (ROM **)0x1fff1ff8;
 int main (void) {
   volatile uint32_t n;
 
-// Code Red Red Suite and LPCXpresso by Code Red both call SystemInit() in
-// the C startup code
-#ifndef __CODERED__
-  SystemInit();
-#endif
-
   MscDevInfo.idVendor = USB_VENDOR_ID;
   MscDevInfo.idProduct = USB_PROD_ID;
   MscDevInfo.bcdDevice = USB_DEVICE; 
