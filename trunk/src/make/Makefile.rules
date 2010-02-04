@@ -141,7 +141,7 @@ ${PROJECT}.${OUT} : ${ALL_OBJ}
 	$(LD)  ${ALL_LDFLAGS}  ${ALL_OBJ} ${ALL_LIBS} -o ${PROJECT}.${OUT}
 # BIN output
 ifdef TARGET_GEN_BIN
-#	$(OBJCOPY) -O binary ${PROJECT}.${OUT}   ${PROJECT}.${OUT}.bin
+	$(OBJCOPY) -O binary ${PROJECT}.${OUT}   ${PROJECT}.${OUT}.bin
 endif
 # HEX output
 ifdef TARGET_GEN_HEX
