@@ -2,7 +2,7 @@
 
 = Introduction =
 
-Smallest is a 32bitmicro toy showing how to write the smallest program for the Cortex-M3 core.
+Smallest is a 32bitmicro toy showing how to write the smallest program for the Cortex-M3 core, 8 or 18 bytes!
 
 
 = Details =
