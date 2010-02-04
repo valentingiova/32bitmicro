@@ -6,3 +6,5 @@ Smallest is a 32bitmicro toy showing how to write the smallest program for the C
 
 
 = Details =
+[http://www.32bitmicro.com/hardware/cores/2-cortexm3/257-smallest-cortex-m3-program Description]
+[http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/toys/smallest SVN trunk]
