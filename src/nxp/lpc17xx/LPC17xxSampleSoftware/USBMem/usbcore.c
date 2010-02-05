@@ -363,7 +363,11 @@ __inline uint32_t USB_SetConfiguration (void) {
               USB_DeviceStatus &= ~USB_GETSTATUS_SELF_POWERED;
             }
           } else {
+#ifndef __GNUC__
             (uint8_t *)pD += ((USB_CONFIGURATION_DESCRIPTOR *)pD)->wTotalLength;
+#else
+            pD += ((USB_CONFIGURATION_DESCRIPTOR *)pD)->wTotalLength;
+#endif
             continue;
           }
           break;
@@ -381,7 +385,11 @@ __inline uint32_t USB_SetConfiguration (void) {
           }
           break;
       }
+#ifndef __GNUC__
       (uint8_t *)pD += pD->bLength;
+#else
+      pD += pD->bLength;
+#endif
     }
   }
   else {
@@ -426,7 +434,11 @@ __inline uint32_t USB_SetInterface (void) {
     switch (pD->bDescriptorType) {
       case USB_CONFIGURATION_DESCRIPTOR_TYPE:
         if (((USB_CONFIGURATION_DESCRIPTOR *)pD)->bConfigurationValue != USB_Configuration) {
+#ifndef __GNUC__
           (uint8_t *)pD += ((USB_CONFIGURATION_DESCRIPTOR *)pD)->wTotalLength;
+#else
+          pD += ((USB_CONFIGURATION_DESCRIPTOR *)pD)->wTotalLength;
+#endif
           continue;
         }
         break;
@@ -460,7 +472,11 @@ __inline uint32_t USB_SetInterface (void) {
         }
         break;
     }
+#ifndef __GNUC__
     (uint8_t *)pD += pD->bLength;
+#else
+    pD += pD->bLength;
+#endif
   }
   return (set);
 }

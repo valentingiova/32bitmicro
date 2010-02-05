@@ -275,7 +275,11 @@ __inline uint32_t USB_SetConfiguration (void) {
 					} 
 					else 
 					{
+#ifndef __GNUC__
 						(uint8_t *)pD += ((USB_CONFIGURATION_DESCRIPTOR *)pD)->wTotalLength;
+#else
+						pD += ((USB_CONFIGURATION_DESCRIPTOR *)pD)->wTotalLength;
+#endif
 						continue;
 					}
 					break;
@@ -292,7 +296,11 @@ __inline uint32_t USB_SetConfiguration (void) {
 					}
 					break;
 			}
+#ifndef __GNUC__
 			(uint8_t *)pD += pD->bLength;
+#else
+			pD += pD->bLength;
+#endif
 		}
 	}
 	else 
