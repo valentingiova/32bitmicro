@@ -28,57 +28,6 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 	.fpu softvfp
 	.thumb
 
-/* Linker symbols */
-/* .text section */
-	.word	_text
-	.word	_etext
-
-/* .isr_vector section */
-	.word	_vector
-	.word	_evector
-
-/* .data section */
-	.word	_data
-	.word	_edata
-
-/* .bss section */
-	.word	_bss
-	.word	_ebss
-
-/* .heap section at the end of bss */
-	.word	_heap
-	.word	_eheap
-
-/* .stack section stack top at the end of ram set by linker */
-	.word	_stack
-	.word	_estack
-
-/* System Stack */
-	.globl  __stack
-	.globl  __stack_size
-
-	.equ    Stack_Size, 0x0000040
-	.section	".stack", "w"
-
-__stack:
-	.if     Stack_Size
-	.space  Stack_Size
-	.endif
-	.set    __stack_size, .-__stack
-
-/* System Heap */
-	.globl  __heap
-	.globl  __heap_size
-
-	.equ    Heap_Size, 0x00000100
-	.section	".heap", "w"
-
-__heap:
-	.if     Heap_Size
-	.space  Heap_Size
-	.endif
-	.set    __heap_size, .-__heap
-
 /* interrupt vectors table */
 
 	.global	__isr_vectors

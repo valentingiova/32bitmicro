@@ -19,7 +19,7 @@
 #ifndef __USB_H__
 #define __USB_H__
 
-#ifdef GCC
+#ifdef __GNUC__
 #define __packed
 #endif
 
