@@ -142,45 +142,21 @@ __isr_vectors:
 	.long	QEI_IRQHandler            /* 47: Quadrature Encoder Interface */
 	.long	PLL1_IRQHandler           /* 48: PLL1 Lock (USB PLL)          */
 
-/*
-		.section ".CRP._0x02FC","a",%progbits
-CRP_Key         .long     0xFFFFFFFF
-                .endif
-*/
+
 
 /* Reset handler */
-    	.section	.text.Reset_Handler,"ax",%progbits
-	.weak	Reset_Handler
-	.type	Reset_Handler, %function
+	.section ".text.handler.reset","x",%progbits
 
 Reset_Handler:
-	.fnstart
-/* fill .bss with 0 using byte stores */
-	ldr     r0, =_bss
-	ldr     r1, =_ebss
-        mov     r2, #0
-.L0:
-	strb	r2, [r0], #1			/* post index */
-	cmp     r0, r1
-	blt     .L0
-
-/* copy initialized .data from rom to ram */
-	ldr     r0, =_data
-	ldr     r1, =_edata
-        mov     r2, #0
-.L1:
-	ldrb	r3, [r0], #1			/* post index */
-	strb	r3, [r2], #1			/* post index */
-	cmp     r0, r1
-	blt     .L1
-
-/* branch to entry point */
-	ldr     r0, =_start
-        bx      r0
-	.cantunwind
-        .fnend   
+	.thumb_func
+	.globl  Reset_Handler
+	.type   Reset_Handler, %function
+	ldr     r0, =SystemInit
+	blx     r0
+	/* branch to entry point */
+	ldr     r0, =_start+1
+	bx      r0
 	.size	Reset_Handler, .-Reset_Handler
-
 
 
 /* default handlers */
@@ -350,3 +326,41 @@ PLL1_IRQHandler:
         b       .
         .size	Default_Handler, .-Default_Handler
 
+/* Default _start */
+
+	.section ".text"
+	.thumb
+	.global	_start
+	.weak	_start
+	.type   _start, %function    
+_start:
+
+/* fill .bss with 0 using byte stores */
+	ldr     r0, =_bss
+	ldr     r1, =_ebss
+        mov     r2, #0
+.L0:
+	strb	r2, [r0], #1
+	cmp     r0, r1
+  	bcc.n   .L0
+
+/* copy initialized .data from rom to ram */
+	ldr     r0, =_data
+	ldr     r1, =_edata
+	ldr     r2, =_ldata
+.L1:
+	ldrb	r3, [r2], #1
+	strb	r3, [r0], #1
+	cmp     r0, r1
+	bcc.n   .L1
+
+/* branch to main */
+	ldr     r0, =main+1
+	bx      r0 
+	.size	_start, .-_start
+
+	.section ".CRP._0x02FC","a",%progbits
+CRP_Key:
+	.word     0xFFFFFFFF
+	
+	.end
