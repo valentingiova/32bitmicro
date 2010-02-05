@@ -15,20 +15,20 @@ The orignal code can be downloaded from NXP support page here:
   * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc17xx/LPC17xxSampleSoftware/readme.txt  readme.txt]
   * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc17xx/LPC17xxSampleSoftware/Makefile Makefile]
   * [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc17xx/LPC17xxSampleSoftware/Makefile.rules Makefile.rules]
-  * ADC
-  * CAN
-  * DAC
-  * DMA
+  * ADC     compiles
+  * CAN     compiles
+  * DAC     compiles
+  * DMA     compiles
   * EMAC
-  * EXTINT
-  * GPIO
-  * I2C
+  * EXTINT  compiles
+  * GPIO    compiles
+  * I2C     compiles
   * I2S
-  * PWM
-  * RTC
-  * UART
-  * USBHID
+  * PWM     compiles
+  * RTC     compiles
+  * UART    compiles
+  * USBHID  compiles
   * USBMem
-  * WDT
-  * common
-  * timer
+  * WDT     compiles
+  * common  compiles
+  * timer   compiles
