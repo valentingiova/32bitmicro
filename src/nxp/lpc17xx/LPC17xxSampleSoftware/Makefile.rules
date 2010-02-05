@@ -36,7 +36,8 @@ TARGET_SDK=cs-arm-2009q1
 #TARGET_SDK=sdk-4.3.2-armv7m
 
 # Target libc
-TARGET_LIBC=default
+#TARGET_LIBC=default
+TARGET_LIBC=nolibc
 
 # Target startup file
 #TARGET_STARTUP=
