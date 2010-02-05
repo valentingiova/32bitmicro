@@ -1,9 +1,9 @@
 #
-# * 32bitmicro CMSIS demo Makefile
+# * 32bitmicro NXP lpc17xx SampleSoftware Makefile Rules
 # * $URL$
 # * $ID$
 #
-#Copyright (c) 2009, 32bitmicro
+#Copyright (c) 2009-2010, 32bitmicro
 #All rights reserved.
 #
 #Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
