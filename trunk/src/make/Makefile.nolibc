@@ -35,8 +35,9 @@ endif
 # global flags, should be compiler specific, right now only gcc
 AFLAGS+=
 CFLAGS+=-ffreestanding -nostdinc -I$(32BITMICRO)/src/32bitmicro/include 
+#CFLAGS+=-ffreestanding -nostdinc -I$(32BITMICRO)/src/32bitmicro/include 
 LDFLAGS+=-nostdlib
 
 
 # 32bitmicro
-include $(32BITMICRO)/src/32bitmicro/Makefile.rules
+#include $(32BITMICRO)/src/32bitmicro/Makefile.rules
