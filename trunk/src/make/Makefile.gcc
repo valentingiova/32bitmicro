@@ -36,12 +36,17 @@ endif
 TARGET_COMPILER=GCC
 
 # Otput extension
+ifndef TARGET_SDK_OUT
 TARGET_SDK_OUT=elf
+endif
 
 # sdk paths
+TARGET_SDK_CC_INCLUDE_PATH=${TARGET_SDK_ROOT}/lib/gcc/${GCC_PREFIX}/${GCC_VERSION}/include
+TARGET_SDK_CC_LINK_PATH=${TARGET_SDK_ROOT}/lib/gcc/${GCC_PREFIX}/${GCC_VERSION}
 TARGET_SDK_LIBC_INCLUDE_PATH=${TARGET_SDK_ROOT}/${GCC_PREFIX}/include
 TARGET_SDK_LIBC_LINK_PATH=${TARGET_SDK_ROOT}/${GCC_PREFIX}/lib
-TARGET_SDK_STARTUP_PATH=${TARGET_SDK_ROOT}/lib/gcc/${GCC_PREFIX}/${GCC_VERSION}
+TARGET_SDK_STARTUP_PATH=../lib/gcc/${GCC_PREFIX}/${GCC_VERSION}
+#TARGET_SDK_STARTUP_PATH=${TARGET_SDK_ROOT}/lib/gcc/${GCC_PREFIX}/${GCC_VERSION}
 
 # Tools
 # 
@@ -61,6 +66,19 @@ STRIP=${TARGET_SDK_PREFIX}strip${EXE}
 READELF=${TARGET_SDK_PREFIX}readelf${EXE}
 CC=${GCC}
 CXX=${GXX}
+
+# Binary outout
+GEN_BIN_CMD=$(OBJCOPY) -O binary ${PROJECT}.${OUT}   ${PROJECT}.${OUT}.bin
+
+# HEX output
+GEN_HEX_CMD=$(OBJCOPY) -O ihex   ${PROJECT}.${OUT}   ${PROJECT}.${OUT}.hex
+
+# Symbols
+GEN_SYM_CMD=$(OBJDUMP)  -t       ${PROJECT}.${OUT}  > ${PROJECT}.${OUT}.sym
+
+# Listing
+GEN_LST_CMD=$(OBJDUMP)  -S -D    ${PROJECT}.${OUT}  > ${PROJECT}.${OUT}.lst
+
 
 # Flags
 
@@ -96,9 +114,10 @@ endif
 #${error TARGET_SDK_LDFLAGS is not defined}
 #endif
 
-# ARM related settings
-# link script arm flash
+# 32bitmicro flash link 
+ifndef TARGET_SDK_USE_DEFAULT_LDSCRIPT
 TARGET_SDK_LDSCRIPT +=-L$(32BITMICRO)/src/make -T$(32BITMICRO)/src/make/${TARGET_MCU}-gcc-flash.ld
+endif
 
 # Target specific libries
 TARGET_SDK_LIBS    =
@@ -171,17 +190,62 @@ endif
 
 # libc - default for gcc is newlib
 ifeq ($(TARGET_LIBC),default)
--include $(32BITMICRO)/src/make/Makefile.newlib
+#-include $(32BITMICRO)/src/make/Makefile.newlib
 else
 -include $(32BITMICRO)/src/make/Makefile.$(TARGET_LIBC)
 endif
 
-# FIXME! need to handle libgcc which lives in
-#TARGET_SDK_STARTUP_PATH + code mode
+LIBGCC:=-L$(TARGET_SDK_CC_LINK_PATH)
 
 # add libc flags to sdk flags
-TARGET_SDK_AFLAGS  +=${TARGET_LIBC_AFLAGS}
-TARGET_SDK_CFLAGS  +=${TARGET_LIBC_CFLAGS}
-TARGET_SDK_LDFLAGS +=${TARGET_LIBC_LDFLAGS}
-TARGET_SDK_LIBS    +=${TARGET_LIBC_LIBS}
+TARGET_SDK_AFLAGS  +=$(TARGET_LIBC_AFLAGS)
+TARGET_SDK_CFLAGS  +=$(TARGET_LIBC_CFLAGS)
+TARGET_SDK_CPPFLAGS+=$(TARGET_LIBC_CPPFLAGS)
+TARGET_SDK_LDFLAGS +=$(TARGET_LIBC_LDFLAGS) $(LIBGCC) 
+TARGET_SDK_LIBS    +=$(TARGET_LIBC_LIBS) -lgcc
+
+# Suffixes
+.SUFFIXES:
+.SUFFIXES: .c .cpp .cc .cxx .h .hpp .o .a .s .S
+
+%.o: %.c
+	@echo Compiling $<
+	$(CC) $(ALL_CFLAGS) -c $< -o $@ 
+ifdef TARGET_GEN_SYM
+	$(OBJDUMP)  -t $@  > $@.sym
+endif
+ifdef TARGET_GEN_LST
+	$(OBJDUMP)  -S -D  $@  > $@.lst
+endif
+
+%.o: %.cpp
+	@echo Compiling $<
+	$(CXX) $(ALL_CPPFLAGS) -c $< -o $@ 
+ifdef TARGET_GEN_SYM
+	$(OBJDUMP)  -t $@  > $@.sym
+endif
+ifdef TARGET_GEN_LST
+	$(OBJDUMP)  -S -D  $@  > $@.lst
+endif
+
+%.o: %.s
+	@echo Assembling $< 
+	$(AS) $(ALL_AFLAGS) $< -o $@
+ifdef TARGET_GEN_SYM
+	$(OBJDUMP)  -t $@  > $@.sym
+endif
+ifdef TARGET_GEN_LST
+	$(OBJDUMP)  -S -D $@  > $@.lst
+endif
+
+%.o: %.S
+	@echo Assembling $< 
+	$(ASPP) $(ALL_AFLAGS) $< -o $@
+#	$(ACPP) $(ALL_AFLAGS) | $(AS) -- $(ALL_AFLAGS) -o $
+ifdef TARGET_GEN_SYM
+	$(OBJDUMP)  -t $@  > $@.sym
+endif
+ifdef TARGET_GEN_LST
+	$(OBJDUMP)  -S -D $@  > $@.lst
+endif
 
