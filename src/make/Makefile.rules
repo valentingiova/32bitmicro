@@ -3,7 +3,7 @@
 # * $URL$
 # * $ID$
 #
-#Copyright (c) 2009, 32bitmicro
+#Copyright (c) 2009-2010, 32bitmicro
 #All rights reserved.
 #
 #Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -57,6 +57,7 @@ ifndef TARGET_STARTUP
 TARGET_STARTUP=default
 endif
 
+.SUFFIXES:
 ifndef TARGET_SDK
 ${error TARGET_SDK is not defined!}
 else
@@ -85,27 +86,31 @@ AOBJ     =$(patsubst %.s,%.o,$(NOCPPASRC))
 CPPASRC  =$(filter %.S, $(ASRC))
 AOBJ    +=$(patsubst %.S,%.o,$(CPPASRC))
 COBJ     =$(patsubst %.c,%.o,$(CSRC))
+CPPOBJ   =$(patsubst %.cpp,%.o,$(CPPSRC))
 
 # List files
 AOBJ_LST =$(patsubst %.o,%.o.lst,$(AOBJ))
 COBJ_LST =$(patsubst %.o,%.o.lst,$(COBJ))
 
 # Source files
-ALL_ASRC   =${ASRC}
-ALL_CSRC   =${CSRC}
-ALL_AFLAGS =${TARGET_SDK_AFLAGS}  ${AFLAGS}
-ALL_CFLAGS =${TARGET_SDK_CFLAGS}  ${CFLAGS}
-ALL_LDFLAGS=${TARGET_SDK_LDFLAGS} ${LDFLAGS}
-ALL_LIBS   =${TARGET_SDK_LIBS}    ${LIBS}
+ALL_ASRC    =${ASRC}
+ALL_CSRC    =${CSRC}
+ALL_CPPSRC  =${CPPSRC}
+ALL_AFLAGS  =${TARGET_SDK_AFLAGS}   ${AFLAGS}
+ALL_CFLAGS  =${TARGET_SDK_CFLAGS}   ${CFLAGS}
+ALL_CPPFLAGS=${TARGET_SDK_CPPFLAGS} ${CPPFLAGS}
+ALL_LDFLAGS =${TARGET_SDK_LDFLAGS}  ${LDFLAGS}
+ALL_LIBS    =${TARGET_SDK_LIBS}     ${LIBS}
 
 ifdef ADD_CMSIS
 include $(32BITMICRO)/src/make/Makefile.${ADD_CMSIS}
-ALL_ASRC   +=${CMSIS_ASRC}
-ALL_CSRC   +=${CMSIS_CSRC}
-ALL_AFLAGS +=${CMSIS_AFLAGS}
-ALL_CFLAGS +=${CMSIS_CFLAGS}
-ALL_LDFLAGS+=${CMSIS_LDFLAGS}
-ALL_LIBS   +=${CMSIS_LIBS}
+ALL_ASRC    +=${CMSIS_ASRC}
+ALL_CSRC    +=${CMSIS_CSRC}
+ALL_AFLAGS  +=${CMSIS_AFLAGS}
+ALL_CFLAGS  +=${CMSIS_CFLAGS}
+ALL_CPPFLAGS+=${CMSIS_CPPFLAGS}
+ALL_LDFLAGS +=${CMSIS_LDFLAGS}
+ALL_LIBS    +=${CMSIS_LIBS}
 endif
 
 # Linker script
@@ -123,13 +128,17 @@ ALL_AOBJ      =$(patsubst %.s,%.o,$(NOCPP_ALL_ASRC))
 CPP_ALL_ASRC  =$(filter %.S, $(ALL_ASRC))
 ALL_AOBJ     +=$(patsubst %.S,%.o,$(CPP_ALL_ASRC))
 ALL_COBJ      =$(patsubst %.c,%.o,$(ALL_CSRC))
+ALL_CPPOBJ    =$(patsubst %.cpp,%.o,$(ALL_CPPSRC))
 ALL_OBJ       =${ALL_AOBJ}
 ALL_OBJ      +=${ALL_COBJ}
+ALL_OBJ      +=${ALL_CPPOBJ}
 ALL_AOBJ_LST  =$(patsubst %.o,%.o.lst,$(ALL_AOBJ))
 ALL_COBJ_LST  =$(patsubst %.o,%.o.lst,$(ALL_COBJ))
+ALL_CPPOBJ_LST=$(patsubst %.o,%.o.lst,$(ALL_CPPOBJ))
 ALL_OBJ_LST   =$(patsubst %.o,%.o.lst,$(ALL_OBJ))
 ALL_AOBJ_SYM  =$(patsubst %.o,%.o.sym,$(ALL_AOBJ))
 ALL_COBJ_SYM  =$(patsubst %.o,%.o.sym,$(ALL_COBJ))
+ALL_CPPOBJ_SYM=$(patsubst %.o,%.o.sym,$(ALL_CPPOBJ))
 ALL_OBJ_SYM   =$(patsubst %.o,%.o.sym,$(ALL_OBJ))
 
 PROJECT_OUT=
@@ -141,19 +150,23 @@ ${PROJECT}.${OUT} : ${ALL_OBJ}
 	$(LD)  ${ALL_LDFLAGS}  ${ALL_OBJ} ${ALL_LIBS} -o ${PROJECT}.${OUT}
 # BIN output
 ifdef TARGET_GEN_BIN
-	$(OBJCOPY) -O binary ${PROJECT}.${OUT}   ${PROJECT}.${OUT}.bin
+	$(GEN_BIN_CMD)
+#	$(OBJCOPY) -O binary ${PROJECT}.${OUT}   ${PROJECT}.${OUT}.bin
 endif
 # HEX output
 ifdef TARGET_GEN_HEX
-	$(OBJCOPY) -O ihex   ${PROJECT}.${OUT}   ${PROJECT}.${OUT}.hex
+	$(GEN_HEX_CMD)
+#	$(OBJCOPY) -O ihex   ${PROJECT}.${OUT}   ${PROJECT}.${OUT}.hex
 endif
 # symbols
 ifdef TARGET_GEN_SYM
-	$(OBJDUMP)  -t       ${PROJECT}.${OUT}  > ${PROJECT}.${OUT}.sym
+	$(GEN_SYM_CMD)
+#	$(OBJDUMP)  -t       ${PROJECT}.${OUT}  > ${PROJECT}.${OUT}.sym
 endif
 # listing
 ifdef TARGET_GEN_LST
-	$(OBJDUMP)  -S -D    ${PROJECT}.${OUT}  > ${PROJECT}.${OUT}.lst
+	$(GEN_LST_CMD)
+#	$(OBJDUMP)  -S -D    ${PROJECT}.${OUT}  > ${PROJECT}.${OUT}.lst
 endif
 endif
 
@@ -168,41 +181,6 @@ endif
 ${PROJECT}: ${ALL_OBJ} ${PROJECT_OUT}
 
 
-# Suffixes
-.SUFFIXES:
-.SUFFIXES: .c .cpp .cc .cxx .h .hpp .o .a .s .S
-
-%.o: %.c
-	@echo Compiling $<
-	$(CC) $(ALL_CFLAGS) -c $< -o $@ 
-ifdef TARGET_GEN_SYM
-	$(OBJDUMP)  -t $@  > $@.sym
-endif
-ifdef TARGET_GEN_LST
-	$(OBJDUMP)  -S -D  $@  > $@.lst
-endif
-
-%.o: %.s
-	@echo Assembling $< 
-	$(AS) $(ALL_AFLAGS) $< -o $@
-ifdef TARGET_GEN_SYM
-	$(OBJDUMP)  -t $@  > $@.sym
-endif
-ifdef TARGET_GEN_LST
-	$(OBJDUMP)  -S -D $@  > $@.lst
-endif
-
-%.o: %.S
-	@echo Assembling $< 
-	$(ASPP) $(ALL_AFLAGS) $< -o $@
-#	$(ACPP) $(ALL_AFLAGS) | $(AS) -- $(ALL_AFLAGS) -o $
-ifdef TARGET_GEN_SYM
-	$(OBJDUMP)  -t $@  > $@.sym
-endif
-ifdef TARGET_GEN_LST
-	$(OBJDUMP)  -S -D $@  > $@.lst
-endif
-
 clean_aobj:
 	-$(RM) -f ${AOBJ}
 	-$(RM) -f ${AOBJ_LST}
@@ -213,7 +191,12 @@ clean_cobj:
 	-$(RM) -f ${COBJ_LST}
 	-$(RM) -f ${COBJ_SYM}
 
-clean_obj: clean_aobj clean_cobj
+clean_cppobj:
+	-$(RM) -f ${CPPOBJ}
+	-$(RM) -f ${CPPOBJ_LST}
+	-$(RM) -f ${CPPOBJ_SYM}
+
+clean_obj: clean_aobj clean_cobj clean_cppobj 
 
 
 clean_all_aobj:
@@ -226,7 +209,13 @@ clean_all_cobj:
 	-$(RM) -f ${ALL_COBJ_LST}
 	-$(RM) -f ${ALL_COBJ_SYM}
 
-clean_all_obj: clean_all_aobj clean_all_cobj
+
+clean_all_cppobj:
+	-$(RM) -f ${ALL_CPPOBJ}
+	-$(RM) -f ${ALL_CPPOBJ_LST}
+	-$(RM) -f ${ALL_CPPOBJ_SYM}
+
+clean_all_obj: clean_all_aobj clean_all_cobj clean_all_cppobj
 
 clean: clean_all_obj
 	-$(RM) -f ${PROJECT_OUT}
@@ -242,6 +231,9 @@ clean: clean_all_obj
 
 
 # Echo targets
+list:
+	@echo "$(.VARIABLES)" 
+
 
 echo_sdk_asrc:
 	@echo "TARGET_SDK_ASRC :"
@@ -277,7 +269,11 @@ echo_all_csrc:
 	@echo "ALL_CSRC :"
 	@echo ${ALL_CSRC}
 
-echo_all_src: echo_all_asrc echo_all_csrc
+echo_all_cppsrc:
+	@echo "ALL_CPPSRC :"
+	@echo ${ALL_CPPSRC}
+
+echo_all_src: echo_all_asrc echo_all_csrc echo_all_cppsrc 
 
 
 echo_aobj:
@@ -288,10 +284,12 @@ echo_cobj:
 	@echo "COBJ :"
 	@echo ${COBJ}
 
-echo_obj: echo_aobj echo_cobj
-	@echo "OBJ :"
-	@echo ${OBJ}
+echo_cppobj:
+	@echo "CPPOBJ :"
+	@echo ${CPPOBJ}
 
+echo_obj: echo_aobj echo_cobj echo_cppobj
+	
 echo_all_aobj:
 	@echo "ALL_AOBJ :"
 	@echo ${ALL_AOBJ}
@@ -300,7 +298,11 @@ echo_all_cobj:
 	@echo "ALL_COBJ :"
 	@echo ${ALL_COBJ}
 
-echo_all_obj: echo_all_aobj echo_all_cobj
+echo_all_cppobj:
+	@echo "ALL_CPPOBJ :"
+	@echo ${ALL_CPPOBJ}
+
+echo_all_obj: echo_all_aobj echo_all_cobj echo_all_cppobj 
 	@echo "ALL_OBJ :"
 	@echo ${ALL_OBJ}
 
@@ -311,6 +313,9 @@ echo_aflags:
 	
 echo_cflags:
 	@echo "CFLAGS            : "${CFLAGS}
+
+echo_cppflags:
+	@echo "CPPFLAGS          : "${CPPFLAGS}
 
 echo_ldflags:
 	@echo "LDFLAGS           : "${LDFLAGS}
