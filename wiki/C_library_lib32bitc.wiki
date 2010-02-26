@@ -1,1 +1,41 @@
-#lib32bitc is a standard C library
+#lib32bitc is a standard C library targeting 32-bit microcontrollers
+
+= API =
+
+== ctype ==
+
+* isalnum
+* isalpha
+* isascii
+* isalnum
+* isblank
+* iscntrl
+* isdigit
+* islower
+* isgraph
+* isprint
+* ispunct
+* isspace
+* isupper
+* isxdigit
+* toascii
+* tolower
+* toupper
+
+== stdio ==
+
+== stdlib ==
+
+== string ==
+
+== syscals ==
+
+* _abort
+* _exit
+* _open
+* _close
+* _read
+* _seek
+* _write
+* _malloc
+* _free
