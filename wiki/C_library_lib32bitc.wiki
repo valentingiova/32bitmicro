@@ -4,23 +4,23 @@
 
 == ctype ==
 
-* isalnum
-* isalpha
-* isascii
-* isalnum
-* isblank
-* iscntrl
-* isdigit
-* islower
-* isgraph
-* isprint
-* ispunct
-* isspace
-* isupper
-* isxdigit
-* toascii
-* tolower
-* toupper
+  * isalnum
+  * isalpha
+  * isascii
+  * isalnum
+  * isblank
+  * iscntrl
+  * isdigit
+  * islower
+  * isgraph
+  * isprint
+  * ispunct
+  * isspace
+  * isupper
+  * isxdigit
+  * toascii
+  * tolower
+  * toupper
 
 == stdio ==
 
@@ -30,12 +30,12 @@
 
 == syscals ==
 
-* _abort
-* _exit
-* _open
-* _close
-* _read
-* _seek
-* _write
-* _malloc
-* _free
+  * _abort
+  * _exit
+  * _open
+  * _close
+  * _read
+  * _seek
+  * _write
+  * _malloc
+  * _free
