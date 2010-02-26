@@ -22,10 +22,10 @@
 
 #  Sources
 LIBC_API_ASRC=
-LIBC_API_CSRC=
+LIBC_API_CSRC=crt0.c syscalls.c
 
-LIBC_API_ASRC_FULL=$(addprefix $(32BITMICRO)/src/32bitmicro/libc/api/cmsis, $(LIBC_API_ASRC))
-LIBC_API_CSRC_FULL=$(addprefix $(32BITMICRO)/src/32bitmicro/libc/api/cmsis, $(LIBC_API_CSRC))
+LIBC_API_ASRC_FULL=$(addprefix $(32BITMICRO)/src/32bitmicro/libc/api/cmsis/, $(LIBC_API_ASRC))
+LIBC_API_CSRC_FULL=$(addprefix $(32BITMICRO)/src/32bitmicro/libc/api/cmsis/, $(LIBC_API_CSRC))
 
 ASRC+=$(LIBC_API_ASRC_FULL)
 CSRC+=$(LIBC_API_CSRC_FULL)
