@@ -59,6 +59,39 @@
 
 == string ==
 
+  * bcmp
+  * bcopy
+  * bzero
+  * memccpy
+  * memchr
+  * memcmp
+  * memcpy
+  * memmove
+  * memset
+  * strcat
+  * strchr
+  * strcmp
+  * strcpy
+  * strcasecmp
+  * strlcat
+  * strlcpy
+  * strlen
+  * strlwr
+  * strncat
+  * strncmp
+  * strncpy
+  * strncasecmp
+  * strnlen
+  * strdup
+  * strrchr
+  * strrev
+  * strsep
+  * strstr
+  * strtok_r
+  * strtok
+  * strupr
+  * swab
+
 == syscals ==
 
   * _abort
