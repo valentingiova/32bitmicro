@@ -22,3 +22,4 @@
 
 EXE=.exe
 RM=rm
+CP=cp
