@@ -1,4 +1,4 @@
-#lib32bitc is a standard C library targeting 32-bit microcontrollers
+#summary lib32bitc is a standard C library targeting 32-bit microcontrollers
 
 = API =
 
@@ -23,6 +23,24 @@
   * toupper
 
 == stdio ==
+
+  * fclose
+  * fcloseall
+  * fgetc
+  * fgets
+  * fprintf
+  * fputc
+  * fputs
+  * fopen
+  * getc
+  * getchar
+  * gets
+  * printf
+  * putc
+  * putchar
+  * puts
+  * sprintf
+  * snprintf
 
 == stdlib ==
 
