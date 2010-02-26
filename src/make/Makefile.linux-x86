@@ -22,3 +22,4 @@
 
 EXE=
 RM=rm
+CP=cp
