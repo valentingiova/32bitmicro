@@ -44,6 +44,19 @@
 
 == stdlib ==
 
+  * abs
+  * atoi
+  * atol
+  * calloc
+  * div
+  * free
+  * ldiv
+  * malloc
+  * rand_r
+  * rand
+  * srand
+  * strtol
+
 == string ==
 
 == syscals ==
