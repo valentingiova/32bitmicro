@@ -1,0 +1,139 @@
+#
+# * 32bitmicro libc Makefile.rules
+# * $URL$
+# * $ID$
+#
+#Copyright (c) 2010, 32bitmicro
+#All rights reserved.
+#
+#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation 
+#and/or other materials provided with the distribution.
+#Neither the name of the 32bitmicro nor the names of its contributors may be used to endorse or promote products derived from this software without 
+#specific prior written permission.
+#
+#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+#BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+#SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+#DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+#OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+#NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+#  Sources
+LIBC_ASRC= 
+LIBC_CTYPE_CSRC:=\
+ctype/ctype_.c \
+ctype/isalnum.c \
+ctype/isalpha.c \
+ctype/isascii.c \
+ctype/isblank.c \
+ctype/iscntrl.c \
+ctype/isdigit.c \
+ctype/islower.c \
+ctype/isprint.c \
+ctype/ispunct.c \
+ctype/isspace.c \
+ctype/isupper.c \
+ctype/isxdigit.c \
+ctype/toascii.c \
+ctype/tolower.c \
+ctype/toupper.c
+
+LIBC_STRING_CSRC:=\
+string/bcmp.c \
+string/bcopy.c \
+string/bzero.c \
+string/index.c \
+string/memccpy.c \
+string/memchr.c \
+string/memcmp.c \
+string/memcpy.c \
+string/memmove.c \
+string/mempcpy.c \
+string/memset.c \
+string/rindex.c \
+string/strcat.c \
+string/strchr.c \
+string/strcmp.c \
+string/strcoll.c \
+string/strcpy.c \
+string/strcspn.c \
+string/strlcat.c \
+string/strlcpy.c \
+string/strlen.c \
+string/strlwr.c \
+string/strncat.c \
+string/strncmp.c \
+string/strncpy.c \
+string/strnlen.c \
+string/strrchr.c \
+string/strspn.c \
+string/strstr.c \
+string/strupr.c
+
+
+
+LIBC_STDLIB_CSRC:=\
+stdlib/abs.c \
+stdlib/assert.c \
+stdlib/atoi.c \
+stdlib/atol.c \
+stdlib/calloc.c \
+stdlib/div.c \
+stdlib/errno.c \
+stdlib/exit.c \
+stdlib/ldiv.c \
+stdlib/malloc.c \
+stdlib/rand.c \
+stdlib/strtol.c 
+
+
+LIBC_STDIO_CSRC := \
+stdio/fclose.c \
+stdio/fcloseall.c \
+stdio/fgetc.c \
+stdio/fgets.c \
+stdio/flags.c \
+stdio/fopen.c \
+stdio/fputc.c \
+stdio/fputs.c \
+stdio/getc.c \
+stdio/getchar.c \
+stdio/gets.c \
+stdio/printf.c \
+stdio/putc.c \
+stdio/putchar.c \
+stdio/puts.c \
+stdio/scanf.c
+
+
+
+LIBC_CSRC:= $(LIBC_CTYPE_CSRC) $(LIBC_STRING_CSRC) $(LIBC_STDLIB_CSRC) $(LIBC_STDIO_CSRC) 
+
+LIBC_ASRC_FULL = $(addprefix $(32BITMICRO)/src/32bitmicro/libc/, $(LIBC_ASRC))
+LIBC_CSRC_FULL = $(addprefix $(32BITMICRO)/src/32bitmicro/libc/, $(LIBC_CSRC))
+
+ASRC+=$(LIBC_ASRC_FULL)
+CSRC+=$(LIBC_CSRC_FULL)
+
+# Arch Sources
+ifeq ($(TARGET_ADD_CRT0),1)
+LIBC_ARCH_ASRC= crt0.S 
+LIBC_ARCH_CSRC=
+endif
+
+LIBC_ARCH_ASRC_FULL = $(addprefix $(32BITMICRO)/src/32bitmicro/libc/arch/$(TARGET_ARCH)/, $(LIBC_ARCH_ASRC))
+LIBC_ARCH_CSRC_FULL = $(addprefix $(32BITMICRO)/src/32bitmicro/libc/arch/$(TARGET_ARCH)/, $(LIBC_ARCH_CSRC))
+
+ASRC+=$(LIBC_ARCH_ASRC_FULL)
+CSRC+=$(LIBC_ARCH_CSRC_FULL)
+
+LIBCDEFINES=-DSTANDALONE=1
+AFLAGS=-g
+
+CFLAGS+=-isystem $(32BITMICRO)/src/32bitmicro  -I./include -I./arch/$(TARGET_ARCH)/include -I$(32BITMICRO)/src/32bitmicro/libm/include -I. $(LIBCDEFINES)
+CFLAGS+=-I$(TARGET_SDK_CC_INCLUDE_PATH) 
+
+LDFLAGS=-g
