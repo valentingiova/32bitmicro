@@ -290,6 +290,7 @@ _start:
 
 
 	.section ".CRP._0x02FC","a",%progbits
+	.globl  CRP_Key
 CRP_Key:
 	.word     0xFFFFFFFF
 	
