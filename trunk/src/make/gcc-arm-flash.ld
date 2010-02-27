@@ -34,8 +34,8 @@ SECTIONS
     _evector = . ;
 
     /* NXP only CRP location */
-/*    . = 0x02FC ; */
-/*    KEEP (*(.CRP.*)) */
+    . = DEFINED(CRP_Key) ?  0x02FC : . ;
+    KEEP (*(.CRP.*))
     . = ALIGN(4);
 
     KEEP (*(.text.handler.*))
@@ -105,7 +105,7 @@ SECTIONS
   . = ALIGN(8);
   _ldata = ABSOLUTE(.);
 
-  .data : ALIGN(8)
+  .data :  AT (_etext)
   {
     _data = .;
    /* LOADADDR (.data); */
