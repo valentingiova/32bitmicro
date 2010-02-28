@@ -4,7 +4,7 @@
 
 == Status ==
 checked-in, some parts compiles
-
+[http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc17xx/LPC1700CMSIS/LPC1700CMSIS_ReleaseNotes.txt Release Notes]
 
 Original file location
 [http://ics.nxp.com/support/documents/microcontrollers/zip/lpc17xx.cmsis.driver.library.zip LPC17xx CMSIS-Compliant Standard Peripheral Firmware Driver Library (GNU, Keil, IAR), V1.3 (Feb 9, 2010) ]
