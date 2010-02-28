@@ -1,0 +1,24 @@
+# DO NOT DELETE
+
+Uart.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/LPC17xx.h
+Uart.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.h
+Uart.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.h
+Uart.o: UartDev.h
+Uart.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_nvic.h
+Uart.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc_types.h
+UartDev_LPC17xx.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/LPC17xx.h
+UartDev_LPC17xx.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.h
+UartDev_LPC17xx.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.h
+UartDev_LPC17xx.o: UartDev.h UartDev_LPC17xx.h
+UartDev_LPC17xx.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_uart.h
+UartDev_LPC17xx.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc_types.h
+UartDev_LPC17xx.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_pinsel.h
+UartDev_LPC17xx.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/lpc17xx.h
+UartDev_LPC17xx_polling.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/LPC17xx.h
+UartDev_LPC17xx_polling.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.h
+UartDev_LPC17xx_polling.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.h
+UartDev_LPC17xx_polling.o: UartDev.h UartDev_LPC17xx.h
+UartDev_LPC17xx_polling.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_uart.h
+UartDev_LPC17xx_polling.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc_types.h
+UartDev_LPC17xx_polling.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_pinsel.h
+UartDev_LPC17xx_polling.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/lpc17xx.h

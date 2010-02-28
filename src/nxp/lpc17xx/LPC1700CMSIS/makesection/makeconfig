@@ -1,0 +1,48 @@
+########################################################################
+#
+# Configuration file for "make" session. 
+#
+########################################################################
+
+########################################################################
+#
+# Note: 
+# Add path of "tools" directory (in this folder) 
+# to the HEAD of SYSTEM PATH variable
+#
+########################################################################
+
+TARGET_MCU?=lpc17xx
+TARGET_CLOCK?=12000000
+
+# Target libc
+TARGET_LIBC=default
+TARGET_SDK?=cs-arm-2009q3
+TARGET_SDK_AFLAGS=-DARM
+TARGET_SDK_CFLAGS=-DARM
+
+# Host configuration
+HOST_OS?=win32
+#HOST_OS=linux 
+
+# 32bitmicro configuration and rules
+32BITMICRO= /32bitmicro
+include $(32BITMICRO)/src/make/Makefile.$(TARGET_MCU)
+include $(32BITMICRO)/src/make/Makefile.$(TARGET_SDK)
+
+
+PROJ_ROOT			=$(32BITMICRO)/src/nxp/lpc17xx/LPC1700CMSIS
+CMCORE_TYPE			=CM3
+DEVICE				=LPC17xx
+MANUFACTURE			=NXP
+TOOL 				=gnu
+DEBUG_MODE			=1
+
+
+GNU_INSTALL_ROOT	=$(TARGET_SDK_ROOT)
+#GNU_INSTALL_ROOT	=C:/Program Files/CodeSourcery/Sourcery G++ Lite
+GNU_VERSION			=$(GCC_VERSION)
+#GNU_VERSION			=4.3.3
+IAR_INSTALL_ROOT	=C:/Program Files/IAR Systems/Embedded Workbench 5.0 Kickstart
+KEIL_INSTALL_ROOT	=C:/Keil
+ADS_INSTALL_ROOT	=C:/Program Files/ARM

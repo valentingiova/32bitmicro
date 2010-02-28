@@ -1,0 +1,21 @@
+# DO NOT DELETE
+
+Spi.o: SpiDev.h
+Spi.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_nvic.h
+Spi.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/LPC17xx.h
+Spi.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.h
+Spi.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.h
+Spi.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc_types.h
+Spi.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_pinsel.h
+Spi.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/lpc17xx.h
+Spi.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_gpio.h
+SpiDev_LPC17xx.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/LPC17xx.h
+SpiDev_LPC17xx.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.h
+SpiDev_LPC17xx.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.h
+SpiDev_LPC17xx.o: SpiDev.h SpiDev_LPC17xx.h
+SpiDev_LPC17xx.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_spi.h
+SpiDev_LPC17xx.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc_types.h
+SpiDev_LPC17xx.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_pinsel.h
+SpiDev_LPC17xx.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/lpc17xx.h
+SpiDev_LPC17xx.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_clkpwr.h
+spi_AT25.o: SpiDev.h
