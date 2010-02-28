@@ -1,0 +1,3 @@
+#summary LPC1700CMSIS CMSIS based driver library
+
+= LPC1700CMSIS =
