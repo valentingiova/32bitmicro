@@ -1,8 +1,9 @@
 #summary lib32bitc is a standard C library targeting 32-bit microcontrollers
 
-= Status =
+== Status ==
 
 checked-in, compiles
+
 
 = API =
 
