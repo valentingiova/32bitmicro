@@ -44,7 +44,7 @@
  */
 #define _SPI_RECONFIG_PIN	0
 
-#elif
+#else
 #error "SPI not defined!"
 
 #endif
