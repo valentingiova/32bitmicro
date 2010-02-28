@@ -1,0 +1,25 @@
+# DO NOT DELETE
+
+GLCD_SPI_LPC1700.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/lpc17xx.h
+GLCD_SPI_LPC1700.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.h
+GLCD_SPI_LPC1700.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.h
+GLCD_SPI_LPC1700.o: GLCD.h Font_24x16.h
+debug_frmwrk.o: debug_frmwrk.h
+debug_frmwrk.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_uart.h
+debug_frmwrk.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/LPC17xx.h
+debug_frmwrk.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.h
+debug_frmwrk.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.h
+debug_frmwrk.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc_types.h
+debug_frmwrk.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_pinsel.h
+debug_frmwrk.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/lpc17xx.h
+lcdtest.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_gpio.h
+lcdtest.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/LPC17xx.h
+lcdtest.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.h
+lcdtest.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.h
+lcdtest.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc_types.h
+lcdtest.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_uart.h
+lcdtest.o: lpc17xx_libcfg.h
+lcdtest.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_nvic.h
+lcdtest.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_pinsel.h
+lcdtest.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/lpc17xx.h
+lcdtest.o: debug_frmwrk.h

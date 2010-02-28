@@ -1,0 +1,19 @@
+# DO NOT DELETE
+
+debug_frmwrk.o: debug_frmwrk.h
+debug_frmwrk.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_uart.h
+debug_frmwrk.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/LPC17xx.h
+debug_frmwrk.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.h
+debug_frmwrk.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.h
+debug_frmwrk.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc_types.h
+debug_frmwrk.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_pinsel.h
+debug_frmwrk.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/lpc17xx.h
+eint_powerdown_test.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/LPC17xx.h
+eint_powerdown_test.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.h
+eint_powerdown_test.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.h
+eint_powerdown_test.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_pinsel.h
+eint_powerdown_test.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/lpc17xx.h
+eint_powerdown_test.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc_types.h
+eint_powerdown_test.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_clkpwr.h
+eint_powerdown_test.o: g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc17xx_nvic.h
+eint_powerdown_test.o: lpc17xx_libcfg.h

@@ -1,0 +1,15 @@
+g:\32bitmicro\src\nxp\lpc17xx\LPC1700CMSIS\makesection\tools\makedepend.exe: warning:  GLCD_SPI_LPC1700.c (reading g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.h, line 90): cannot find include file "stdint.h"
+	not in g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/stdint.h
+	not in g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/stdint.h
+	not in g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/stdint.h
+	not in g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Examples/GPIO/Port_LCD/stdint.h
+g:\32bitmicro\src\nxp\lpc17xx\LPC1700CMSIS\makesection\tools\makedepend.exe: warning:  GLCD_SPI_LPC1700.c (reading g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.h, line 33): cannot find include file "stdint.h"
+	not in g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/stdint.h
+	not in g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/stdint.h
+	not in g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/stdint.h
+	not in g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Examples/GPIO/Port_LCD/stdint.h
+g:\32bitmicro\src\nxp\lpc17xx\LPC1700CMSIS\makesection\tools\makedepend.exe: warning:  debug_frmwrk.c (reading g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/lpc_types.h, line 34): cannot find include file "stdint.h"
+	not in g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/include/stdint.h
+	not in g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/stdint.h
+	not in g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/stdint.h
+	not in g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Examples/GPIO/Port_LCD/stdint.h
