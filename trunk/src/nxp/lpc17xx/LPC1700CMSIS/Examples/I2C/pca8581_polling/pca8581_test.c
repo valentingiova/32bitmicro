@@ -37,7 +37,7 @@
 #define I2CDEV LPC_I2C0
 #elif (USEDI2CDEV == 2)
 #define I2CDEV LPC_I2C2
-#elif
+#else
 #error "I2C device not defined!"
 #endif
 
