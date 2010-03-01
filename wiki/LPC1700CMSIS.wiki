@@ -6,9 +6,9 @@
 checked-in, integrated with 32bitmicro build environment, compiles
 
 == Notes on using Examples ==
-To reduce size of the binary elf files all of the examples in [http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/nxp/lpc17xx/LPC1700CMSIS/Examples LPC1700CMSIS/Examples] include individual files for the device drivers from "LPC1700CMSIS/Drivers" library. These files must be compiled with settings in "lpc17xx_libcfg.h" present in each example directory. Current makefiles do not clear object files before linking example which might cause linking errors when last configuration did not include all of the required drivers. 
+To reduce size of the binary elf files all of the examples in [http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/nxp/lpc17xx/LPC1700CMSIS/Examples LPC1700CMSIS/Examples] include individual files for the device drivers from [http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/nxp/lpc17xx/LPC1700CMSIS/Drivers LPC1700CMSIS/Drivers] library. These files must be compiled with settings in "lpc17xx_libcfg.h" present in each example directory. Current makefiles do not clear object files before linking example which might cause linking errors when last configuration did not include all of the required drivers. 
 
-Currently the safest approach is to manually clear object files in "LPC1700CMSIS/Drivers/source" before attempting to build each example.
+Currently the safest approach is to manually clear object files in [http://code.google.com/p/32bitmicro/source/browse/#svn/trunk/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source LPC1700CMSIS/Drivers/source] before attempting to build each example.
 
 
 
