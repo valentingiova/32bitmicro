@@ -87,8 +87,12 @@ ADDOBJSS    += $(PROJ_ROOT)/Core/$(CMCORE_TYPE)/DeviceSupport/$(MANUFACTURE)/$(D
 
 
 # Define Required Linker script file in each build mode
-LDSCRIPTIROM = $(PROJ_ROOT)/makesection/makerule/example/ldscript_rom_$(TOOL).ld
-LDSCRIPTIRAM = $(PROJ_ROOT)/makesection/makerule/example/ldscript_ram_$(TOOL).ld
+#LDSCRIPTIROM = 
+LDSCRIPTIROM = $(TARGET_FINAL_LDSCRIPT)
+#LDSCRIPTIROM = $(PROJ_ROOT)/makesection/makerule/example/ldscript_rom_$(TOOL).ld
+#LDSCRIPTIRAM =
+LDSCRIPTIRAM = $(TARGET_FINAL_LDSCRIPT) 
+#LDSCRIPTIRAM = $(PROJ_ROOT)/makesection/makerule/example/ldscript_ram_$(TOOL).ld
 
 # Following used for Chip Revision V00 only ------------------------------------
 #LDSCRIPTIROM_V00 = $(PROJ_ROOT)/makesection/makerule/example/ldscript_rom_v00_$(TOOL).ld
