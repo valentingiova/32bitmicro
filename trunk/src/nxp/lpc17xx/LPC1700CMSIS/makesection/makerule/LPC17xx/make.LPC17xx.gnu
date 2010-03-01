@@ -107,7 +107,8 @@ LK       		+= -Wl,--end-group
 
 
 MAP      		= -Xlinker -Map -Xlinker
-LDESC    		= -Xlinker -T  
+# FIXME - commented for 32bitmicro
+###LDESC    		= -Xlinker -T  
 ENTRY    		= -e
 BIN      		= -bin
 EXT      		=.elf
