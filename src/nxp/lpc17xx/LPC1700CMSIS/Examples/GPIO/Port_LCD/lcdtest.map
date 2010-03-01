@@ -1,7 +1,7 @@
 Archive member included because of file (symbol)
 
 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_aeabi_uldivmod.o)
-                              g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2s.o (__aeabi_uldivmod)
+                              g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pwm.o (__aeabi_uldivmod)
 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(bpabi.o)
                               g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_aeabi_uldivmod.o) (__gnu_uldivmod_helper)
 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_dvmd_tls.o)
@@ -12,10 +12,6 @@ g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_udiv
                               g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(bpabi.o) (__udivdi3)
 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_udivsi3.o)
                               g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_divdi3.o) (__aeabi_uidiv)
-g:/32bitmicro/win32/arm-2009q3/arm-none-eabi/lib/thumb2\libcs3.a(start_c.o)
-                              (__cs3_start_c)
-g:/32bitmicro/win32/arm-2009q3/arm-none-eabi/lib/thumb2\libc.a(lib_a-init.o)
-                              g:/32bitmicro/win32/arm-2009q3/arm-none-eabi/lib/thumb2\libcs3.a(start_c.o) (__libc_init_array)
 
 Allocating common symbols
 Common symbol       size              file
@@ -31,4 +27,913 @@ _db_msg_            0x4               debug_frmwrk.o
 _db_char            0x4               debug_frmwrk.o
 _db_hex             0x4               debug_frmwrk.o
 _db_hex_16          0x4               debug_frmwrk.o
-FULLCAN_ENABLE      0x1               g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_can.o
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+rom              0x00000000         0x00080000         xr
+ram              0x10000000         0x00008000         xrw
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crti.o
+LOAD g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtbegin.o
+LOAD GLCD_SPI_LPC1700.o
+LOAD debug_frmwrk.o
+LOAD lcdtest.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/startup/gcc/startup_LPC17xx.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_adc.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_can.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_clkpwr.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_dac.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_emac.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpdma.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpio.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2c.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2s.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_libcfg_default.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_mcpwm.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_nvic.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pinsel.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pwm.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_qei.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rit.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rtc.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_spi.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_ssp.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_timer.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_uart.o
+LOAD g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_wdt.o
+START GROUP
+LOAD g:/32bitmicro/win32/arm-2009q3/arm-none-eabi/lib/thumb2\libc.a
+LOAD g:/32bitmicro/win32/arm-2009q3/arm-none-eabi/lib/thumb2\libg.a
+LOAD g:/32bitmicro/win32/arm-2009q3/arm-none-eabi/lib/thumb2\libstdc++.a
+LOAD g:/32bitmicro/win32/arm-2009q3/arm-none-eabi/lib/thumb2\libsupc++.a
+LOAD g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a
+LOAD g:/32bitmicro/win32/arm-2009q3/arm-none-eabi/lib/thumb2\libm.a
+END GROUP
+START GROUP
+LOAD g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a
+LOAD g:/32bitmicro/win32/arm-2009q3/arm-none-eabi/lib/thumb2\libc.a
+END GROUP
+LOAD g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtend.o
+LOAD g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtn.o
+                0x10007ffc                _ram_end = 0x10007ffc
+
+.text           0x00000000     0x6828
+                0x00000000                _text = .
+                0x00000000                _vector = .
+ *(.isr_vector)
+ .isr_vector    0x00000000       0xc4 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/startup/gcc/startup_LPC17xx.o
+                0x00000000                __isr_vectors
+                0x000000c4                _evector = .
+                0x000000c4                . = DEFINED (CRP_Key)?0x2fc:.
+ *(.CRP.*)
+ .CRP._0x02FC   0x000000c4        0x4 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/startup/gcc/startup_LPC17xx.o
+                0x000000c8                . = ALIGN (0x4)
+ *(.text.handler.*)
+ .text.handler.reset
+                0x000000c8       0x24 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/startup/gcc/startup_LPC17xx.o
+                0x000000c8                Reset_Handler
+                0x000000d0                NMI_Handler
+                0x000000d2                HardFault_Handler
+                0x000000d4                MemManage_Handler
+                0x000000d6                BusFault_Handler
+                0x000000d8                UsageFault_Handler
+                0x000000da                SVC_Handler
+                0x000000dc                DebugMon_Handler
+                0x000000de                PendSV_Handler
+                0x000000e0                SysTick_Handler
+ *(.text .text.* .gnu.linkonce.t.*)
+ .text          0x000000ec        0x0 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crti.o
+ .text          0x000000ec       0x68 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtbegin.o
+ .text          0x00000154      0xd10 GLCD_SPI_LPC1700.o
+                0x0000037c                GLCD_Init
+                0x0000084c                GLCD_WindowMax
+                0x00000884                GLCD_PutPixel
+                0x000008d8                GLCD_SetTextColor
+                0x000008f8                GLCD_SetBackColor
+                0x00000918                GLCD_Clear
+                0x0000097c                GLCD_DrawChar
+                0x00000a84                GLCD_DisplayChar
+                0x00000ad8                GLCD_DisplayString
+                0x00000b1c                GLCD_ClearLn
+                0x00000b44                GLCD_Bargraph
+                0x00000c50                GLCD_Bitmap
+                0x00000d60                GLCD_Bmp
+ .text          0x00000e64      0x83c debug_frmwrk.o
+                0x00000e64                UARTPutChar
+                0x00000e8c                UARTGetChar
+                0x00000ebc                UARTPuts
+                0x00000ef0                UARTPuts_
+                0x00000f18                UARTPutDec
+                0x00000fec                UARTPutDec16
+                0x00001158                UARTPutDec32
+                0x0000141c                UARTPutHex
+                0x00001490                UARTPutHex16
+                0x00001504                UARTPutHex32
+                0x00001578                debug_frmwrk_init
+ .text          0x000016a0       0xf4 lcdtest.o
+                0x000016f8                print_menu
+                0x0000171c                c_entry
+                0x00001778                main
+                0x00001788                check_failed
+ .text          0x00001794      0x28c g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.o
+                0x00001794                __get_PSP
+                0x000017a4                __set_PSP
+                0x000017ac                __get_MSP
+                0x000017bc                __set_MSP
+                0x000017c4                __get_BASEPRI
+                0x000017e4                __set_BASEPRI
+                0x000017fc                __get_PRIMASK
+                0x0000181c                __set_PRIMASK
+                0x00001834                __get_FAULTMASK
+                0x00001854                __set_FAULTMASK
+                0x0000186c                __get_CONTROL
+                0x0000188c                __set_CONTROL
+                0x000018a4                __REV
+                0x000018c8                __REV16
+                0x000018ec                __REVSH
+                0x00001910                __RBIT
+                0x00001934                __LDREXB
+                0x00001958                __LDREXH
+                0x0000197c                __LDREXW
+                0x000019a0                __STREXB
+                0x000019cc                __STREXH
+                0x000019f8                __STREXW
+ .text          0x00001a20      0x43c g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.o
+                0x00001a20                SystemCoreClockUpdate
+                0x00001c48                SystemInit
+ .text          0x00001e5c       0x40 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/startup/gcc/startup_LPC17xx.o
+                0x00001e5c                _start
+ .text.Default_Handler
+                0x00001e9c        0x2 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/startup/gcc/startup_LPC17xx.o
+                0x00001e9c                TIMER2_IRQHandler
+                0x00001e9c                RIT_IRQHandler
+                0x00001e9c                I2C0_IRQHandler
+                0x00001e9c                PWM1_IRQHandler
+                0x00001e9c                I2C1_IRQHandler
+                0x00001e9c                EINT2_IRQHandler
+                0x00001e9c                UART1_IRQHandler
+                0x00001e9c                EINT3_IRQHandler
+                0x00001e9c                TIMER3_IRQHandler
+                0x00001e9c                UART0_IRQHandler
+                0x00001e9c                PLL0_IRQHandler
+                0x00001e9c                CAN_IRQHandler
+                0x00001e9c                PLL1_IRQHandler
+                0x00001e9c                SSP0_IRQHandler
+                0x00001e9c                I2S_IRQHandler
+                0x00001e9c                I2C2_IRQHandler
+                0x00001e9c                RTC_IRQHandler
+                0x00001e9c                TIMER0_IRQHandler
+                0x00001e9c                SPI_IRQHandler
+                0x00001e9c                EINT1_IRQHandler
+                0x00001e9c                TIMER1_IRQHandler
+                0x00001e9c                UART2_IRQHandler
+                0x00001e9c                Default_Handler
+                0x00001e9c                ADC_IRQHandler
+                0x00001e9c                SSP1_IRQHandler
+                0x00001e9c                USB_IRQHandler
+                0x00001e9c                BOD_IRQHandler
+                0x00001e9c                WDT_IRQHandler
+                0x00001e9c                QEI_IRQHandler
+                0x00001e9c                EINT0_IRQHandler
+                0x00001e9c                DMA_IRQHandler
+                0x00001e9c                UART3_IRQHandler
+                0x00001e9c                MCPWM_IRQHandler
+                0x00001e9c                ENET_IRQHandler
+ .text          0x00001e9e        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_adc.o
+ .text          0x00001e9e        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_can.o
+ *fill*         0x00001e9e        0x2 00
+ .text          0x00001ea0      0x2b8 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_clkpwr.o
+                0x00001eac                CLKPWR_SetPCLKDiv
+                0x00001f78                CLKPWR_GetPCLKSEL
+                0x00001fcc                CLKPWR_GetPCLK
+                0x0000203c                CLKPWR_ConfigPPWR
+                0x000020b8                CLKPWR_Sleep
+                0x000020d4                CLKPWR_DeepSleep
+                0x00002100                CLKPWR_PowerDown
+                0x0000212c                CLKPWR_DeepPowerDown
+ .text          0x00002158        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_dac.o
+ .text          0x00002158        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_emac.o
+ .text          0x00002158      0x624 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpdma.o
+                0x00002158                GPDMA_Init
+                0x000021f8                GPDMA_Setup
+                0x00002634                GPDMA_ChannelCmd
+                0x0000267c                GPDMA_IntHandler
+ .text          0x0000277c        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpio.o
+ .text          0x0000277c     0x145c g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2c.o
+                0x00002964                I2C_IntCmd
+                0x00002a10                I2C_MasterHandler
+                0x00002e18                I2C_SlaveHandler
+                0x00002ff8                I2C_SetClock
+                0x000030c0                I2C_DeInit
+                0x00003164                I2C_Init
+                0x0000323c                I2C_Cmd
+                0x000032c0                I2C_MasterTransferData
+                0x00003650                I2C_SlaveTransferData
+                0x000038f8                I2C_SetOwnSlaveAddr
+                0x00003a0c                I2C_MonitorModeConfig
+                0x00003aa4                I2C_MonitorModeCmd
+                0x00003b30                I2C_MonitorGetDatabuffer
+                0x00003b84                I2C0_StdIntHandler
+                0x00003ba0                I2C1_StdIntHandler
+                0x00003bbc                I2C2_StdIntHandler
+ .text          0x00003bd8        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2s.o
+ .text          0x00003bd8        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_libcfg_default.o
+ .text          0x00003bd8        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_mcpwm.o
+ .text          0x00003bd8      0x160 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_nvic.o
+                0x00003bd8                NVIC_DeInit
+                0x00003c54                NVIC_SCBDeInit
+                0x00003d10                NVIC_SetVTOR
+ .text          0x00003d38      0x2a4 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pinsel.o
+                0x00003d38                PINSEL_SetPinFunc
+                0x00003dd8                PINSEL_ConfigTraceFunc
+                0x00003e2c                PINSEL_SetResistorMode
+                0x00003ecc                PINSEL_SetOpenDrainMode
+                0x00003f4c                PINSEL_SetI2C0Pins
+                0x00003f88                PINSEL_ConfigPin
+ .text          0x00003fdc      0xba8 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pwm.o
+                0x00003fdc                PWM_GetIntStatus
+                0x0000406c                PWM_ClearIntPending
+                0x000040f0                PWM_ConfigStructInit
+                0x00004158                PWM_Init
+                0x00004318                PWM_DeInit
+                0x00004368                PWM_Cmd
+                0x000043d8                PWM_CounterCmd
+                0x00004448                PWM_ResetCounter
+                0x00004490                PWM_ConfigMatch
+                0x00004688                PWM_ConfigCapture
+                0x0000487c                PWM_GetCaptureValue
+                0x000048e8                PWM_MatchUpdate
+                0x000049f0                PWM_ChannelConfig
+                0x00004ac4                PWM_ChannelCmd
+ .text          0x00004b84        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_qei.o
+ .text          0x00004b84        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rit.o
+ .text          0x00004b84        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rtc.o
+ .text          0x00004b84        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_spi.o
+ .text          0x00004b84        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_ssp.o
+ .text          0x00004b84        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_timer.o
+ .text          0x00004b84     0x1340 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_uart.o
+                0x00004b84                getUartNum
+                0x00004bd8                uart_set_divisors
+                0x00004e4c                UART_GenIntHandler
+                0x0000501c                UART_DeInit
+                0x00005098                UART_Init
+                0x000053a8                UART_ConfigStructInit
+                0x000053dc                UART_SendData
+                0x00005454                UART_ReceiveData
+                0x000054cc                UART_ForceBreak
+                0x00005554                UART_IntConfig
+                0x00005728                UART_GetLineStatus
+                0x000057a4                UART_CheckBusy
+                0x000057d0                UART_FIFOConfig
+                0x00005958                UART_FIFOConfigStructInit
+                0x0000598c                UART_ABCmd
+                0x00005aec                UART_TxCmd
+                0x00005bdc                UART_Send
+                0x00005ce8                UART_Receive
+                0x00005dc0                UART_SetupCbs
+                0x00005e74                UART0_StdIntHandler
+                0x00005e88                UART1_StdIntHandler
+                0x00005e9c                UART2_StdIntHandler
+                0x00005eb0                UART3_StdIntHandler
+ .text          0x00005ec4        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_wdt.o
+ .text          0x00005ec4       0x2c g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_aeabi_uldivmod.o)
+                0x00005ec4                __aeabi_uldivmod
+ .text          0x00005ef0       0x58 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(bpabi.o)
+                0x00005ef0                __gnu_uldivmod_helper
+                0x00005f1c                __gnu_ldivmod_helper
+ .text          0x00005f48        0x4 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_dvmd_tls.o)
+                0x00005f48                __aeabi_idiv0
+                0x00005f48                __aeabi_ldiv0
+ .text          0x00005f4c      0x35c g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_divdi3.o)
+                0x00005f4c                __divdi3
+ .text          0x000062a8      0x304 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_udivdi3.o)
+                0x000062a8                __udivdi3
+ *fill*         0x000065ac        0x4 00
+ .text          0x000065b0      0x278 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_udivsi3.o)
+                0x000065b0                __aeabi_uidiv
+                0x000065b0                __udivsi3
+                0x0000680c                __aeabi_uidivmod
+ .text          0x00006828        0x0 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtend.o
+ .text          0x00006828        0x0 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtn.o
+ *(.plt)
+ *(.gnu.warning)
+ *(.glue_7t)
+ .glue_7t       0x00000000        0x0 linker stubs
+ *(.glue_7)
+ .glue_7        0x00000000        0x0 linker stubs
+ *(.vfp11_veneer)
+ .vfp11_veneer  0x00000000        0x0 linker stubs
+ *(.ARM.extab* .gnu.linkonce.armextab.*)
+ .ARM.extab     0x00006828        0x0 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_divdi3.o)
+ .ARM.extab     0x00006828        0x0 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_udivdi3.o)
+ *(.gcc_except_table)
+
+.v4_bx          0x00006828        0x0
+ .v4_bx         0x00000000        0x0 linker stubs
+
+.eh_frame_hdr
+ *(.eh_frame_hdr)
+
+.eh_frame       0x00006828        0x4
+ *(.eh_frame)
+ .eh_frame      0x00006828        0x0 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtbegin.o
+ .eh_frame      0x00006828        0x4 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtend.o
+
+.rodata         0x0000682c     0x16ac
+ *(.rodata .rodata.* .gnu.linkonce.r.*)
+ .rodata        0x0000682c     0x1518 GLCD_SPI_LPC1700.o
+                0x0000682c                Font_24x16
+ .rodata        0x00007d44        0x8 debug_frmwrk.o
+ .rodata        0x00007d4c       0x90 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpdma.o
+                0x00007d4c                GPDMA_LUTPerAddr
+                0x00007dac                GPDMA_LUTPerBurst
+                0x00007dc4                GPDMA_LUTPerWid
+ .rodata        0x00007ddc       0x48 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2c.o
+ .rodata        0x00007e24       0x48 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pwm.o
+ .rodata        0x00007e6c       0x4c g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_uart.o
+                0x00007eb8                . = ALIGN (0x4)
+ *(.init)
+ .init          0x00007eb8        0x4 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crti.o
+                0x00007eb8                _init
+ .init          0x00007ebc        0x8 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtn.o
+                0x00007ec4                . = ALIGN (0x4)
+                0x00007ec4                __preinit_array_start = .
+ *(.preinit_array)
+                0x00007ec4                __preinit_array_end = .
+                0x00007ec4                . = ALIGN (0x4)
+                0x00007ec4                __init_array_start = .
+ *(SORT(.init_array.*))
+ *(.init_array)
+ .init_array    0x00007ec4        0x4 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtbegin.o
+                0x00007ec8                __init_array_end = .
+                0x00007ec8                . = ALIGN (0x4)
+ *(.fini)
+ .fini          0x00007ec8        0x4 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crti.o
+                0x00007ec8                _fini
+ .fini          0x00007ecc        0x8 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtn.o
+                0x00007ed4                . = ALIGN (0x4)
+                0x00007ed4                __fini_array_start = .
+ *(.fini_array)
+ .fini_array    0x00007ed4        0x4 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtbegin.o
+ *(SORT(.fini_array.*))
+                0x00007ed8                __fini_array_end = .
+                0x00007ed8                . = ALIGN (0x4)
+ *crtbegin.o(.ctors)
+ *(EXCLUDE_FILE(*crtend.o) .ctors)
+ *(SORT(.ctors.*))
+ *crtend.o(.ctors)
+                0x00007ed8                . = ALIGN (0x4)
+ *crtbegin.o(.dtors)
+ *(EXCLUDE_FILE(*crtend.o) .dtors)
+ *(SORT(.dtors.*))
+ *crtend.o(.dtors)
+                0x00007ed8                __exidx_start = .
+
+.ARM.exidx      0x00007ed8        0x8
+ *(.ARM.exidx* .gnu.linkonce.armexidx.*)
+ .ARM.exidx     0x00007ed8        0x8 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_divdi3.o)
+ .ARM.exidx     0x00007ee0        0x0 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_udivdi3.o)
+                                  0x8 (size before relaxing)
+                0x00007ee0                __exidx_end = .
+                0x00007ee0                . = ALIGN (0x8)
+                0x00007ee0                _etext = .
+                0x00007ee0                . = ALIGN (0x8)
+                0x00007ee0                _ldata = ABSOLUTE (.)
+
+.data           0x10000000      0x1e0 load address 0x00007ee0
+                0x10000000                _data = .
+ *(.jcr)
+ .jcr           0x10000000        0x0 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtbegin.o
+ .jcr           0x10000000        0x4 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtend.o
+ *(.got.plt)
+ *(.got)
+ *(.shdata)
+ *(.data .data.* .gnu.linkonce.d.*)
+ .data          0x10000004        0x0 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crti.o
+ .data          0x10000004        0x4 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtbegin.o
+                0x10000004                __dso_handle
+ .data          0x10000008        0x2 GLCD_SPI_LPC1700.o
+ .data          0x1000000a        0x0 debug_frmwrk.o
+ *fill*         0x1000000a        0x2 00
+ .data          0x1000000c      0x1ac lcdtest.o
+                0x1000000c                menu1
+                0x10000180                menu2
+                0x10000194                lcd_text
+ .data          0x100001b8        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.o
+ .data          0x100001b8        0x4 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.o
+                0x100001b8                SystemCoreClock
+ .data          0x100001bc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/startup/gcc/startup_LPC17xx.o
+ .data          0x100001bc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_adc.o
+ .data          0x100001bc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_can.o
+ .data          0x100001bc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_clkpwr.o
+ .data          0x100001bc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_dac.o
+ .data          0x100001bc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_emac.o
+ .data          0x100001bc       0x20 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpdma.o
+                0x100001bc                pGPDMACh
+ .data          0x100001dc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpio.o
+ .data          0x100001dc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2c.o
+ .data          0x100001dc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2s.o
+ .data          0x100001dc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_libcfg_default.o
+ .data          0x100001dc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_mcpwm.o
+ .data          0x100001dc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_nvic.o
+ .data          0x100001dc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pinsel.o
+ .data          0x100001dc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pwm.o
+ .data          0x100001dc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_qei.o
+ .data          0x100001dc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rit.o
+ .data          0x100001dc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rtc.o
+ .data          0x100001dc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_spi.o
+ .data          0x100001dc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_ssp.o
+ .data          0x100001dc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_timer.o
+ .data          0x100001dc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_uart.o
+ .data          0x100001dc        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_wdt.o
+ .data          0x100001dc        0x0 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_aeabi_uldivmod.o)
+ .data          0x100001dc        0x0 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(bpabi.o)
+ .data          0x100001dc        0x0 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_dvmd_tls.o)
+ .data          0x100001dc        0x0 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_divdi3.o)
+ .data          0x100001dc        0x0 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_udivdi3.o)
+ .data          0x100001dc        0x0 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_udivsi3.o)
+ .data          0x100001dc        0x0 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtend.o
+ .data          0x100001dc        0x0 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtn.o
+                0x100001e0                . = ALIGN (0x8)
+ *fill*         0x100001dc        0x4 00
+ *(.ram)
+                0x100001e0                _edata = .
+
+.bss            0x100001e0       0xd8 load address 0x000080c0
+                0x100001e0                _bss = .
+ *(.shbss)
+ *(.bss .bss.* .gnu.linkonce.b.*)
+ .bss           0x100001e0        0x0 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crti.o
+ .bss           0x100001e0       0x1c g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtbegin.o
+ .bss           0x100001fc        0x4 GLCD_SPI_LPC1700.o
+ .bss           0x10000200        0x0 debug_frmwrk.o
+ .bss           0x10000200        0x0 lcdtest.o
+ .bss           0x10000200        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.o
+ .bss           0x10000200        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.o
+ .bss           0x10000200        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/startup/gcc/startup_LPC17xx.o
+ .bss           0x10000200        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_adc.o
+ .bss           0x10000200        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_can.o
+ .bss           0x10000200        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_clkpwr.o
+ .bss           0x10000200        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_dac.o
+ .bss           0x10000200        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_emac.o
+ .bss           0x10000200       0x20 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpdma.o
+ .bss           0x10000220        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpio.o
+ .bss           0x10000220       0x24 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2c.o
+ .bss           0x10000244        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2s.o
+ .bss           0x10000244        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_libcfg_default.o
+ .bss           0x10000244        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_mcpwm.o
+ .bss           0x10000244        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_nvic.o
+ .bss           0x10000244        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pinsel.o
+ .bss           0x10000244        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pwm.o
+ .bss           0x10000244        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_qei.o
+ .bss           0x10000244        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rit.o
+ .bss           0x10000244        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rtc.o
+ .bss           0x10000244        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_spi.o
+ .bss           0x10000244        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_ssp.o
+ .bss           0x10000244        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_timer.o
+ .bss           0x10000244       0x44 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_uart.o
+                0x10000244                uartCbsDat
+                0x10000284                pfnModemCbs
+ .bss           0x10000288        0x0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_wdt.o
+ .bss           0x10000288        0x0 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_aeabi_uldivmod.o)
+ .bss           0x10000288        0x0 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(bpabi.o)
+ .bss           0x10000288        0x0 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_dvmd_tls.o)
+ .bss           0x10000288        0x0 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_divdi3.o)
+ .bss           0x10000288        0x0 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_udivdi3.o)
+ .bss           0x10000288        0x0 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_udivsi3.o)
+ .bss           0x10000288        0x0 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtend.o
+ .bss           0x10000288        0x0 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtn.o
+                0x10000288                _ebss = .
+ *(COMMON)
+ COMMON         0x10000288       0x28 debug_frmwrk.o
+                0x10000288                _db_dec
+                0x1000028c                _db_dec_32
+                0x10000290                _db_hex_32
+                0x10000294                _db_dec_16
+                0x10000298                _db_msg
+                0x1000029c                _db_get_char
+                0x100002a0                _db_msg_
+                0x100002a4                _db_char
+                0x100002a8                _db_hex
+                0x100002ac                _db_hex_16
+ COMMON         0x100002b0        0x8 lcdtest.o
+                0x100002b0                UARTConfigStruct
+                0x100002b8                . = ALIGN (0x8)
+ *(.ram.b)
+
+.heap           0x100002b8        0x0
+                0x100002b8                . = ALIGN (0x8)
+                0x100002b8                _heap = .
+ *(.heap)
+                0x100002b8                _eheap = .
+
+.stack          0x100002b8        0x0
+                0x100002b8                . = ALIGN (0x8)
+                0x100002b8                _stack = .
+ *(.stack)
+                0x10007fec                . = (_ram_end - 0x10)
+                0x10007fec                estack = .
+                0x10007fec                _estack = .
+                0x10007ffc                . = _ram_end
+                0x10007ffc                _end = .
+                0x10007ffc                __end = .
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.comment        0x00000000      0x46e
+ .comment       0x00000000       0x2a GLCD_SPI_LPC1700.o
+ .comment       0x0000002a       0x2a debug_frmwrk.o
+ .comment       0x00000054       0x2a lcdtest.o
+ .comment       0x0000007e       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.o
+ .comment       0x000000a8       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.o
+ .comment       0x000000d2       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_adc.o
+ .comment       0x000000fc       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_can.o
+ .comment       0x00000126       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_clkpwr.o
+ .comment       0x00000150       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_dac.o
+ .comment       0x0000017a       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_emac.o
+ .comment       0x000001a4       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpdma.o
+ .comment       0x000001ce       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpio.o
+ .comment       0x000001f8       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2c.o
+ .comment       0x00000222       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2s.o
+ .comment       0x0000024c       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_libcfg_default.o
+ .comment       0x00000276       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_mcpwm.o
+ .comment       0x000002a0       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_nvic.o
+ .comment       0x000002ca       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pinsel.o
+ .comment       0x000002f4       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pwm.o
+ .comment       0x0000031e       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_qei.o
+ .comment       0x00000348       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rit.o
+ .comment       0x00000372       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rtc.o
+ .comment       0x0000039c       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_spi.o
+ .comment       0x000003c6       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_ssp.o
+ .comment       0x000003f0       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_timer.o
+ .comment       0x0000041a       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_uart.o
+ .comment       0x00000444       0x2a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_wdt.o
+
+.debug_aranges  0x00000000      0x1b0
+ *(.debug_aranges)
+ .debug_aranges
+                0x00000000       0x20 GLCD_SPI_LPC1700.o
+ .debug_aranges
+                0x00000020       0x20 debug_frmwrk.o
+ .debug_aranges
+                0x00000040       0x20 lcdtest.o
+ .debug_aranges
+                0x00000060       0x20 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.o
+ .debug_aranges
+                0x00000080       0x20 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.o
+ .debug_aranges
+                0x000000a0       0x30 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/startup/gcc/startup_LPC17xx.o
+ .debug_aranges
+                0x000000d0       0x20 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_clkpwr.o
+ .debug_aranges
+                0x000000f0       0x20 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpdma.o
+ .debug_aranges
+                0x00000110       0x20 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2c.o
+ .debug_aranges
+                0x00000130       0x20 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_nvic.o
+ .debug_aranges
+                0x00000150       0x20 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pinsel.o
+ .debug_aranges
+                0x00000170       0x20 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pwm.o
+ .debug_aranges
+                0x00000190       0x20 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_uart.o
+
+.debug_pubnames
+                0x00000000      0xb5a
+ *(.debug_pubnames)
+ .debug_pubnames
+                0x00000000      0x10d GLCD_SPI_LPC1700.o
+ .debug_pubnames
+                0x0000010d      0x150 debug_frmwrk.o
+ .debug_pubnames
+                0x0000025d       0x7d lcdtest.o
+ .debug_pubnames
+                0x000002da      0x159 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.o
+ .debug_pubnames
+                0x00000433       0x4f g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.o
+ .debug_pubnames
+                0x00000482       0xbb g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_clkpwr.o
+ .debug_pubnames
+                0x0000053d       0xa7 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpdma.o
+ .debug_pubnames
+                0x000005e4      0x165 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2c.o
+ .debug_pubnames
+                0x00000749       0x46 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_nvic.o
+ .debug_pubnames
+                0x0000078f       0xa6 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pinsel.o
+ .debug_pubnames
+                0x00000835      0x127 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pwm.o
+ .debug_pubnames
+                0x0000095c      0x1fe g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_uart.o
+
+.debug_info     0x00000000     0x6304
+ *(.debug_info .gnu.linkonce.wi.*)
+ .debug_info    0x00000000      0xda3 GLCD_SPI_LPC1700.o
+ .debug_info    0x00000da3      0x894 debug_frmwrk.o
+ .debug_info    0x00001637      0x622 lcdtest.o
+ .debug_info    0x00001c59      0x540 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.o
+ .debug_info    0x00002199      0x328 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.o
+ .debug_info    0x000024c1       0xcd g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/startup/gcc/startup_LPC17xx.o
+ .debug_info    0x0000258e       0x85 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_adc.o
+ .debug_info    0x00002613       0x85 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_can.o
+ .debug_info    0x00002698      0x607 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_clkpwr.o
+ .debug_info    0x00002c9f       0x85 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_dac.o
+ .debug_info    0x00002d24       0x85 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_emac.o
+ .debug_info    0x00002da9      0x47b g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpdma.o
+ .debug_info    0x00003224       0x85 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpio.o
+ .debug_info    0x000032a9      0xcad g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2c.o
+ .debug_info    0x00003f56       0x85 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2s.o
+ .debug_info    0x00003fdb       0x6f g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_libcfg_default.o
+ .debug_info    0x0000404a       0x85 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_mcpwm.o
+ .debug_info    0x000040cf      0x3cc g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_nvic.o
+ .debug_info    0x0000449b      0x48f g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pinsel.o
+ .debug_info    0x0000492a      0x80c g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pwm.o
+ .debug_info    0x00005136       0x85 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_qei.o
+ .debug_info    0x000051bb       0x85 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rit.o
+ .debug_info    0x00005240       0x85 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rtc.o
+ .debug_info    0x000052c5       0x85 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_spi.o
+ .debug_info    0x0000534a       0x85 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_ssp.o
+ .debug_info    0x000053cf       0x85 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_timer.o
+ .debug_info    0x00005454      0xe2b g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_uart.o
+ .debug_info    0x0000627f       0x85 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_wdt.o
+
+.debug_abbrev   0x00000000     0x166b
+ *(.debug_abbrev)
+ .debug_abbrev  0x00000000      0x21b GLCD_SPI_LPC1700.o
+ .debug_abbrev  0x0000021b      0x1b1 debug_frmwrk.o
+ .debug_abbrev  0x000003cc      0x1e8 lcdtest.o
+ .debug_abbrev  0x000005b4       0xd3 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.o
+ .debug_abbrev  0x00000687       0xc0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.o
+ .debug_abbrev  0x00000747       0x12 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/startup/gcc/startup_LPC17xx.o
+ .debug_abbrev  0x00000759       0x49 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_adc.o
+ .debug_abbrev  0x000007a2       0x49 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_can.o
+ .debug_abbrev  0x000007eb      0x177 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_clkpwr.o
+ .debug_abbrev  0x00000962       0x49 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_dac.o
+ .debug_abbrev  0x000009ab       0x49 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_emac.o
+ .debug_abbrev  0x000009f4      0x184 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpdma.o
+ .debug_abbrev  0x00000b78       0x49 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpio.o
+ .debug_abbrev  0x00000bc1      0x24d g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2c.o
+ .debug_abbrev  0x00000e0e       0x49 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2s.o
+ .debug_abbrev  0x00000e57       0x28 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_libcfg_default.o
+ .debug_abbrev  0x00000e7f       0x49 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_mcpwm.o
+ .debug_abbrev  0x00000ec8       0xe5 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_nvic.o
+ .debug_abbrev  0x00000fad      0x10d g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pinsel.o
+ .debug_abbrev  0x000010ba      0x18c g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pwm.o
+ .debug_abbrev  0x00001246       0x49 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_qei.o
+ .debug_abbrev  0x0000128f       0x49 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rit.o
+ .debug_abbrev  0x000012d8       0x49 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rtc.o
+ .debug_abbrev  0x00001321       0x49 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_spi.o
+ .debug_abbrev  0x0000136a       0x49 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_ssp.o
+ .debug_abbrev  0x000013b3       0x49 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_timer.o
+ .debug_abbrev  0x000013fc      0x226 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_uart.o
+ .debug_abbrev  0x00001622       0x49 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_wdt.o
+
+.debug_line     0x00000000     0x23c0
+ *(.debug_line)
+ .debug_line    0x00000000      0x2aa GLCD_SPI_LPC1700.o
+ .debug_line    0x000002aa      0x257 debug_frmwrk.o
+ .debug_line    0x00000501      0x1d6 lcdtest.o
+ .debug_line    0x000006d7      0x176 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.o
+ .debug_line    0x0000084d      0x1a0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.o
+ .debug_line    0x000009ed       0xd8 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/startup/gcc/startup_LPC17xx.o
+ .debug_line    0x00000ac5       0x6b g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_adc.o
+ .debug_line    0x00000b30       0x6b g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_can.o
+ .debug_line    0x00000b9b      0x244 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_clkpwr.o
+ .debug_line    0x00000ddf       0x6b g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_dac.o
+ .debug_line    0x00000e4a       0x6b g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_emac.o
+ .debug_line    0x00000eb5      0x26a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpdma.o
+ .debug_line    0x0000111f       0x6b g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpio.o
+ .debug_line    0x0000118a      0x443 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2c.o
+ .debug_line    0x000015cd       0x6b g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2s.o
+ .debug_line    0x00001638       0x1d g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_libcfg_default.o
+ .debug_line    0x00001655       0x6b g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_mcpwm.o
+ .debug_line    0x000016c0      0x153 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_nvic.o
+ .debug_line    0x00001813      0x22d g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pinsel.o
+ .debug_line    0x00001a40      0x2b7 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pwm.o
+ .debug_line    0x00001cf7       0x6b g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_qei.o
+ .debug_line    0x00001d62       0x6b g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rit.o
+ .debug_line    0x00001dcd       0x6b g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rtc.o
+ .debug_line    0x00001e38       0x6b g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_spi.o
+ .debug_line    0x00001ea3       0x6b g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_ssp.o
+ .debug_line    0x00001f0e       0x6b g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_timer.o
+ .debug_line    0x00001f79      0x3dc g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_uart.o
+ .debug_line    0x00002355       0x6b g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_wdt.o
+
+.debug_frame    0x00000000     0x1290
+ *(.debug_frame)
+ .debug_frame   0x00000000      0x2d0 GLCD_SPI_LPC1700.o
+ .debug_frame   0x000002d0      0x170 debug_frmwrk.o
+ .debug_frame   0x00000440       0x9c lcdtest.o
+ .debug_frame   0x000004dc      0x248 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.o
+ .debug_frame   0x00000724       0x48 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.o
+ .debug_frame   0x0000076c      0x110 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_clkpwr.o
+ .debug_frame   0x0000087c       0x84 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpdma.o
+ .debug_frame   0x00000900      0x2c8 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2c.o
+ .debug_frame   0x00000bc8       0x64 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_nvic.o
+ .debug_frame   0x00000c2c       0xbc g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pinsel.o
+ .debug_frame   0x00000ce8      0x1d0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pwm.o
+ .debug_frame   0x00000eb8      0x2d0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_uart.o
+ .debug_frame   0x00001188       0x60 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(bpabi.o)
+ .debug_frame   0x000011e8       0x44 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_divdi3.o)
+ .debug_frame   0x0000122c       0x44 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_udivdi3.o)
+ .debug_frame   0x00001270       0x20 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_udivsi3.o)
+
+.debug_str      0x00000000     0x257b
+ *(.debug_str)
+ .debug_str     0x00000000      0x55a GLCD_SPI_LPC1700.o
+                                0x5a7 (size before relaxing)
+ .debug_str     0x0000055a      0x2af debug_frmwrk.o
+                                0x3fc (size before relaxing)
+ .debug_str     0x00000809       0xd0 lcdtest.o
+                                0x356 (size before relaxing)
+ .debug_str     0x000008d9      0x17e g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.o
+                                0x23e (size before relaxing)
+ .debug_str     0x00000a57       0x90 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.o
+                                0x258 (size before relaxing)
+ .debug_str     0x00000ae7       0x48 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_adc.o
+                                 0xea (size before relaxing)
+ .debug_str     0x00000b2f       0x48 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_can.o
+                                 0xea (size before relaxing)
+ .debug_str     0x00000b77      0x117 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_clkpwr.o
+                                0x350 (size before relaxing)
+ .debug_str     0x00000c8e       0x48 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_dac.o
+                                 0xea (size before relaxing)
+ .debug_str     0x00000cd6       0x49 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_emac.o
+                                 0xeb (size before relaxing)
+ .debug_str     0x00000d1f      0x2a3 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpdma.o
+                                0x391 (size before relaxing)
+ .debug_str     0x00000fc2       0x49 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpio.o
+                                 0xeb (size before relaxing)
+ .debug_str     0x0000100b      0x6a6 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2c.o
+                                0x7e5 (size before relaxing)
+ .debug_str     0x000016b1       0x48 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2s.o
+                                 0xea (size before relaxing)
+ .debug_str     0x000016f9       0x53 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_libcfg_default.o
+                                 0xe8 (size before relaxing)
+ .debug_str     0x0000174c       0x4a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_mcpwm.o
+                                 0xec (size before relaxing)
+ .debug_str     0x00001796       0x78 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_nvic.o
+                                0x1c9 (size before relaxing)
+ .debug_str     0x0000180e      0x13b g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pinsel.o
+                                0x359 (size before relaxing)
+ .debug_str     0x00001949      0x49a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pwm.o
+                                0x593 (size before relaxing)
+ .debug_str     0x00001de3       0x48 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_qei.o
+                                 0xea (size before relaxing)
+ .debug_str     0x00001e2b       0x48 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rit.o
+                                 0xea (size before relaxing)
+ .debug_str     0x00001e73       0x48 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rtc.o
+                                 0xea (size before relaxing)
+ .debug_str     0x00001ebb       0x48 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_spi.o
+                                 0xea (size before relaxing)
+ .debug_str     0x00001f03       0x48 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_ssp.o
+                                 0xea (size before relaxing)
+ .debug_str     0x00001f4b       0x4a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_timer.o
+                                 0xec (size before relaxing)
+ .debug_str     0x00001f95      0x59e g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_uart.o
+                                0x847 (size before relaxing)
+ .debug_str     0x00002533       0x48 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_wdt.o
+                                 0xea (size before relaxing)
+
+.debug_loc      0x00000000     0x1d45
+ *(.debug_loc)
+ .debug_loc     0x00000000      0x4c1 GLCD_SPI_LPC1700.o
+ .debug_loc     0x000004c1      0x25d debug_frmwrk.o
+ .debug_loc     0x0000071e       0xef lcdtest.o
+ .debug_loc     0x0000080d      0x3de g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.o
+ .debug_loc     0x00000beb       0x56 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.o
+ .debug_loc     0x00000c41      0x1b3 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_clkpwr.o
+ .debug_loc     0x00000df4       0xd0 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpdma.o
+ .debug_loc     0x00000ec4      0x4cd g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2c.o
+ .debug_loc     0x00001391       0xa5 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_nvic.o
+ .debug_loc     0x00001436      0x14a g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pinsel.o
+ .debug_loc     0x00001580      0x302 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pwm.o
+ .debug_loc     0x00001882      0x4c3 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_uart.o
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_ranges   0x00000000       0x28
+ *(.debug_ranges)
+ .debug_ranges  0x00000000       0x28 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/startup/gcc/startup_LPC17xx.o
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.note.gnu.arm.ident
+ *(.note.gnu.arm.ident)
+
+.ARM.attributes
+                0x00000000       0x25
+ *(.ARM.attributes)
+ .ARM.attributes
+                0x00000000       0x17 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crti.o
+ .ARM.attributes
+                0x00000017       0x27 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtbegin.o
+ .ARM.attributes
+                0x0000003e       0x31 GLCD_SPI_LPC1700.o
+ .ARM.attributes
+                0x0000006f       0x31 debug_frmwrk.o
+ .ARM.attributes
+                0x000000a0       0x31 lcdtest.o
+ .ARM.attributes
+                0x000000d1       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/CoreSupport/core_cm3.o
+ .ARM.attributes
+                0x00000102       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/system_LPC17xx.o
+ .ARM.attributes
+                0x00000133       0x21 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Core/CM3/DeviceSupport/NXP/LPC17xx/startup/gcc/startup_LPC17xx.o
+ .ARM.attributes
+                0x00000154       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_adc.o
+ .ARM.attributes
+                0x00000185       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_can.o
+ .ARM.attributes
+                0x000001b6       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_clkpwr.o
+ .ARM.attributes
+                0x000001e7       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_dac.o
+ .ARM.attributes
+                0x00000218       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_emac.o
+ .ARM.attributes
+                0x00000249       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpdma.o
+ .ARM.attributes
+                0x0000027a       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_gpio.o
+ .ARM.attributes
+                0x000002ab       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2c.o
+ .ARM.attributes
+                0x000002dc       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_i2s.o
+ .ARM.attributes
+                0x0000030d       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_libcfg_default.o
+ .ARM.attributes
+                0x0000033e       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_mcpwm.o
+ .ARM.attributes
+                0x0000036f       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_nvic.o
+ .ARM.attributes
+                0x000003a0       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pinsel.o
+ .ARM.attributes
+                0x000003d1       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_pwm.o
+ .ARM.attributes
+                0x00000402       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_qei.o
+ .ARM.attributes
+                0x00000433       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rit.o
+ .ARM.attributes
+                0x00000464       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_rtc.o
+ .ARM.attributes
+                0x00000495       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_spi.o
+ .ARM.attributes
+                0x000004c6       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_ssp.o
+ .ARM.attributes
+                0x000004f7       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_timer.o
+ .ARM.attributes
+                0x00000528       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_uart.o
+ .ARM.attributes
+                0x00000559       0x31 g:/32bitmicro/src/nxp/lpc17xx/LPC1700CMSIS/Drivers/source/lpc17xx_wdt.o
+ .ARM.attributes
+                0x0000058a       0x19 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_aeabi_uldivmod.o)
+ .ARM.attributes
+                0x000005a3       0x27 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(bpabi.o)
+ .ARM.attributes
+                0x000005ca       0x19 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_dvmd_tls.o)
+ .ARM.attributes
+                0x000005e3       0x27 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_divdi3.o)
+ .ARM.attributes
+                0x0000060a       0x27 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_udivdi3.o)
+ .ARM.attributes
+                0x00000631       0x19 g:/32bitmicro/win32/arm-2009q3/lib/gcc/arm-none-eabi/4.4.1/thumb2\libgcc.a(_udivsi3.o)
+ .ARM.attributes
+                0x0000064a       0x27 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtend.o
+ .ARM.attributes
+                0x00000671       0x17 g:/32bitmicro/win32/arm-2009q3/bin/../lib/gcc/arm-none-eabi/4.4.1/thumb2/crtn.o
+
+/DISCARD/
+ *(.note.GNU-stack)
+OUTPUT(lcdtest.elf elf32-littlearm)
