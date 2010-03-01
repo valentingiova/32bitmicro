@@ -1,248 +1,315 @@
-/*****************************************************************************/
-/* startup_LPC17xx.s: Startup file for LPC17xx device series                 */
-/*****************************************************************************/
-/* Version: CodeSourcery Sourcery G++ Lite (with CS3)                        */
-/*****************************************************************************/
-
-
 /*
-//*** <<< Use Configuration Wizard in Context Menu >>> ***
+ * 32bitmicro startup_LPC17xx.S  Startup File for the NXP LPC17xx Device Series 
+
+ * $URL$
+ * $ID$
+
+Copyright (c) 2009, 32bitmicro
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation 
+and/or other materials provided with the distribution.
+Neither the name of the 32bitmicro nor the names of its contributors may be used to endorse or promote products derived from this software without 
+specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
 
-/*
-// <h> Stack Configuration
-//   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
-// </h>
-*/
+	.syntax unified
+	.cpu cortex-m3
+	.fpu softvfp
+	.thumb
 
-    .equ    Stack_Size, 0x00000100
-    .section ".stack", "w"
-    .align  3
-    .globl  __cs3_stack_mem
-    .globl  __cs3_stack_size
-__cs3_stack_mem:
-    .if     Stack_Size
-    .space  Stack_Size
-    .endif
-    .size   __cs3_stack_mem,  . - __cs3_stack_mem
-    .set    __cs3_stack_size, . - __cs3_stack_mem
+/* interrupt vectors table */
 
+	.global	__isr_vectors
+	.weak	__isr_vectors
 
-/*
-// <h> Heap Configuration
-//   <o>  Heap Size (in Bytes) <0x0-0xFFFFFFFF:8>
-// </h>
-*/
+ 	.section ".isr_vector","a",%progbits
+	.type	__isr_vectors, %object
+	.size	__isr_vectors, .-__isr_vectors
 
-    .equ    Heap_Size,  0x00001000
+__isr_vectors:
+	.long	_estack                   /*  0: Top of Stack                 */
+/* CM3 system interrupts */
+	.long	Reset_Handler             /*  1: Reset Handler                */
+	.long	NMI_Handler               /*  2: NMI Handler                  */
+	.long	HardFault_Handler         /*  3: Hard Fault Handler           */
+	.long	MemManage_Handler         /*  4: MPU Fault Handler            */
+	.long	BusFault_Handler          /*  5: Bus Fault Handler            */
+	.long	UsageFault_Handler        /*  6: Usage Fault Handler          */
+	.long	0                         /*  7: Reserved                     */
+	.long	0                         /*  8: Reserved                     */
+	.long	0                         /*  9: Reserved                     */
+	.long	0                         /* 10: Reserved                     */
+	.long	SVC_Handler               /* 11: SVCall Handler               */
+	.long	DebugMon_Handler          /* 12: Debug Monitor Handler        */
+	.long	0                         /* 13: Reserved                     */
+	.long	PendSV_Handler            /* 14: PendSV Handler               */
+	.long	SysTick_Handler           /* 15: SysTick Handler              */
 
-    .section ".heap", "w"
-    .align  3
-    .globl  __cs3_heap_start
-    .globl  __cs3_heap_end
-__cs3_heap_start:
-    .if     Heap_Size
-    .space  Heap_Size
-    .endif
-__cs3_heap_end:
-
-
-/* Vector Table */
-
-    .section ".cs3.interrupt_vector"
-    .globl  __cs3_interrupt_vector_cortex_m
-    .type   __cs3_interrupt_vector_cortex_m, %object
-
-__cs3_interrupt_vector_cortex_m:
-    .long   __cs3_stack                 /* Top of Stack                 */
-    .long   __cs3_reset                 /* Reset Handler                */
-    .long   NMI_Handler                 /* NMI Handler                  */
-    .long   HardFault_Handler           /* Hard Fault Handler           */
-    .long   MemManage_Handler           /* MPU Fault Handler            */
-    .long   BusFault_Handler            /* Bus Fault Handler            */
-    .long   UsageFault_Handler          /* Usage Fault Handler          */
-    .long   0                           /* Reserved                     */
-    .long   0                           /* Reserved                     */
-    .long   0                           /* Reserved                     */
-    .long   0                           /* Reserved                     */
-    .long   SVC_Handler                 /* SVCall Handler               */
-    .long   DebugMon_Handler            /* Debug Monitor Handler        */
-    .long   0                           /* Reserved                     */
-    .long   PendSV_Handler              /* PendSV Handler               */
-    .long   SysTick_Handler             /* SysTick Handler              */
-
-    /* External Interrupts */
-    .long   WDT_IRQHandler              /* 16: Watchdog Timer               */
-    .long   TIMER0_IRQHandler           /* 17: Timer0                       */
-    .long   TIMER1_IRQHandler           /* 18: Timer1                       */
-    .long   TIMER2_IRQHandler           /* 19: Timer2                       */
-    .long   TIMER3_IRQHandler           /* 20: Timer3                       */
-    .long   UART0_IRQHandler            /* 21: UART0                        */
-    .long   UART1_IRQHandler            /* 22: UART1                        */
-    .long   UART2_IRQHandler            /* 23: UART2                        */
-    .long   UART3_IRQHandler            /* 24: UART3                        */
-    .long   PWM1_IRQHandler             /* 25: PWM1                         */
-    .long   I2C0_IRQHandler             /* 26: I2C0                         */
-    .long   I2C1_IRQHandler             /* 27: I2C1                         */
-    .long   I2C2_IRQHandler             /* 28: I2C2                         */
-    .long   SPI_IRQHandler              /* 29: SPI                          */
-    .long   SSP0_IRQHandler             /* 30: SSP0                         */
-    .long   SSP1_IRQHandler             /* 31: SSP1                         */
-    .long   PLL0_IRQHandler             /* 32: PLL0 Lock (Main PLL)         */
-    .long   RTC_IRQHandler              /* 33: Real Time Clock              */
-    .long   EINT0_IRQHandler            /* 34: External Interrupt 0         */
-    .long   EINT1_IRQHandler            /* 35: External Interrupt 1         */
-    .long   EINT2_IRQHandler            /* 36: External Interrupt 2         */
-    .long   EINT3_IRQHandler            /* 37: External Interrupt 3         */
-    .long   ADC_IRQHandler              /* 38: A/D Converter                */
-    .long   BOD_IRQHandler              /* 39: Brown-Out Detect             */
-    .long   USB_IRQHandler              /* 40: USB                          */
-    .long   CAN_IRQHandler              /* 41: CAN                          */
-    .long   DMA_IRQHandler              /* 42: General Purpose DMA          */
-    .long   I2S_IRQHandler              /* 43: I2S                          */
-    .long   ENET_IRQHandler             /* 44: Ethernet                     */
-    .long   RIT_IRQHandler              /* 45: Repetitive Interrupt Timer   */
-    .long   MCPWM_IRQHandler            /* 46: Motor Control PWM            */
-    .long   QEI_IRQHandler              /* 47: Quadrature Encoder Interface */
-    .long   PLL1_IRQHandler             /* 48: PLL1 Lock (USB PLL)          */
-    .long	USBActivity_IRQHandler		/* 49: USB Activity 				*/
-    .long 	CANActivity_IRQHandler		/* 50: CAN Activity					*/
-
-    .size   __cs3_interrupt_vector_cortex_m, . - __cs3_interrupt_vector_cortex_m
+/* LPC17xx interrupts */
+	.long	WDT_IRQHandler            /* 16: Watchdog Timer               */
+	.long	TIMER0_IRQHandler         /* 17: Timer0                       */
+	.long	TIMER1_IRQHandler         /* 18: Timer1                       */
+	.long	TIMER2_IRQHandler         /* 19: Timer2                       */
+	.long	TIMER3_IRQHandler         /* 20: Timer3                       */
+	.long	UART0_IRQHandler          /* 21: UART0                        */
+	.long	UART1_IRQHandler          /* 22: UART1                        */
+	.long	UART2_IRQHandler          /* 23: UART2                        */
+	.long	UART3_IRQHandler          /* 24: UART3                        */
+	.long	PWM1_IRQHandler           /* 25: PWM1                         */
+	.long	I2C0_IRQHandler           /* 26: I2C0                         */
+	.long	I2C1_IRQHandler           /* 27: I2C1                         */
+	.long	I2C2_IRQHandler           /* 28: I2C2                         */
+	.long	SPI_IRQHandler            /* 29: SPI                          */
+	.long	SSP0_IRQHandler           /* 30: SSP0                         */
+	.long	SSP1_IRQHandler           /* 31: SSP1                         */
+	.long	PLL0_IRQHandler           /* 32: PLL0 Lock (Main PLL)         */
+	.long	RTC_IRQHandler            /* 33: Real Time Clock              */
+	.long	EINT0_IRQHandler          /* 34: External Interrupt 0         */
+	.long	EINT1_IRQHandler          /* 35: External Interrupt 1         */
+	.long	EINT2_IRQHandler          /* 36: External Interrupt 2         */
+	.long	EINT3_IRQHandler          /* 37: External Interrupt 3         */
+	.long	ADC_IRQHandler            /* 38: A/D Converter                */
+	.long	BOD_IRQHandler            /* 39: Brown-Out Detect             */
+	.long	USB_IRQHandler            /* 40: USB                          */
+	.long	CAN_IRQHandler            /* 41: CAN                          */
+	.long	DMA_IRQHandler            /* 42: General Purpose DMA          */
+	.long	I2S_IRQHandler            /* 43: I2S                          */
+	.long	ENET_IRQHandler           /* 44: Ethernet                     */
+	.long	RIT_IRQHandler            /* 45: Repetitive Interrupt Timer   */
+	.long	MCPWM_IRQHandler          /* 46: Motor Control PWM            */
+	.long	QEI_IRQHandler            /* 47: Quadrature Encoder Interface */
+	.long	PLL1_IRQHandler           /* 48: PLL1 Lock (USB PLL)          */
 
 
-    .thumb
+
+/* Reset handler */
+	.section ".text.handler.reset","x",%progbits
+
+Reset_Handler:
+	.thumb_func
+	.globl  Reset_Handler
+	.type   Reset_Handler, %function
+	ldr     r0, =SystemInit
+	blx     r0
+	/* branch to entry point */
+	ldr     r0, =_start+1
+	bx      r0
+	.size	Reset_Handler, .-Reset_Handler
 
 
-/* Reset Handler */
-
-    .section .cs3.reset,"x",%progbits
-    .thumb_func
-    .globl  __cs3_reset_cortex_m
-    .type   __cs3_reset_cortex_m, %function
-__cs3_reset_cortex_m:
-    .fnstart
-    LDR     R0, =SystemInit
-    BLX     R0
-.if (RAM_MODE)
-    LDR     R0,=main
-    BX      R0
-.else
-	LDR     R0,=_start
-    BX      R0
-.endif
-    .pool
-    .cantunwind
-    .fnend
-    .size   __cs3_reset_cortex_m,.-__cs3_reset_cortex_m
-
-    .section ".text"
-
-/* Exception Handlers */
-
-    .weak   NMI_Handler
-    .type   NMI_Handler, %function
+/* default handlers */
 NMI_Handler:
-    B       .
-    .size   NMI_Handler, . - NMI_Handler
+	.globl  NMI_Handler
+	.weak   NMI_Handler
+	.type   NMI_Handler, %function
+        b .
 
-    .weak   HardFault_Handler
-    .type   HardFault_Handler, %function
 HardFault_Handler:
-    B       .
-    .size   HardFault_Handler, . - HardFault_Handler
+	.globl  HardFault_Handler         
+	.weak   HardFault_Handler
+	.type   HardFault_Handler, %function
+        b .
 
-    .weak   MemManage_Handler
-    .type   MemManage_Handler, %function
 MemManage_Handler:
-    B       .
-    .size   MemManage_Handler, . - MemManage_Handler
+	.globl  MemManage_Handler
+	.weak   MemManage_Handler
+	.type   MemManage_Handler, %function
+        b .
 
-    .weak   BusFault_Handler
-    .type   BusFault_Handler, %function
 BusFault_Handler:
-    B       .
-    .size   BusFault_Handler, . - BusFault_Handler
+	.globl  BusFault_Handler
+	.weak   BusFault_Handler
+	.type   BusFault_Handler, %function
+        b .
 
-    .weak   UsageFault_Handler
-    .type   UsageFault_Handler, %function
 UsageFault_Handler:
-    B       .
-    .size   UsageFault_Handler, . - UsageFault_Handler
+	.globl  UsageFault_Handler
+	.weak   UsageFault_Handler
+	.type   UsageFault_Handler, %function    
+        b .
 
-    .weak   SVC_Handler
-    .type   SVC_Handler, %function
 SVC_Handler:
-    B       .
-    .size   SVC_Handler, . - SVC_Handler
+	.globl  SVC_Handler
+	.weak   SVC_Handler
+	.type   SVC_Handler, %function    
+        b .
 
-    .weak   DebugMon_Handler
-    .type   DebugMon_Handler, %function
 DebugMon_Handler:
-    B       .
-    .size   DebugMon_Handler, . - DebugMon_Handler
+	.globl  DebugMon_Handler
+	.weak   DebugMon_Handler
+	.type   DebugMon_Handler, %function    
+        b .
 
-    .weak   PendSV_Handler
-    .type   PendSV_Handler, %function
 PendSV_Handler:
-    B       .
-    .size   PendSV_Handler, . - PendSV_Handler
+	.globl  PendSV_Handler
+	.weak   PendSV_Handler
+	.type   PendSV_Handler, %function    
+        b .
 
-    .weak   SysTick_Handler
-    .type   SysTick_Handler, %function
 SysTick_Handler:
-    B       .
-    .size   SysTick_Handler, . - SysTick_Handler
+	.globl  SysTick_Handler
+	.weak   SysTick_Handler
+	.type   SysTick_Handler, %function    
+        b .
 
+/* Default handler */
 
-/* IRQ Handlers */
+	.global	Default_Handler
+	.weak	Default_Handler
 
-    .globl  Default_Handler
-    .type   Default_Handler, %function
+	.section	.text.Default_Handler,"ax",%progbits
 Default_Handler:
-    B       .
-    .size   Default_Handler, . - Default_Handler
+	.globl  WDT_IRQHandler
+	.weak   WDT_IRQHandler
+	.globl  TIMER0_IRQHandler
+	.weak   TIMER0_IRQHandler
+	.globl  TIMER1_IRQHandler
+	.weak   TIMER1_IRQHandler
+	.globl  TIMER2_IRQHandler
+	.weak   TIMER2_IRQHandler
+	.globl  TIMER3_IRQHandler
+	.weak   TIMER3_IRQHandler
+	.globl  UART0_IRQHandler
+	.weak   UART0_IRQHandler
+	.globl  UART1_IRQHandler
+	.weak   UART1_IRQHandler
+	.globl  UART2_IRQHandler
+	.weak   UART2_IRQHandler
+	.globl  UART3_IRQHandler
+	.weak   UART3_IRQHandler
+	.globl  PWM1_IRQHandler
+	.weak   PWM1_IRQHandler
+	.globl  I2C0_IRQHandler
+	.weak   I2C0_IRQHandler
+	.globl  I2C1_IRQHandler
+	.weak   I2C1_IRQHandler
+	.globl  I2C2_IRQHandler
+	.weak   I2C2_IRQHandler
+	.globl  SPI_IRQHandler
+	.weak   SPI_IRQHandler
+	.globl  SSP0_IRQHandler
+	.weak   SSP0_IRQHandler
+	.globl  SSP1_IRQHandler
+	.weak   SSP1_IRQHandler
+	.globl  PLL0_IRQHandler
+	.weak   PLL0_IRQHandler
+	.globl  RTC_IRQHandler
+	.weak   RTC_IRQHandler
+	.globl  EINT0_IRQHandler
+	.weak   EINT0_IRQHandler
+	.globl  EINT1_IRQHandler
+	.weak   EINT1_IRQHandler
+	.globl  EINT2_IRQHandler
+	.weak   EINT2_IRQHandler
+	.globl  EINT3_IRQHandler
+	.weak   EINT3_IRQHandler
+	.globl  ADC_IRQHandler
+	.weak   ADC_IRQHandler
+	.globl  BOD_IRQHandler
+	.weak   BOD_IRQHandler
+	.globl  USB_IRQHandler
+	.weak   USB_IRQHandler
+	.globl  CAN_IRQHandler
+	.weak   CAN_IRQHandler
+	.globl  DMA_IRQHandler
+	.weak   DMA_IRQHandler
+	.globl  I2S_IRQHandler
+	.weak   I2S_IRQHandler
+	.globl  ENET_IRQHandler
+	.weak   ENET_IRQHandler
+	.globl  RIT_IRQHandler
+	.weak   RIT_IRQHandler
+	.globl  MCPWM_IRQHandler
+	.weak   MCPWM_IRQHandler
+	.globl  QEI_IRQHandler
+	.weak   QEI_IRQHandler
+	.globl  PLL1_IRQHandler
+	.weak   PLL1_IRQHandler
 
-    .macro  IRQ handler
-    .weak   \handler
-    .set    \handler, Default_Handler
-    .endm
+WDT_IRQHandler:          
+TIMER0_IRQHandler:         
+TIMER1_IRQHandler:        
+TIMER2_IRQHandler:        
+TIMER3_IRQHandler:        
+UART0_IRQHandler:        
+UART1_IRQHandler:
+UART2_IRQHandler:
+UART3_IRQHandler:
+PWM1_IRQHandler:
+I2C0_IRQHandler:
+I2C1_IRQHandler:
+I2C2_IRQHandler:
+SPI_IRQHandler:
+SSP0_IRQHandler:
+SSP1_IRQHandler:
+PLL0_IRQHandler:
+RTC_IRQHandler:
+EINT0_IRQHandler:
+EINT1_IRQHandler:
+EINT2_IRQHandler:
+EINT3_IRQHandler:
+ADC_IRQHandler:
+BOD_IRQHandler:
+USB_IRQHandler:
+CAN_IRQHandler:
+DMA_IRQHandler:
+I2S_IRQHandler:
+ENET_IRQHandler:
+RIT_IRQHandler:
+MCPWM_IRQHandler:
+QEI_IRQHandler:   
+PLL1_IRQHandler:
 
-    IRQ     WDT_IRQHandler
-    IRQ     TIMER0_IRQHandler
-    IRQ     TIMER1_IRQHandler
-    IRQ     TIMER2_IRQHandler
-    IRQ     TIMER3_IRQHandler
-    IRQ     UART0_IRQHandler
-    IRQ     UART1_IRQHandler
-    IRQ     UART2_IRQHandler
-    IRQ     UART3_IRQHandler
-    IRQ     PWM1_IRQHandler
-    IRQ     I2C0_IRQHandler
-    IRQ     I2C1_IRQHandler
-    IRQ     I2C2_IRQHandler
-    IRQ     SPI_IRQHandler
-    IRQ     SSP0_IRQHandler
-    IRQ     SSP1_IRQHandler
-    IRQ     PLL0_IRQHandler
-    IRQ     RTC_IRQHandler
-    IRQ     EINT0_IRQHandler
-    IRQ     EINT1_IRQHandler
-    IRQ     EINT2_IRQHandler
-    IRQ     EINT3_IRQHandler
-    IRQ     ADC_IRQHandler
-    IRQ     BOD_IRQHandler
-    IRQ     USB_IRQHandler
-    IRQ     CAN_IRQHandler
-    IRQ     DMA_IRQHandler
-    IRQ     I2S_IRQHandler
-    IRQ     ENET_IRQHandler
-    IRQ     RIT_IRQHandler
-    IRQ     MCPWM_IRQHandler
-    IRQ     QEI_IRQHandler
-    IRQ     PLL1_IRQHandler
-    IRQ		USBActivity_IRQHandler
-    IRQ		CANActivity_IRQHandler
+/* catch it here */
+        b       .
+        .size	Default_Handler, .-Default_Handler
 
-    .end
+/* Default _start */
+
+	.section ".text"
+	.thumb
+	.global	_start
+	.weak	_start
+	.type   _start, %function    
+_start:
+
+/* fill .bss with 0 using byte stores */
+	ldr     r0, =_bss
+	ldr     r1, =_ebss
+        mov     r2, #0
+.L0:
+	strb	r2, [r0], #1
+	cmp     r0, r1
+  	bcc.n   .L0
+
+/* copy initialized .data from rom to ram */
+	ldr     r0, =_data
+	ldr     r1, =_edata
+	ldr     r2, =_ldata
+.L1:
+	ldrb	r3, [r2], #1
+	strb	r3, [r0], #1
+	cmp     r0, r1
+	bcc.n   .L1
+
+/* branch to main */
+	ldr     r0, =main+1
+	bx      r0 
+	.size	_start, .-_start
+
+	.section ".CRP._0x02FC","a",%progbits
+CRP_Key:
+	.word     0xFFFFFFFF
+	
+	.end
