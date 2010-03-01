@@ -12,14 +12,12 @@
 #
 ########################################################################
 
-TARGET_MCU?=lpc17xx
+TARGET_MCU?=lpc1768
 TARGET_CLOCK?=12000000
 
 # Target libc
 TARGET_LIBC=default
 TARGET_SDK?=cs-arm-2009q3
-TARGET_SDK_AFLAGS=-DARM
-TARGET_SDK_CFLAGS=-DARM
 
 # Host configuration
 HOST_OS?=win32
@@ -30,6 +28,9 @@ HOST_OS?=win32
 include $(32BITMICRO)/src/make/Makefile.$(TARGET_MCU)
 include $(32BITMICRO)/src/make/Makefile.$(TARGET_SDK)
 
+TARGET_FINAL_LDSCRIPT:=${TARGET_SDK_LDSCRIPT}
+# see makefile.ex 
+TARGET_STARTUP = $(PROJ_ROOT)/Core/$(CMCORE_TYPE)/DeviceSupport/$(MANUFACTURE)/$(DEVICE)/startup/gcc/startup_$(DEVICE).o 
 
 PROJ_ROOT			=$(32BITMICRO)/src/nxp/lpc17xx/LPC1700CMSIS
 CMCORE_TYPE			=CM3
