@@ -217,7 +217,7 @@ clean_all_cppobj:
 
 clean_all_obj: clean_all_aobj clean_all_cobj clean_all_cppobj
 
-clean: clean_all_obj clean_project
+clean: clean_all_obj
 	-$(RM) -f ${PROJECT_OUT}
 	-$(RM) -f ${PROJECT_OUT}.bin
 	-$(RM) -f ${PROJECT_OUT}.hex
