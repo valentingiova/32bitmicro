@@ -98,10 +98,20 @@ SECTIONS
     KEEP (*(SORT(.dtors.*)))
     KEEP (*crtend.o(.dtors))
 
-    . = ALIGN(8);
-    _etext = .;
+/*    . = ALIGN(8); */
+/*    _etext = .; */
   } >rom
-  
+
+  __exidx_start = .;
+  .ARM.exidx :
+  {
+    *(.ARM.exidx* .gnu.linkonce.armexidx.*)
+  } >rom
+  __exidx_end = .; 
+
+  . = ALIGN(8);
+   _etext = .;
+
   . = ALIGN(8);
   _ldata = ABSOLUTE(.);
 
@@ -147,6 +157,8 @@ SECTIONS
   } >ram
 
   . = _ram_end - 16;
+  /* for compatibility */
+  estack = .;
   _estack = .;
   . = _ram_end;
   _end = .;
