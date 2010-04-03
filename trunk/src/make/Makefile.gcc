@@ -109,6 +109,8 @@ endif
 ifndef TARGET_SDK_CFLAGS
 ${error TARGET_SDK_CFLAGS is not defined}
 endif
+# compiler includes
+TARGET_SDK_CFLAGS+=-I$(TARGET_SDK_CC_INCLUDE_PATH)
 
 #ifndef TARGET_SDK_LDFLAGS
 #${error TARGET_SDK_LDFLAGS is not defined}
