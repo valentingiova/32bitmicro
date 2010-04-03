@@ -1,5 +1,5 @@
 /*
- * 32bitmicro libc include ctype Makefile
+ * 32bitmicro libc include inttytpes Makefile
  * $URL$
  * $ID$
 
@@ -26,28 +26,53 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 #define _INTTYPES_H_
 
 #ifndef __int8_t_defined
-#define __int8_t_defined
-/* Use [u]intN_t if you need exactly N bits.
-   XXX - doesn't handle the -mint8 option.  */
-
 typedef signed char int8_t;
+#define __int8_t_defined 1
+#endif
+
+#ifndef __uint8_t_defined
 typedef unsigned char uint8_t;
+#define __uint8_t_defined 1
+#endif
 
+#ifndef __int16_t_defined
 typedef short  int16_t;
+#define __int16_t_defined 1
+#endif
+
+#ifndef __uint16_t_defined
 typedef unsigned short uint16_t;
+#define __uint16_t_defined 1
+#endif
 
+#ifndef __int32_t_defined
 typedef long int32_t;
-typedef unsigned long uint32_t;
+#define __int32_t_defined 1
+#endif
 
+#ifndef __uint32_t_defined
+typedef unsigned long uint32_t;
+#define __uint32_t_defined 1
+#endif
+
+#ifndef __int64_defined
 typedef long long int64_t;
+#define __int64_defined 1
+#endif
+
+#ifndef __uint64_t_defined
 typedef unsigned long long uint64_t;
+#define __uint64_t_defined 1
 #endif
 
 #ifndef __intptr_t_defined
-#define __intptr_t_defined
 typedef int intptr_t;
-typedef unsigned int uintptr_t;
+#define __intptr_t_defined 1
 #endif
 
+#ifndef __uintptr_t_defined
+typedef unsigned int uintptr_t;
+#define __uintptr_t_defined 1
+#endif
 
 #endif

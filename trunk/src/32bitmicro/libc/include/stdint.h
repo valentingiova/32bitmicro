@@ -25,29 +25,45 @@
 #include <stddef.h>
 
 /* 7.18.1.1  Exact-width integer types */
+#ifndef __int8_t_defined
 typedef signed char int8_t;
 #define __int8_t_defined 1
+#endif
 
-typedef unsigned char   uint8_t;
+#ifndef __uint8_t_defined
+typedef unsigned char uint8_t;
 #define __uint8_t_defined 1
+#endif
 
+#ifndef __int16_t_defined
 typedef short  int16_t;
 #define __int16_t_defined 1
+#endif
 
-typedef unsigned short  uint16_t;
+#ifndef __uint16_t_defined
+typedef unsigned short uint16_t;
 #define __uint16_t_defined 1
+#endif
 
-typedef int  int32_t;
+#ifndef __int32_t_defined
+typedef long int32_t;
 #define __int32_t_defined 1
+#endif
 
-typedef unsigned   uint32_t;
+#ifndef __uint32_t_defined
+typedef unsigned long uint32_t;
 #define __uint32_t_defined 1
+#endif
 
-typedef long long  int64_t;
+#ifndef __int64_defined
+typedef long long int64_t;
 #define __int64_defined 1
+#endif
 
-typedef unsigned long long   uint64_t;
+#ifndef __uint64_t_defined
+typedef unsigned long long uint64_t;
 #define __uint64_t_defined 1
+#endif
 
 /* 7.18.1.2  Minimum-width integer types */
 typedef signed char int_least8_t;
@@ -104,7 +120,8 @@ typedef unsigned long long   uint_fast64_t;
 
 /* 7.18.1.4  Integer types capable of holding object pointers */
 
-#ifndef _INTPTR_T_DEFINED
+#ifndef __intptr_t_defined
+#define __intptr_t_defined
 #define _INTPTR_T_DEFINED
 #ifdef _WIN64
   typedef __int64 intptr_t;
@@ -113,7 +130,8 @@ typedef unsigned long long   uint_fast64_t;
 #endif
 #endif
 
-#ifndef _UINTPTR_T_DEFINED
+#ifndef __uintptr_t_defined
+#define __uintptr_t_defined
 #define _UINTPTR_T_DEFINED
 #ifdef _WIN64
   typedef unsigned __int64 uintptr_t;

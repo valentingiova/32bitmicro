@@ -54,9 +54,9 @@ typedef	u_int16_t	nlink_t;          /* link counts */
 typedef	long		off_t;            /* file size */
 typedef	u_int32_t	pid_t;            /* process, process group IDs */
 
-#ifndef __SIZE_T_DEFINED
+#ifndef _SIZE_T_DEFINED
 typedef	u_int32_t	size_t;           /* sizes */
-#define __SIZE_T_DEFINED
+#define _SIZE_T_DEFINED
 #endif
 
 typedef	u_int32_t	ssize_t;          /* count of bytes or error */
