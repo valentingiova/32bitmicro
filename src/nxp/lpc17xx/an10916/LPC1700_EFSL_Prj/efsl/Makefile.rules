@@ -1,0 +1,68 @@
+#
+# * 32bitmicro lpc17xx an10916 LPC1700_EFSL_Prj efsl Makefile rules
+# * $URL$
+# * $ID$
+#
+#Copyright (c) 2010, 32bitmicro
+#All rights reserved.
+#
+#Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+#Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+#Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation 
+#and/or other materials provided with the distribution.
+#Neither the name of the 32bitmicro nor the names of its contributors may be used to endorse or promote products derived from this software without 
+#specific prior written permission.
+#
+#THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+#BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+#SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+#DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+#OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+#NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+# Sources
+ASRC=
+
+# efsl  
+CSRC+=src/efs.c
+CSRC+=src/plibc.c
+CSRC+=src/disc.c
+CSRC+=src/partition.c
+CSRC+=src/time.c
+CSRC+=src/fs.c
+CSRC+=src/fat.c
+CSRC+=src/file.c
+CSRC+=src/dir.c
+CSRC+=src/mkfs.c
+CSRC+=src/debug.c
+CSRC+=src/ioman.c
+CSRC+=src/ui.c
+CSRC+=src/extract.c
+#CSRC+=src/interfaces/sd.c
+CSRC+=src/ls.c
+CSRC+=src/interfaces/lpc17xx_sd.c
+CSRC+=src/interfaces/lpc17xx_spi.c
+CSRC+=src/interfaces/if_lpc17xx.c
+
+# example
+CSRC+=examples/lpc17xx_ssp/UART/lpc17xx_uart.c
+CSRC+=examples/lpc17xx_ssp/UTILITY/monitor.c
+CSRC+=examples/lpc17xx_ssp/Core_CM3/core_cm3.c
+CSRC+=examples/lpc17xx_ssp/Core_CM3/system_LPC17xx.c
+ASRC+=examples/lpc17xx_ssp/Core_CM3/startup_LPC17xx.s
+CSRC+=examples/lpc17xx_ssp/main.c
+
+
+
+# Flags
+AFLAGS+=
+#CFLAGS+=-DHW_ENDPOINT_LPC17xx_SD
+CFLAGS+=-I.
+CFLAGS+=-I./inc
+CFLAGS+=-I./conf
+CFLAGS+=-I./examples 
+CFLAGS+=-I./examples/lpc17xx_ssp/Core/CM3 
+CFLAGS+=-I./examples/lpc17xx_ssp/UART
+CFLAGS+=-I./examples/lpc17xx_ssp/Utility
+LDFLAGS+=
