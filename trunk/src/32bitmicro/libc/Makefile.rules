@@ -106,7 +106,8 @@ stdio/printf.c \
 stdio/putc.c \
 stdio/putchar.c \
 stdio/puts.c \
-stdio/scanf.c
+stdio/scanf.c \
+stdio/snprintf.c
 
 
 
@@ -135,5 +136,6 @@ AFLAGS=-g
 
 CFLAGS+=-isystem $(32BITMICRO)/src/32bitmicro  -I./include -I./arch/$(TARGET_ARCH)/include -I$(32BITMICRO)/src/32bitmicro/libm/include -I. $(LIBCDEFINES)
 CFLAGS+=-I$(TARGET_SDK_CC_INCLUDE_PATH) 
+CFLAGS+=-DHAVE_CONFIG_H
 
 LDFLAGS=-g
