@@ -22,15 +22,16 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 */
 
 
-#ifndef _SYSCALLS_H__
-#define _SYSCALLS_H__
+#ifndef _SYSCALLS_H_
+#define _SYSCALLS_H_
 
 extern void _abort(void);
 extern void _exit(int code);
 
-/* file */
+/* device and file*/
 extern int _open(const char *name, int flags, int mode);
 extern int _close(int file);
+extern int _devctl(int file, int devctl, int flags);
 extern int _read(int file, char *ptr, int len);
 extern int _seek(int file, int offset, int whence);
 extern int _write(int file, char *ptr, int len);
