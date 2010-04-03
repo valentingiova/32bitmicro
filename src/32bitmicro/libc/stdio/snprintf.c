@@ -142,7 +142,7 @@
  *    included throughout the project files:
  *
  *    	#if HAVE_CONFIG_H
- *    	#include <config.h>
+ *    	#include <conf/config.h>
  *    	#endif
  *    	#if HAVE_STDARG_H
  *    	#include <stdarg.h>
@@ -165,7 +165,7 @@
  */
 
 #if HAVE_CONFIG_H
-#include <config.h>
+#include <conf/config.h>
 #endif	/* HAVE_CONFIG_H */
 
 #if TEST_SNPRINTF
@@ -288,7 +288,8 @@
 #define VA_START(ap, last) va_start(ap, last)
 #define VA_SHIFT(ap, value, type) /* No-op for ANSI C. */
 #else	/* Assume <varargs.h> is available. */
-#include <varargs.h>
+#include <stdarg.h>
+/*#include <varargs.h>*/
 #define VA_START(ap, last) va_start(ap)	/* "last" is ignored. */
 #define VA_SHIFT(ap, value, type) value = va_arg(ap, type)
 #endif	/* HAVE_STDARG_H */
