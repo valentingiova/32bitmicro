@@ -29,7 +29,7 @@ TARGET_API?=cmsis
 TARGET_OS?=standalone
 
 # Project configuration
-PROJECT=32bitc
+PROJECT=c
 PROJECT_TYPE=LIB
 all: $(PROJECT) copy_lib
 
