@@ -15,4 +15,4 @@ Compiles
 
 Original port to LPC11xx and LPC13XX by Mark Higgins
 
-[http://tech.groups.yahoo.com/group/lpc1000/message/305 Forum thread]
+[http://tech.groups.yahoo.com/group/lpc1000/message/305 LPC2xxx sample RC5 modified for LPC1114 thread]
