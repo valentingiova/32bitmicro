@@ -6,9 +6,13 @@ NXP App Note AN10722 RC5 decoder using the LPC2000
 PDF document can be downloaded from NXP support page here:
 [http://www.nxp.com/documents/application_note/AN10722.pdf AN10722 RC5 decoder using the LPC2000]
 
-= Status= 
+== Status==
 LPC13xx port
 [http://code.google.com/p/32bitmicro/source/browse/trunk/src/nxp/lpc13xx/an10722 SVN trunk]
 
-= Details =
+== Details ==
 Compiles
+
+Ported to LPC11xx  by Mark Higgins
+
+[http://tech.groups.yahoo.com/group/lpc1000/message/305 Forum thread]
