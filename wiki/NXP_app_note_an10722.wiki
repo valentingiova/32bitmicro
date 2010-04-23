@@ -13,6 +13,6 @@ LPC13xx port
 == Details ==
 Compiles
 
-Ported to LPC11xx  by Mark Higgins
+Original port to LPC11xx and LPC13XX by Mark Higgins
 
 [http://tech.groups.yahoo.com/group/lpc1000/message/305 Forum thread]
