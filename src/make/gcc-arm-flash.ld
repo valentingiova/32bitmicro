@@ -22,7 +22,10 @@ OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-_ram_end = ORIGIN(ram) + LENGTH(ram) - 4;
+_rom_start = ORIGIN(rom);
+_rom_end   = ORIGIN(rom) + LENGTH(rom) - 1;
+_ram_start = ORIGIN(ram);
+_ram_end   = ORIGIN(ram) + LENGTH(ram) - 1;
 
 SECTIONS
 {
@@ -32,6 +35,11 @@ SECTIONS
     _vector = . ;
     KEEP(*(.isr_vector))
     _evector = . ;
+
+    _conf = . ;
+    KEEP(*(.conf))
+    KEEP(*(.conf.*))
+    _econf = . ;
 
     /* NXP only CRP location */
     . = DEFINED(CRP_Key) ?  0x02FC : . ;
@@ -61,7 +69,9 @@ SECTIONS
   
   .rodata : ALIGN (4)
   {
+    _rodata = .;
     *(.rodata .rodata.* .gnu.linkonce.r.*)
+    _erodata = .;
 
     . = ALIGN(4);
     KEEP(*(.init))
@@ -99,7 +109,8 @@ SECTIONS
     KEEP (*crtend.o(.dtors))
 
 /*    . = ALIGN(8); */
-/*    _etext = .; */
+    . = ALIGN(4);
+    _eallrodata = .; 
   } >rom
 
   __exidx_start = .;
@@ -110,12 +121,10 @@ SECTIONS
   __exidx_end = .; 
 
   . = ALIGN(8);
-   _etext = .;
+  _etext = .;
+  _ldata = .;
 
-  . = ALIGN(8);
-  _ldata = ABSOLUTE(.);
-
-  .data :  AT (_etext)
+  .data :  AT (_ldata)
   {
     _data = .;
    /* LOADADDR (.data); */
@@ -125,9 +134,11 @@ SECTIONS
     *(.data .data.* .gnu.linkonce.d.*)
     . = ALIGN (8);
     *(.ram)
+     
     _edata = .;
   } >ram
 
+ _ledata = _ldata + SIZEOF(.data); 
 
   .bss :
   {
@@ -156,7 +167,8 @@ SECTIONS
    
   } >ram
 
-  . = _ram_end - 16;
+  . = _ram_end - 8;
+  . = ALIGN(8);
   /* for compatibility */
   estack = .;
   _estack = .;
