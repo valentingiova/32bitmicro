@@ -81,6 +81,11 @@ GEN_LST_CMD=$(OBJDUMP)  -S -D    ${PROJECT}.${OUT}  > ${PROJECT}.${OUT}.lst
 
 
 # Flags
+ifeq ($(TARGET_CORE),ARM7)
+TARGET_SDK_AFLAGS  =-mcpu=arm7tdmi
+TARGET_SDK_CFLAGS  =-mcpu=arm7tdmi
+TARGET_SDK_LDFLAGS =
+endif
 
 ifeq ($(TARGET_CORE),CM0)
 TARGET_SDK_AFLAGS  =-mcpu=cortex-m0

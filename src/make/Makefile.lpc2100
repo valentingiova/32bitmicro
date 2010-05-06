@@ -3,7 +3,7 @@
 # * $URL$
 # * $ID$
 #
-#Copyright (c) 2009, 32bitmicro
+#Copyright (c) 2010, 32bitmicro
 #All rights reserved.
 #
 #Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,7 +23,7 @@
 TARGET_SERIES=LPC2100
 TARGET_FAMILY=LPC2000
 TARGET_CORE=ARM7
-TARGET_COREREV=TDMI
+TARGET_COREREV=ARM7R0P0
 TARGET_ARCH=ARMv4TDMI
 TARGET_CODE?=ARM
 
