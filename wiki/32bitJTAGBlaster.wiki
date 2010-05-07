@@ -7,12 +7,15 @@
 
 = Details =
 
-Original implementation by Rony Bershadsky and Nimrod Talmon.
-[http://www.cs.tau.ac.il/~nimrodt5/JTAG/index.html JTAG project web page]
+Original implementation by Rony Bershadsky and Nimrod Talmon [http://www.cs.tau.ac.il/~nimrodt5/JTAG/index.html web page link]
 
 
 Features
-
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+  * Supports JTAG, ARM core, and ICE scan chains
+  * UART based communication with the host
+  * 4 GPIO pins used for JTAG 
+   # P0.4  - clock (TCK) 
+   # P0.5  - data output (TDO) 
+   # P0.6  - data input (TDI) 
+   # P0.28 - mode select (TMS) 
+   # P0.29 - voltage reference (VREF) 
