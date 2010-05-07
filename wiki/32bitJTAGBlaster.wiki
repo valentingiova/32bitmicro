@@ -4,11 +4,13 @@
 
 32bit Blaster JTAG interface code.
 
-
-= Details =
-
 Original implementation by Rony Bershadsky and Nimrod Talmon [http://www.cs.tau.ac.il/~nimrodt5/JTAG/index.html web page link]
 
+= Status =
+
+Code compiles for NXP LPC2148 
+
+[http://code.google.com/p/32bitmicro/source/browse/trunk/src/32bitblaster/jtag SVN trunk]
 
 Features
   * Supports JTAG, ARM core, and ICE scan chains
