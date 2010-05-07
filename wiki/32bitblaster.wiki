@@ -8,6 +8,7 @@ Firmware tools for hardware interfacing to GPIO pins and buses.
 
   * UART - planning
   * [http://code.google.com/p/32bitmicro/wiki/32bitJTAGBlaster JTAG - initial release]
-  * I2C  - planning
-  * I2S  - planning
-  * SPI  - planning
+  * I2C - planning
+  * I2S - planning
+  * SPI - planning
+  * 1-Wire - planning
