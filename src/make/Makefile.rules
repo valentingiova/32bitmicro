@@ -406,6 +406,7 @@ echo_target_sdk:
 	@echo "TARGET_PREFIX     : "${TARGET_PREFIX}
 	@echo "TARGET_LIBC       : "${TARGET_LIBC}
 	@echo "TARGET_STARTUP    : "${TARGET_STARTUP}
+	@echo "TARGET_LDSCRIPT   : "${TARGET_LDSCRIPT}
 	@echo "AR                : "${AR}
 	@echo "AS                : "${AS}
 	@echo "CC                : "${CC}
