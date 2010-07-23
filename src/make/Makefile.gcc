@@ -66,6 +66,7 @@ STRIP=${TARGET_SDK_PREFIX}strip${EXE}
 READELF=${TARGET_SDK_PREFIX}readelf${EXE}
 CC=${GCC}
 CXX=${GXX}
+GDB=${TARGET_SDK_PREFIX}gdb${EXE}
 
 # Binary outout
 GEN_BIN_CMD=$(OBJCOPY) -O binary ${PROJECT}.${OUT}   ${PROJECT}.${OUT}.bin
