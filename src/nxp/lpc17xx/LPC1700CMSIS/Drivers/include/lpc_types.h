@@ -1,13 +1,12 @@
 /***********************************************************************//**
- * @file	: lpc_types.h
- * @brief	:
- *     Contains the NXP ABL typedefs for C standard types.
- *     It is intended to be used in ISO C conforming development
- *     environments and checks for this insofar as it is possible
- *     to do so.
- * @version	: 1.0
- * @date	: 27 Jul. 2008
- * @author	: wellsk
+ * @file		lpc_types.h
+ * @brief		Contains the NXP ABL typedefs for C standard types.
+ *     			It is intended to be used in ISO C conforming development
+ *     			environments and checks for this insofar as it is possible
+ *     			to do so.
+ * @version		1.0
+ * @date		27 Jul. 2008
+ * @author		wellsk
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -22,7 +21,7 @@
  **************************************************************************/
 
 /* Type group ----------------------------------------------------------- */
-/** @defgroup LPC_Types
+/** @defgroup LPC_Types LPC_Types
  * @ingroup LPC1700CMSIS_FwLib_Drivers
  * @{
  */
@@ -35,7 +34,7 @@
 
 
 /* Public Types --------------------------------------------------------------- */
-/** @defgroup LPC_Types_Public_Types
+/** @defgroup LPC_Types_Public_Types LPC_Types Public Types
  * @{
  */
 
@@ -84,7 +83,7 @@ typedef int32_t(*PFI)();
 
 
 /* Public Macros -------------------------------------------------------------- */
-/** @defgroup LPC_Types_Public_Macros
+/** @defgroup LPC_Types_Public_Macros  LPC_Types Public Macros
  * @{
  */
 
@@ -143,7 +142,7 @@ typedef int32_t(*PFI)();
 
 
 /* Old Type Definition compatibility ------------------------------------------ */
-/** @addtogroup LPC_Types_Public_Types
+/** @addtogroup LPC_Types_Public_Types LPC_Types Public Types
  * @{
  */
 

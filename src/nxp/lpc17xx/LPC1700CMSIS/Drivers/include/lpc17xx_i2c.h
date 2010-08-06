@@ -1,10 +1,10 @@
 /***********************************************************************//**
- * @file	: lpc17xx_i2c.h
- * @brief	: Contains all macro definitions and function prototypes
+ * @file		lpc17xx_i2c.h
+ * @brief		Contains all macro definitions and function prototypes
  * 				support for I2C firmware library on LPC17xx
- * @version	: 1.0
- * @date	: 13. Apr. 2009
- * @author	: HieuNguyen
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -19,7 +19,7 @@
  **************************************************************************/
 
 /* Peripheral group ----------------------------------------------------------- */
-/** @defgroup I2C
+/** @defgroup I2C I2C
  * @ingroup LPC1700CMSIS_FwLib_Drivers
  * @{
  */
@@ -39,14 +39,11 @@ extern "C"
 
 
 /* Private Macros ------------------------------------------------------------- */
-/** @defgroup I2C_Private_Macros
+/** @defgroup I2C_Private_Macros I2C Private Macros
  * @{
  */
 
-/** @defgroup I2C_REGISTER_BIT_DEFINITIONS
- * @{
- */
-
+/* --------------------- BIT DEFINITIONS -------------------------------------- */
 /*******************************************************************//**
  * I2C Control Set register description
  *********************************************************************/
@@ -55,7 +52,6 @@ extern "C"
 #define I2C_I2CONSET_STO			((0x10)) /*!< STOP flag */
 #define I2C_I2CONSET_STA			((0x20)) /*!< START flag */
 #define I2C_I2CONSET_I2EN			((0x40)) /*!< I2C interface enable */
-
 
 /*******************************************************************//**
  * I2C Control Clear register description
@@ -68,7 +64,6 @@ extern "C"
 #define I2C_I2CONCLR_STAC			((1<<5))
 /** I2C interface Disable bit */
 #define I2C_I2CONCLR_I2ENC			((1<<6))
-
 
 /********************************************************************//**
  * I2C Status Code definition (I2C Status register)
@@ -178,7 +173,6 @@ extern "C"
  * length that can be supported */
 #define I2C_I2DAT_IDLE_CHAR			(0xFF)
 
-
 /********************************************************************//**
  * I2C Monitor mode control register description
  *********************************************************************/
@@ -187,13 +181,11 @@ extern "C"
 #define I2C_I2MMCTRL_MATCH_ALL		((1<<2))		/**< Select interrupt register match */
 #define I2C_I2MMCTRL_BITMASK		((0x07))		/**< Mask for I2MMCTRL register */
 
-
 /********************************************************************//**
  * I2C Data buffer register description
  *********************************************************************/
 /** I2C Data buffer register bit mask */
 #define I2DATA_BUFFER_BITMASK		((0xFF))
-
 
 /********************************************************************//**
  * I2C Slave Address registers definition
@@ -203,13 +195,11 @@ extern "C"
 /** I2C Slave Address registers bit mask */
 #define I2C_I2ADR_BITMASK			((0xFF))
 
-
 /********************************************************************//**
  * I2C Mask Register definition
  *********************************************************************/
 /** I2C Mask Register mask field */
 #define I2C_I2MASK_MASK(n)			((n&0xFE))
-
 
 /********************************************************************//**
  * I2C SCL HIGH duty cycle Register definition
@@ -217,16 +207,34 @@ extern "C"
 /** I2C SCL HIGH duty cycle Register bit mask */
 #define I2C_I2SCLH_BITMASK			((0xFFFF))
 
-
 /********************************************************************//**
  * I2C SCL LOW duty cycle Register definition
  *********************************************************************/
 /** I2C SCL LOW duty cycle Register bit mask */
 #define I2C_I2SCLL_BITMASK			((0xFFFF))
 
-/**
- * @}
- */
+/* I2C status values */
+#define I2C_SETUP_STATUS_ARBF   (1<<8)	/**< Arbitration false */
+#define I2C_SETUP_STATUS_NOACKF (1<<9)	/**< No ACK returned */
+#define I2C_SETUP_STATUS_DONE   (1<<10)	/**< Status DONE */
+
+/*********************************************************************//**
+ * I2C monitor control configuration defines
+ **********************************************************************/
+#define I2C_MONITOR_CFG_SCL_OUTPUT	I2C_I2MMCTRL_ENA_SCL		/**< SCL output enable */
+#define I2C_MONITOR_CFG_MATCHALL	I2C_I2MMCTRL_MATCH_ALL		/**< Select interrupt register match */
+
+/* ---------------- CHECK PARAMETER DEFINITIONS ---------------------------- */
+/* Macros check I2C slave address */
+#define PARAM_I2C_SLAVEADDR_CH(n)	((n>=0) && (n<=3))
+
+/** Macro to determine if it is valid SSP port number */
+#define PARAM_I2Cx(n)	((((uint32_t *)n)==((uint32_t *)LPC_I2C0)) \
+|| (((uint32_t *)n)==((uint32_t *)LPC_I2C1)) \
+|| (((uint32_t *)n)==((uint32_t *)LPC_I2C2)))
+
+/* Macros check I2C monitor configuration type */
+#define PARAM_I2C_MONITOR_CFG(n) ((n==I2C_MONITOR_CFG_SCL_OUTPUT) || (I2C_MONITOR_CFG_MATCHALL))
 
 /**
  * @}
@@ -235,11 +243,13 @@ extern "C"
 
 
 /* Public Types --------------------------------------------------------------- */
-/** @defgroup I2C_Public_Types
+/** @defgroup I2C_Public_Types I2C Public Types
  * @{
  */
 
-/** @brief I2C Own slave address setting structure */
+/**
+ * @brief I2C Own slave address setting structure
+ */
 typedef struct {
 	uint8_t SlaveAddrChannel;	/**< Slave Address channel in I2C control,
 								should be in range from 0..3
@@ -261,7 +271,9 @@ typedef struct {
 } I2C_OWNSLAVEADDR_CFG_Type;
 
 
-/** @brief Master transfer setup data structure definitions */
+/**
+ * @brief Master transfer setup data structure definitions
+ */
 typedef struct
 {
   uint32_t          sl_addr7bit;				/**< Slave address in 7bit mode */
@@ -283,7 +295,9 @@ typedef struct
 } I2C_M_SETUP_Type;
 
 
-/** @brief Slave transfer setup data structure definitions */
+/**
+ * @brief Slave transfer setup data structure definitions
+ */
 typedef struct
 {
   uint8_t*          tx_data;
@@ -310,62 +324,39 @@ typedef enum {
  */
 
 
-/* Public Macros -------------------------------------------------------------- */
-/** @defgroup I2C_Public_Macros
- * @{
- */
-
-#define PARAM_I2C_SLAVEADDR_CH(n)	((n>=0) && (n<=3))
-
-/** Macro to determine if it is valid SSP port number */
-#define PARAM_I2Cx(n)	((((uint32_t *)n)==((uint32_t *)LPC_I2C0)) \
-|| (((uint32_t *)n)==((uint32_t *)LPC_I2C1)) \
-|| (((uint32_t *)n)==((uint32_t *)LPC_I2C2)))
-
-/* I2C status values */
-#define I2C_SETUP_STATUS_ARBF   (1<<8)	/**< Arbitration false */
-#define I2C_SETUP_STATUS_NOACKF (1<<9)	/**< No ACK returned */
-#define I2C_SETUP_STATUS_DONE   (1<<10)	/**< Status DONE */
-
-
-/*********************************************************************//**
- * I2C monitor control configuration defines
- **********************************************************************/
-#define I2C_MONITOR_CFG_SCL_OUTPUT	I2C_I2MMCTRL_ENA_SCL		/**< SCL output enable */
-#define I2C_MONITOR_CFG_MATCHALL	I2C_I2MMCTRL_MATCH_ALL		/**< Select interrupt register match */
-
-#define PARAM_I2C_MONITOR_CFG(n) ((n==I2C_MONITOR_CFG_SCL_OUTPUT) || (I2C_MONITOR_CFG_MATCHALL))
-
-/**
- * @}
- */
-
-
 /* Public Functions ----------------------------------------------------------- */
-/** @defgroup I2C_Public_Functions
+/** @defgroup I2C_Public_Functions I2C Public Functions
  * @{
  */
 
-void I2C_SetClock (LPC_I2C_TypeDef *I2Cx, uint32_t target_clock);
-void I2C_DeInit(LPC_I2C_TypeDef* I2Cx);
+/* I2C Init/DeInit functions ---------- */
 void I2C_Init(LPC_I2C_TypeDef *I2Cx, uint32_t clockrate);
+void I2C_DeInit(LPC_I2C_TypeDef* I2Cx);
+//void I2C_SetClock (LPC_I2C_TypeDef *I2Cx, uint32_t target_clock);
 void I2C_Cmd(LPC_I2C_TypeDef* I2Cx, FunctionalState NewState);
 
+/* I2C transfer data functions -------- */
 Status I2C_MasterTransferData(LPC_I2C_TypeDef *I2Cx, \
 		I2C_M_SETUP_Type *TransferCfg, I2C_TRANSFER_OPT_Type Opt);
 Status I2C_SlaveTransferData(LPC_I2C_TypeDef *I2Cx, \
 		I2C_S_SETUP_Type *TransferCfg, I2C_TRANSFER_OPT_Type Opt);
+uint32_t I2C_MasterTransferComplete(LPC_I2C_TypeDef *I2Cx);
+uint32_t I2C_SlaveTransferComplete(LPC_I2C_TypeDef *I2Cx);
+
 
 void I2C_SetOwnSlaveAddr(LPC_I2C_TypeDef *I2Cx, I2C_OWNSLAVEADDR_CFG_Type *OwnSlaveAddrConfigStruct);
 uint8_t I2C_GetLastStatusCode(LPC_I2C_TypeDef* I2Cx);
 
+/* I2C Monitor functions ---------------*/
 void I2C_MonitorModeConfig(LPC_I2C_TypeDef *I2Cx, uint32_t MonitorCfgType, FunctionalState NewState);
 void I2C_MonitorModeCmd(LPC_I2C_TypeDef *I2Cx, FunctionalState NewState);
 uint8_t I2C_MonitorGetDatabuffer(LPC_I2C_TypeDef *I2Cx);
+BOOL_8 I2C_MonitorHandler(LPC_I2C_TypeDef *I2Cx, uint8_t *buffer, uint32_t size);
 
-void I2C0_StdIntHandler(void);
-void I2C1_StdIntHandler(void);
-void I2C2_StdIntHandler(void);
+/* I2C Interrupt handler functions ------*/
+void I2C_IntCmd (LPC_I2C_TypeDef *I2Cx, Bool NewState);
+void I2C_MasterHandler (LPC_I2C_TypeDef *I2Cx);
+void I2C_SlaveHandler (LPC_I2C_TypeDef *I2Cx);
 
 
 /**

@@ -1,9 +1,9 @@
-/**
- * @file	: lpc17xx_gpio.c
- * @brief	: Contains all functions support for GPIO firmware library on LPC17xx
- * @version	: 1.0
- * @date	: 11. Jun. 2009
- * @author	: HieuNguyen
+/***********************************************************************//**
+ * @file		lpc17xx_gpio.c
+ * @brief		Contains all functions support for GPIO firmware library on LPC17xx
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -39,9 +39,11 @@
 #ifdef _GPIO
 
 /* Private Functions ---------------------------------------------------------- */
-/** @addtogroup GPIO_Private_Functions
- * @{
- */
+
+static LPC_GPIO_TypeDef *GPIO_GetPointer(uint8_t portNum);
+static GPIO_HalfWord_TypeDef *FIO_HalfWordGetPointer(uint8_t portNum);
+static GPIO_Byte_TypeDef *FIO_ByteGetPointer(uint8_t portNum);
+
 /*********************************************************************//**
  * @brief		Get pointer to GPIO peripheral due to GPIO port
  * @param[in]	portNum		Port Number value, should be in range from 0 to 4.
@@ -140,9 +142,7 @@ static GPIO_Byte_TypeDef *FIO_ByteGetPointer(uint8_t portNum)
 	return pFIO;
 }
 
-/**
- * @}
- */
+/* End of Private Functions --------------------------------------------------- */
 
 
 /* Public Functions ----------------------------------------------------------- */
@@ -249,6 +249,76 @@ uint32_t GPIO_ReadValue(uint8_t portNum)
 	return (0);
 }
 
+/*********************************************************************//**
+ * @brief		Enable GPIO interrupt (just used for P0.0-P0.30, P2.0-P2.13)
+ * @param[in]	portNum		Port number to read value, should be: 0 or 2
+ * @param[in]	bitValue	Value that contains all bits on GPIO to enable,
+ * 							in range from 0 to 0xFFFFFFFF.
+ * @param[in]	edgeState	state of edge, should be:
+ * 							- 0: Rising edge
+ * 							- 1: Falling edge
+ * @return		None
+ **********************************************************************/
+void GPIO_IntCmd(uint8_t portNum, uint32_t bitValue, uint8_t edgeState)
+{
+	if((portNum == 0)&&(edgeState == 0))
+		LPC_GPIOINT->IO0IntEnR = bitValue;
+	else if ((portNum == 2)&&(edgeState == 0))
+		LPC_GPIOINT->IO2IntEnR = bitValue;
+	else if ((portNum == 0)&&(edgeState == 1))
+		LPC_GPIOINT->IO0IntEnF = bitValue;
+	else if ((portNum == 2)&&(edgeState == 1))
+		LPC_GPIOINT->IO2IntEnF = bitValue;
+	else
+		//Error
+		while(1);
+}
+
+/*********************************************************************//**
+ * @brief		Get GPIO Interrupt Status (just used for P0.0-P0.30, P2.0-P2.13)
+ * @param[in]	portNum		Port number to read value, should be: 0 or 2
+ * @param[in]	pinNum		Pin number, should be: 0..30(with port 0) and 0..13
+ * 							(with port 2)
+ * @param[in]	edgeState	state of edge, should be:
+ * 							- 0: Rising edge
+ * 							- 1: Falling edge
+ * @return		Bool	could be:
+ * 						- ENABLE: Interrupt has been generated due to a rising
+ * 								edge on P0.0
+ * 						- DISABLE: A rising edge has not been detected on P0.0
+ **********************************************************************/
+FunctionalState GPIO_GetIntStatus(uint8_t portNum, uint32_t pinNum, uint8_t edgeState)
+{
+	if((portNum == 0) && (edgeState == 0))//Rising Edge
+		return (((LPC_GPIOINT->IO0IntStatR)>>pinNum)& 0x1);
+	else if ((portNum == 2) && (edgeState == 0))
+		return (((LPC_GPIOINT->IO2IntStatR)>>pinNum)& 0x1);
+	else if ((portNum == 0) && (edgeState == 1))//Falling Edge
+		return (((LPC_GPIOINT->IO0IntStatF)>>pinNum)& 0x1);
+	else if ((portNum == 2) && (edgeState == 1))
+		return (((LPC_GPIOINT->IO2IntStatF)>>pinNum)& 0x1);
+	else
+		//Error
+		while(1);
+}
+/*********************************************************************//**
+ * @brief		Clear GPIO interrupt (just used for P0.0-P0.30, P2.0-P2.13)
+ * @param[in]	portNum		Port number to read value, should be: 0 or 2
+ * @param[in]	bitValue	Value that contains all bits on GPIO to enable,
+ * 							in range from 0 to 0xFFFFFFFF.
+ * @return		None
+ **********************************************************************/
+void GPIO_ClearInt(uint8_t portNum, uint32_t bitValue)
+{
+	if(portNum == 0)
+		LPC_GPIOINT->IO0IntClr = bitValue;
+	else if (portNum == 2)
+		LPC_GPIOINT->IO2IntClr = bitValue;
+	else
+		//Invalid portNum
+		while(1);
+}
+
 /* FIO word accessible ----------------------------------------------------------------- */
 /* Stub function for FIO (word-accessible) style */
 
@@ -284,7 +354,29 @@ uint32_t FIO_ReadValue(uint8_t portNum)
 	return (GPIO_ReadValue(portNum));
 }
 
+/**
+ * @brief The same with GPIO_IntCmd()
+ */
+void FIO_IntCmd(uint8_t portNum, uint32_t bitValue, uint8_t edgeState)
+{
+	GPIO_IntCmd(portNum, bitValue, edgeState);
+}
 
+/**
+ * @brief The same with GPIO_GetIntStatus()
+ */
+FunctionalState FIO_GetIntStatus(uint8_t portNum, uint32_t pinNum, uint8_t edgeState)
+{
+	return (GPIO_GetIntStatus(portNum, pinNum, edgeState));
+}
+
+/**
+ * @brief The same with GPIO_ClearInt()
+ */
+void FIO_ClearInt(uint8_t portNum, uint32_t bitValue)
+{
+	GPIO_ClearInt(portNum, bitValue);
+}
 /*********************************************************************//**
  * @brief		Set mask value for bits in FIO port
  * @param[in]	portNum		Port number, in range from 0 to 4

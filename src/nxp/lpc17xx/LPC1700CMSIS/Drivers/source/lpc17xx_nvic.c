@@ -1,11 +1,11 @@
-/**
- * @file	: lpc17xx_nvic.c
- * @brief	: Contains all expansion functions support for
+/***********************************************************************//**
+ * @file		lpc17xx_nvic.c
+ * @brief		Contains all expansion functions support for
  * 				NVIC firmware library on LPC17xx. The main
  * 				NVIC functions are defined in core_cm3.h
- * @version	: 1.0
- * @date	: 18. Mar. 2009
- * @author	: HieuNguyen
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -121,7 +121,8 @@ void NVIC_SCBDeInit(void)
  *******************************************************************************/
 void NVIC_SetVTOR(uint32_t offset)
 {
-	SCB->VTOR  = (offset & NVIC_VTOR_MASK);
+//	SCB->VTOR  = (offset & NVIC_VTOR_MASK);
+	SCB->VTOR  = offset;
 }
 
 /**

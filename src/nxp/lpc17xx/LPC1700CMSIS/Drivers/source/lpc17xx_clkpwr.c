@@ -1,10 +1,10 @@
-/**
- * @file	: lpc17xx_clkpwr.c
- * @brief	: Contains all functions support for Clock and Power Control
+/***********************************************************************//**
+ * @file		lpc17xx_clkpwr.c
+ * @brief		Contains all functions support for Clock and Power Control
  * 				firmware library on LPC17xx
- * @version	: 1.0
- * @date	: 18. Mar. 2009
- * @author	: HieuNguyen
+ * @version		3.0
+ * @date		18. June. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -270,11 +270,11 @@ void CLKPWR_ConfigPPWR (uint32_t PPType, FunctionalState NewState)
 }
 
 
-/**
+/*********************************************************************//**
  * @brief 		Enter Sleep mode with co-operated instruction by the Cortex-M3.
  * @param[in]	None
  * @return		None
- */
+ **********************************************************************/
 void CLKPWR_Sleep(void)
 {
 	LPC_SC->PCON = 0x00;
@@ -283,55 +283,49 @@ void CLKPWR_Sleep(void)
 }
 
 
-/**
+/*********************************************************************//**
  * @brief 		Enter Deep Sleep mode with co-operated instruction by the Cortex-M3.
  * @param[in]	None
  * @return		None
- */
+ **********************************************************************/
 void CLKPWR_DeepSleep(void)
 {
     /* Deep-Sleep Mode, set SLEEPDEEP bit */
 	SCB->SCR = 0x4;
-	LPC_SC->PCON = 0x00;
-	/* Sleep Mode*/
+	LPC_SC->PCON = 0x8;
+	/* Deep Sleep Mode*/
 	__WFI();
 }
 
 
-/**
+/*********************************************************************//**
  * @brief 		Enter Power Down mode with co-operated instruction by the Cortex-M3.
  * @param[in]	None
  * @return		None
- */
+ **********************************************************************/
 void CLKPWR_PowerDown(void)
 {
     /* Deep-Sleep Mode, set SLEEPDEEP bit */
 	SCB->SCR = 0x4;
-	LPC_SC->PCON = 0x01;
-	/* Sleep Mode*/
+	LPC_SC->PCON = 0x09;
+	/* Power Down Mode*/
 	__WFI();
 }
 
 
-/**
+/*********************************************************************//**
  * @brief 		Enter Deep Power Down mode with co-operated instruction by the Cortex-M3.
  * @param[in]	None
  * @return		None
- */
+ **********************************************************************/
 void CLKPWR_DeepPowerDown(void)
 {
     /* Deep-Sleep Mode, set SLEEPDEEP bit */
 	SCB->SCR = 0x4;
 	LPC_SC->PCON = 0x03;
-	/* Sleep Mode*/
+	/* Deep Power Down Mode*/
 	__WFI();
 }
-
-
-/**
- * @brief 		Configure Brown-Out function in
- */
-
 
 /**
  * @}

@@ -1,9 +1,9 @@
-/**
- * @file	: lpc17xx_i2c.c
- * @brief	: Contains all functions support for I2C firmware library on LPC17xx
- * @version	: 1.0
- * @date	: 9. April. 2009
- * @author	: HieuNguyen
+/***********************************************************************//**
+ * @file		lpc17xx_i2c.c
+ * @brief		Contains all functions support for I2C firmware library on LPC17xx
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -43,7 +43,7 @@
 
 
 /* Private Types -------------------------------------------------------------- */
-/** @defgroup I2C_Private_Types
+/** @defgroup I2C_Private_Types I2C Private Types
  * @{
  */
 
@@ -54,7 +54,6 @@ typedef struct
 {
   uint32_t      txrx_setup; 						/* Transmission setup */
   int32_t		dir;								/* Current direction phase, 0 - write, 1 - read */
-  void		(*inthandler)(LPC_I2C_TypeDef *I2Cx);   	/* Transmission interrupt handler */
 } I2C_CFG_T;
 
 /**
@@ -67,12 +66,15 @@ typedef struct
  */
 static I2C_CFG_T i2cdat[3];
 
+static uint32_t I2C_MasterComplete[3];
+static uint32_t I2C_SlaveComplete[3];
 
+static uint32_t I2C_MonitorBufferIndex;
 
 /* Private Functions ---------------------------------------------------------- */
-/** @defgroup I2C_Private_Functions
- * @{
- */
+
+/* Get I2C number */
+static int32_t I2C_getNum(LPC_I2C_TypeDef *I2Cx);
 
 /* Generate a start condition on I2C bus (in master mode only) */
 static uint32_t I2C_Start (LPC_I2C_TypeDef *I2Cx);
@@ -86,20 +88,18 @@ static uint32_t I2C_SendByte (LPC_I2C_TypeDef *I2Cx, uint8_t databyte);
 /* I2C get byte subroutine */
 static uint32_t I2C_GetByte (LPC_I2C_TypeDef *I2Cx, uint8_t *retdat, Bool ack);
 
-/* I2C interrupt master handler */
-void I2C_MasterHandler (LPC_I2C_TypeDef *I2Cx);
-
-/* I2C interrupt master handler */
-void I2C_SlaveHandler (LPC_I2C_TypeDef *I2Cx);
-
-/* Enable interrupt for I2C device */
-void I2C_IntCmd (LPC_I2C_TypeDef *I2Cx, Bool NewState);
+/* I2C set clock (hz) */
+static void I2C_SetClock (LPC_I2C_TypeDef *I2Cx, uint32_t target_clock);
 
 /*--------------------------------------------------------------------------------*/
-
-/**
- * @brief Convert from I2C peripheral to number
- */
+/********************************************************************//**
+ * @brief		Convert from I2C peripheral to number
+ * @param[in]	I2Cx: I2C peripheral selected, should be:
+ * 				- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
+ * @return 		I2C number, could be: 0..2
+ *********************************************************************/
 static int32_t I2C_getNum(LPC_I2C_TypeDef *I2Cx){
 	if (I2Cx == LPC_I2C0) {
 		return (0);
@@ -111,14 +111,14 @@ static int32_t I2C_getNum(LPC_I2C_TypeDef *I2Cx){
 	return (-1);
 }
 
-/***********************************************************************
- * Function: I2C_Start
- * Purpose: Generate a start condition on I2C bus (in master mode only)
- * Parameters:
- *     i2cdev: Pointer to I2C register
- *     blocking: blocking or none blocking mode
- * Returns: value of I2C status register after generate a start condition
- **********************************************************************/
+/********************************************************************//**
+ * @brief		Generate a start condition on I2C bus (in master mode only)
+ * @param[in]	I2Cx: I2C peripheral selected, should be:
+ * 				- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
+ * @return 		value of I2C status register after generate a start condition
+ *********************************************************************/
 static uint32_t I2C_Start (LPC_I2C_TypeDef *I2Cx)
 {
 	I2Cx->I2CONCLR = I2C_I2CONCLR_SIC;
@@ -130,14 +130,14 @@ static uint32_t I2C_Start (LPC_I2C_TypeDef *I2Cx)
 	return (I2Cx->I2STAT & I2C_STAT_CODE_BITMASK);
 }
 
-
-/***********************************************************************
- * Function: I2C_Stop
- * Purpose: Generate a stop condition on I2C bus (in master mode only)
- * Parameters:
- *     I2Cx: Pointer to I2C register
- * Returns: None
- **********************************************************************/
+/********************************************************************//**
+ * @brief		Generate a stop condition on I2C bus (in master mode only)
+ * @param[in]	I2Cx: I2C peripheral selected, should be:
+ * 				- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
+ * @return 		None
+ *********************************************************************/
 static void I2C_Stop (LPC_I2C_TypeDef *I2Cx)
 {
 
@@ -150,14 +150,15 @@ static void I2C_Stop (LPC_I2C_TypeDef *I2Cx)
 	I2Cx->I2CONCLR = I2C_I2CONCLR_SIC;
 }
 
-
-/***********************************************************************
- * Function: I2C_SendByte
- * Purpose: Send a byte
- * Parameters:
- *     I2Cx: Pointer to I2C register
- * Returns: value of I2C status register after sending
- **********************************************************************/
+/********************************************************************//**
+ * @brief		Send a byte
+ * @param[in]	I2Cx: I2C peripheral selected, should be:
+ * 				- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
+ * @param[in]	databyte: number of byte
+ * @return 		value of I2C status register after sending
+ *********************************************************************/
 static uint32_t I2C_SendByte (LPC_I2C_TypeDef *I2Cx, uint8_t databyte)
 {
 	/* Make sure start bit is not active */
@@ -172,14 +173,16 @@ static uint32_t I2C_SendByte (LPC_I2C_TypeDef *I2Cx, uint8_t databyte)
 	return (I2Cx->I2STAT & I2C_STAT_CODE_BITMASK);
 }
 
-
-/***********************************************************************
- * Function: I2C_GetByte
- * Purpose: Get a byte
- * Parameters:
- *     I2Cx: Pointer to I2C register
- * Returns: value of I2C status register after receiving
- **********************************************************************/
+/********************************************************************//**
+ * @brief		Get a byte
+ * @param[in]	I2Cx: I2C peripheral selected, should be:
+ * 				- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
+ * @param[out]	retdat	pointer to return data
+ * @param[in]	ack		assert acknowledge or not, should be: TRUE/FALSE
+ * @return 		value of I2C status register after sending
+ *********************************************************************/
 static uint32_t I2C_GetByte (LPC_I2C_TypeDef *I2Cx, uint8_t *retdat, Bool ack)
 {
 	if (ack == TRUE)
@@ -197,15 +200,163 @@ static uint32_t I2C_GetByte (LPC_I2C_TypeDef *I2Cx, uint8_t *retdat, Bool ack)
 	return (I2Cx->I2STAT & I2C_STAT_CODE_BITMASK);
 }
 
+/*********************************************************************//**
+ * @brief 		Setup clock rate for I2C peripheral
+ * @param[in] 	I2Cx	I2C peripheral selected, should be:
+ * 				- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
+ * @param[in]	target_clock : clock of SSP (Hz)
+ * @return 		None
+ ***********************************************************************/
+static void I2C_SetClock (LPC_I2C_TypeDef *I2Cx, uint32_t target_clock)
+{
+	uint32_t temp;
 
+	CHECK_PARAM(PARAM_I2Cx(I2Cx));
+
+	// Get PCLK of I2C controller
+	if (I2Cx == LPC_I2C0)
+	{
+		temp = CLKPWR_GetPCLK (CLKPWR_PCLKSEL_I2C0) / target_clock;
+	}
+	else if (I2Cx == LPC_I2C1)
+	{
+		temp = CLKPWR_GetPCLK (CLKPWR_PCLKSEL_I2C1) / target_clock;
+	}
+	else if (I2Cx == LPC_I2C2)
+	{
+		temp = CLKPWR_GetPCLK (CLKPWR_PCLKSEL_I2C1) / target_clock;
+	}
+
+	/* Set the I2C clock value to register */
+	I2Cx->I2SCLH = (uint32_t)(temp / 2);
+	I2Cx->I2SCLL = (uint32_t)(temp - I2Cx->I2SCLH);
+}
+/* End of Private Functions --------------------------------------------------- */
+
+
+/* Public Functions ----------------------------------------------------------- */
+/** @addtogroup I2C_Public_Functions
+ * @{
+ */
+
+/********************************************************************//**
+ * @brief		Initializes the I2Cx peripheral with specified parameter.
+ * @param[in]	I2Cx	I2C peripheral selected, should be
+ * 				- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
+ * @param[in]	clockrate Target clock rate value to initialized I2C
+ * 				peripheral (Hz)
+ * @return 		None
+ *********************************************************************/
+void I2C_Init(LPC_I2C_TypeDef *I2Cx, uint32_t clockrate)
+{
+	CHECK_PARAM(PARAM_I2Cx(I2Cx));
+
+	if (I2Cx==LPC_I2C0)
+	{
+		/* Set up clock and power for I2C0 module */
+		CLKPWR_ConfigPPWR (CLKPWR_PCONP_PCI2C0, ENABLE);
+		/* As default, peripheral clock for I2C0 module
+		 * is set to FCCLK / 2 */
+		CLKPWR_SetPCLKDiv(CLKPWR_PCLKSEL_I2C0, CLKPWR_PCLKSEL_CCLK_DIV_2);
+	}
+	else if (I2Cx==LPC_I2C1)
+	{
+		/* Set up clock and power for I2C1 module */
+		CLKPWR_ConfigPPWR (CLKPWR_PCONP_PCI2C1, ENABLE);
+		/* As default, peripheral clock for I2C1 module
+		 * is set to FCCLK / 2 */
+		CLKPWR_SetPCLKDiv(CLKPWR_PCLKSEL_I2C1, CLKPWR_PCLKSEL_CCLK_DIV_2);
+	}
+	else if (I2Cx==LPC_I2C2)
+	{
+		/* Set up clock and power for I2C2 module */
+		CLKPWR_ConfigPPWR (CLKPWR_PCONP_PCI2C2, ENABLE);
+		/* As default, peripheral clock for I2C2 module
+		 * is set to FCCLK / 2 */
+		CLKPWR_SetPCLKDiv(CLKPWR_PCLKSEL_I2C2, CLKPWR_PCLKSEL_CCLK_DIV_2);
+	}
+	else {
+		// Up-Support this device
+		return;
+	}
+
+    /* Set clock rate */
+    I2C_SetClock(I2Cx, clockrate);
+    /* Set I2C operation to default */
+    I2Cx->I2CONCLR = (I2C_I2CONCLR_AAC | I2C_I2CONCLR_STAC | I2C_I2CONCLR_I2ENC);
+}
+
+/*********************************************************************//**
+ * @brief		De-initializes the I2C peripheral registers to their
+ *                  default reset values.
+ * @param[in]	I2Cx	I2C peripheral selected, should be
+ *  			- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
+ * @return 		None
+ **********************************************************************/
+void I2C_DeInit(LPC_I2C_TypeDef* I2Cx)
+{
+	CHECK_PARAM(PARAM_I2Cx(I2Cx));
+
+	/* Disable I2C control */
+	I2Cx->I2CONCLR = I2C_I2CONCLR_I2ENC;
+
+	if (I2Cx==LPC_I2C0)
+	{
+		/* Disable power for I2C0 module */
+		CLKPWR_ConfigPPWR (CLKPWR_PCONP_PCI2C0, DISABLE);
+	}
+	else if (I2Cx==LPC_I2C1)
+	{
+		/* Disable power for I2C1 module */
+		CLKPWR_ConfigPPWR (CLKPWR_PCONP_PCI2C1, DISABLE);
+	}
+	else if (I2Cx==LPC_I2C2)
+	{
+		/* Disable power for I2C2 module */
+		CLKPWR_ConfigPPWR (CLKPWR_PCONP_PCI2C2, DISABLE);
+	}
+}
+
+/*********************************************************************//**
+ * @brief		Enable or disable I2C peripheral's operation
+ * @param[in]	I2Cx I2C peripheral selected, should be
+ *  			- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
+ * @param[in]	NewState New State of I2Cx peripheral's operation
+ * @return 		none
+ **********************************************************************/
+void I2C_Cmd(LPC_I2C_TypeDef* I2Cx, FunctionalState NewState)
+{
+	CHECK_PARAM(PARAM_FUNCTIONALSTATE(NewState));
+	CHECK_PARAM(PARAM_I2Cx(I2Cx));
+
+	if (NewState == ENABLE)
+	{
+		I2Cx->I2CONSET = I2C_I2CONSET_I2EN;
+	}
+	else
+	{
+		I2Cx->I2CONCLR = I2C_I2CONCLR_I2ENC;
+	}
+}
 
 /*********************************************************************//**
  * @brief 		Enable/Disable interrupt for I2C peripheral
- * @param[in]	I2Cx	I2C peripheral selected, should be I2C0, I2C1 or I2C2
+ * @param[in]	I2Cx	I2C peripheral selected, should be:
+ * 				- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
  * @param[in]	NewState	New State of I2C peripheral interrupt in NVIC core
- * 							should be:
- * 							- ENABLE: enable interrupt for this I2C peripheral
- * 							- DISABLE: disable interrupt for this I2C peripheral
+ * 				should be:
+ * 				- ENABLE: enable interrupt for this I2C peripheral
+ * 				- DISABLE: disable interrupt for this I2C peripheral
  * @return 		None
  **********************************************************************/
 void I2C_IntCmd (LPC_I2C_TypeDef *I2Cx, Bool NewState)
@@ -246,7 +397,10 @@ void I2C_IntCmd (LPC_I2C_TypeDef *I2Cx, Bool NewState)
 
 /*********************************************************************//**
  * @brief 		General Master Interrupt handler for I2C peripheral
- * @param[in]	I2Cx	I2C peripheral selected, should be I2C0, I2C1 or I2C2
+ * @param[in]	I2Cx	I2C peripheral selected, should be:
+ * 				- LPC_I2C
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
  * @return 		None
  **********************************************************************/
 void I2C_MasterHandler (LPC_I2C_TypeDef  *I2Cx)
@@ -333,14 +487,12 @@ next_stage:
 			// update status
 			txrx_setup->status |= I2C_SETUP_STATUS_NOACKF;
 			goto retry;
-			break;
 		/* Arbitration lost in SLA+R/W or Data bytes -------------------------------*/
 		case I2C_I2STAT_M_TX_ARB_LOST:
 			// update status
 			txrx_setup->status |= I2C_SETUP_STATUS_ARBF;
 		default:
 			goto retry;
-			break;
 		}
 	}
 
@@ -410,14 +562,12 @@ send_slar:
 			// success, go to end stage
 			txrx_setup->status |= I2C_SETUP_STATUS_DONE;
 			goto end_stage;
-			break;
 
 		/* SLA+R has been transmitted, NACK has been received ------------------*/
 		case I2C_I2STAT_M_RX_SLAR_NACK:
 			// update status
 			txrx_setup->status |= I2C_SETUP_STATUS_NOACKF;
 			goto retry;
-			break;
 
 		/* Arbitration lost ----------------------------------------------------*/
 		case I2C_I2STAT_M_RX_ARB_LOST:
@@ -440,10 +590,8 @@ end_stage:
 				I2C_IntCmd(I2Cx, 0);
 				// Send stop
 				I2C_Stop(I2Cx);
-				// Call callback if installed
-				if (txrx_setup->callback != NULL){
-					txrx_setup->callback();
-				}
+
+				I2C_MasterComplete[tmp] = TRUE;
 			}
 			break;
 		}
@@ -453,7 +601,10 @@ end_stage:
 
 /*********************************************************************//**
  * @brief 		General Slave Interrupt handler for I2C peripheral
- * @param[in]	I2Cx	I2C peripheral selected, should be I2C0, I2C1 or I2C2
+ * @param[in]	I2Cx	I2C peripheral selected, should be:
+ *  			- LPC_I2C0
+ *  			- LPC_I2C1
+ *  			- LPC_I2C2
  * @return 		None
  **********************************************************************/
 void I2C_SlaveHandler (LPC_I2C_TypeDef  *I2Cx)
@@ -583,7 +734,6 @@ void I2C_SlaveHandler (LPC_I2C_TypeDef  *I2Cx)
 		I2Cx->I2CONCLR = I2C_I2CONCLR_SIC;
 		txrx_setup->status |= I2C_SETUP_STATUS_DONE;
 		goto s_int_end;
-		break;
 
 	// Other status must be captured
 	default:
@@ -591,159 +741,17 @@ s_int_end:
 		// Disable interrupt
 		I2C_IntCmd(I2Cx, 0);
 		I2Cx->I2CONCLR = I2C_I2CONCLR_AAC | I2C_I2CONCLR_SIC | I2C_I2CONCLR_STAC;
-		// Call callback if installed
-		if (txrx_setup->callback != NULL){
-			txrx_setup->callback();
-		}
+		I2C_SlaveComplete[tmp] = TRUE;
 		break;
 	}
 }
 
-/**
- * @}
- */
-
-
-/* Public Functions ----------------------------------------------------------- */
-/** @addtogroup I2C_Public_Functions
- * @{
- */
-
-/*********************************************************************//**
- * @brief 		Setup clock rate for I2C peripheral
- * @param[in] 	I2Cx	I2C peripheral selected, should be I2C0, I2C1 or I2C2
- * @param[in]	target_clock : clock of SSP (Hz)
- * @return 		None
- ***********************************************************************/
-void I2C_SetClock (LPC_I2C_TypeDef *I2Cx, uint32_t target_clock)
-{
-	uint32_t temp;
-
-	CHECK_PARAM(PARAM_I2Cx(I2Cx));
-
-	// Get PCLK of I2C controller
-	if (I2Cx == LPC_I2C0)
-	{
-		temp = CLKPWR_GetPCLK (CLKPWR_PCLKSEL_I2C0) / target_clock;
-	}
-	else if (I2Cx == LPC_I2C1)
-	{
-		temp = CLKPWR_GetPCLK (CLKPWR_PCLKSEL_I2C1) / target_clock;
-	}
-	else if (I2Cx == LPC_I2C2)
-	{
-		temp = CLKPWR_GetPCLK (CLKPWR_PCLKSEL_I2C1) / target_clock;
-	}
-
-	/* Set the I2C clock value to register */
-	I2Cx->I2SCLH = (uint32_t)(temp / 2);
-	I2Cx->I2SCLL = (uint32_t)(temp - I2Cx->I2SCLH);
-}
-
-
-/*********************************************************************//**
- * @brief		De-initializes the I2C peripheral registers to their
-*                  default reset values.
- * @param[in]	I2Cx	I2C peripheral selected, should be I2C0, I2C1 or I2C2
- * @return 		None
- **********************************************************************/
-void I2C_DeInit(LPC_I2C_TypeDef* I2Cx)
-{
-	CHECK_PARAM(PARAM_I2Cx(I2Cx));
-
-	/* Disable I2C control */
-	I2Cx->I2CONCLR = I2C_I2CONCLR_I2ENC;
-
-	if (I2Cx==LPC_I2C0)
-	{
-		/* Disable power for I2C0 module */
-		CLKPWR_ConfigPPWR (CLKPWR_PCONP_PCI2C0, DISABLE);
-	}
-	else if (I2Cx==LPC_I2C1)
-	{
-		/* Disable power for I2C1 module */
-		CLKPWR_ConfigPPWR (CLKPWR_PCONP_PCI2C1, DISABLE);
-	}
-	else if (I2Cx==LPC_I2C2)
-	{
-		/* Disable power for I2C2 module */
-		CLKPWR_ConfigPPWR (CLKPWR_PCONP_PCI2C2, DISABLE);
-	}
-}
-
-
-/********************************************************************//**
- * @brief		Initializes the I2Cx peripheral with specified parameter.
- * @param[in]	I2Cx	I2C peripheral selected, should be I2C0, I2C1 or I2C2
- * @param[in]	clockrate Target clock rate value to initialized I2C
- * 				peripheral
- * @return 		None
- *********************************************************************/
-void I2C_Init(LPC_I2C_TypeDef *I2Cx, uint32_t clockrate)
-{
-	CHECK_PARAM(PARAM_I2Cx(I2Cx));
-
-	if (I2Cx==LPC_I2C0)
-	{
-		/* Set up clock and power for I2C0 module */
-		CLKPWR_ConfigPPWR (CLKPWR_PCONP_PCI2C0, ENABLE);
-		/* As default, peripheral clock for I2C0 module
-		 * is set to FCCLK / 2 */
-		CLKPWR_SetPCLKDiv(CLKPWR_PCLKSEL_I2C0, CLKPWR_PCLKSEL_CCLK_DIV_2);
-	}
-	else if (I2Cx==LPC_I2C1)
-	{
-		/* Set up clock and power for I2C1 module */
-		CLKPWR_ConfigPPWR (CLKPWR_PCONP_PCI2C1, ENABLE);
-		/* As default, peripheral clock for I2C1 module
-		 * is set to FCCLK / 2 */
-		CLKPWR_SetPCLKDiv(CLKPWR_PCLKSEL_I2C1, CLKPWR_PCLKSEL_CCLK_DIV_2);
-	}
-	else if (I2Cx==LPC_I2C2)
-	{
-		/* Set up clock and power for I2C2 module */
-		CLKPWR_ConfigPPWR (CLKPWR_PCONP_PCI2C2, ENABLE);
-		/* As default, peripheral clock for I2C2 module
-		 * is set to FCCLK / 2 */
-		CLKPWR_SetPCLKDiv(CLKPWR_PCLKSEL_I2C2, CLKPWR_PCLKSEL_CCLK_DIV_2);
-	}
-	else {
-		// Up-Support this device
-		return;
-	}
-
-    /* Set clock rate */
-    I2C_SetClock(I2Cx, clockrate);
-    /* Set I2C operation to default */
-    I2Cx->I2CONCLR = (I2C_I2CONCLR_AAC | I2C_I2CONCLR_STAC | I2C_I2CONCLR_I2ENC);
-}
-
-
-/*********************************************************************//**
- * @brief		Enable or disable I2C peripheral's operation
- * @param[in]	I2Cx I2C peripheral selected, should be I2C0, I2C1 or I2C2
- * @param[in]	NewState New State of I2Cx peripheral's operation
- * @return 		none
- **********************************************************************/
-void I2C_Cmd(LPC_I2C_TypeDef* I2Cx, FunctionalState NewState)
-{
-	CHECK_PARAM(PARAM_FUNCTIONALSTATE(NewState));
-	CHECK_PARAM(PARAM_I2Cx(I2Cx));
-
-	if (NewState == ENABLE)
-	{
-		I2Cx->I2CONSET = I2C_I2CONSET_I2EN;
-	}
-	else
-	{
-		I2Cx->I2CONCLR = I2C_I2CONCLR_I2ENC;
-	}
-}
-
-
 /*********************************************************************//**
  * @brief 		Transmit and Receive data in master mode
- * @param[in]	I2Cx			I2C peripheral selected, should be I2C0, I2C1 or I2C2
+ * @param[in]	I2Cx			I2C peripheral selected, should be:
+ *  			- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
  * @param[in]	TransferCfg		Pointer to a I2C_M_SETUP_Type structure that
  * 								contains specified information about the
  * 								configuration for master transfer.
@@ -927,7 +935,6 @@ error:
 		// Setup tx_rx data, callback and interrupt handler
 		tmp = I2C_getNum(I2Cx);
 		i2cdat[tmp].txrx_setup = (uint32_t) TransferCfg;
-		i2cdat[tmp].inthandler = I2C_MasterHandler;
 		// Set direction phase, write first
 		i2cdat[tmp].dir = 0;
 
@@ -944,7 +951,10 @@ error:
 
 /*********************************************************************//**
  * @brief 		Receive and Transmit data in slave mode
- * @param[in]	I2Cx			I2C peripheral selected, should be I2C0, I2C1 or I2C2
+ * @param[in]	I2Cx			I2C peripheral selected, should be
+ *    			- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
  * @param[in]	TransferCfg		Pointer to a I2C_S_SETUP_Type structure that
  * 								contains specified information about the
  * 								configuration for master transfer.
@@ -1106,7 +1116,6 @@ Status I2C_SlaveTransferData(LPC_I2C_TypeDef *I2Cx, I2C_S_SETUP_Type *TransferCf
 				default:
 					I2Cx->I2CONCLR = I2C_I2CONCLR_SIC;
 					goto s_error;
-					break;
 				}
 			} else if (time_en){
 				if (timeout++ > I2C_SLAVE_TIME_OUT){
@@ -1136,7 +1145,6 @@ s_error:
 		// Setup tx_rx data, callback and interrupt handler
 		tmp = I2C_getNum(I2Cx);
 		i2cdat[tmp].txrx_setup = (uint32_t) TransferCfg;
-		i2cdat[tmp].inthandler = I2C_SlaveHandler;
 		// Set direction phase, read first
 		i2cdat[tmp].dir = 1;
 
@@ -1154,7 +1162,10 @@ s_error:
 /*********************************************************************//**
  * @brief		Set Own slave address in I2C peripheral corresponding to
  * 				parameter specified in OwnSlaveAddrConfigStruct.
- * @param[in]	I2Cx	I2C peripheral selected, should be I2C0, I2C1 or I2C2
+ * @param[in]	I2Cx	I2C peripheral selected, should be
+ *    			- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
  * @param[in]	OwnSlaveAddrConfigStruct	Pointer to a I2C_OWNSLAVEADDR_CFG_Type
  * 				structure that contains the configuration information for the
 *               specified I2C slave address.
@@ -1197,7 +1208,10 @@ void I2C_SetOwnSlaveAddr(LPC_I2C_TypeDef *I2Cx, I2C_OWNSLAVEADDR_CFG_Type *OwnSl
 
 /*********************************************************************//**
  * @brief		Configures functionality in I2C monitor mode
- * @param[in]	I2Cx	I2C peripheral selected, should be I2C0, I2C1 or I2C2
+ * @param[in]	I2Cx	I2C peripheral selected, should be
+ *   			- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
  * @param[in]	MonitorCfgType Monitor Configuration type, should be:
  * 				- I2C_MONITOR_CFG_SCL_OUTPUT: I2C module can 'stretch'
  * 				the clock line (hold it low) until it has had time to
@@ -1229,7 +1243,10 @@ void I2C_MonitorModeConfig(LPC_I2C_TypeDef *I2Cx, uint32_t MonitorCfgType, Funct
 
 /*********************************************************************//**
  * @brief		Enable/Disable I2C monitor mode
- * @param[in]	I2Cx	I2C peripheral selected, should be I2C0, I2C1 or I2C2
+ * @param[in]	I2Cx	I2C peripheral selected, should be
+ *    			- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
  * @param[in]	NewState New State of this function, should be:
  * 				- ENABLE: Enable monitor mode.
  * 				- DISABLE: Disable monitor mode.
@@ -1243,17 +1260,24 @@ void I2C_MonitorModeCmd(LPC_I2C_TypeDef *I2Cx, FunctionalState NewState)
 	if (NewState == ENABLE)
 	{
 		I2Cx->MMCTRL |= I2C_I2MMCTRL_MM_ENA;
+		I2Cx->I2CONSET = I2C_I2CONSET_AA;
+		I2Cx->I2CONCLR = I2C_I2CONCLR_SIC | I2C_I2CONCLR_STAC;
 	}
 	else
 	{
 		I2Cx->MMCTRL &= (~I2C_I2MMCTRL_MM_ENA) & I2C_I2MMCTRL_BITMASK;
+		I2Cx->I2CONCLR = I2C_I2CONCLR_SIC | I2C_I2CONCLR_STAC | I2C_I2CONCLR_AAC;
 	}
+	I2C_MonitorBufferIndex = 0;
 }
 
 
 /*********************************************************************//**
  * @brief		Get data from I2C data buffer in monitor mode.
- * @param[in]	I2Cx	I2C peripheral selected, should be I2C0, I2C1 or I2C2
+ * @param[in]	I2Cx	I2C peripheral selected, should be
+ *    			- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
  * @return		None
  * Note:	In monitor mode, the I2C module may lose the ability to stretch
  * the clock (stall the bus) if the ENA_SCL bit is not set. This means that
@@ -1270,34 +1294,70 @@ uint8_t I2C_MonitorGetDatabuffer(LPC_I2C_TypeDef *I2Cx)
 }
 
 /*********************************************************************//**
- * @brief 		Standard Interrupt handler for I2C0 peripheral
- * @param[in]	None
- * @return 		None
+ * @brief		Get data from I2C data buffer in monitor mode.
+ * @param[in]	I2Cx	I2C peripheral selected, should be
+ *    			- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
+ * @return		None
+ * Note:	In monitor mode, the I2C module may lose the ability to stretch
+ * the clock (stall the bus) if the ENA_SCL bit is not set. This means that
+ * the processor will have a limited amount of time to read the contents of
+ * the data received on the bus. If the processor reads the I2DAT shift
+ * register, as it ordinarily would, it could have only one bit-time to
+ * respond to the interrupt before the received data is overwritten by
+ * new data.
  **********************************************************************/
-void I2C0_StdIntHandler(void)
+BOOL_8 I2C_MonitorHandler(LPC_I2C_TypeDef *I2Cx, uint8_t *buffer, uint32_t size)
 {
-	i2cdat[0].inthandler(LPC_I2C0);
+	BOOL_8 ret=FALSE;
+
+	I2Cx->I2CONCLR = I2C_I2CONCLR_SIC;
+
+	buffer[I2C_MonitorBufferIndex] = (uint8_t)(I2Cx->I2DATA_BUFFER);
+	I2C_MonitorBufferIndex++;
+	if(I2C_MonitorBufferIndex >= size)
+	{
+		ret = TRUE;
+	}
+	return ret;
+}
+/*********************************************************************//**
+ * @brief 		Get status of Master Transfer
+ * @param[in]	I2Cx	I2C peripheral selected, should be:
+ *  			- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
+ * @return 		Master transfer status, could be:
+ * 				- TRUE	master transfer completed
+ * 				- FALSE master transfer have not completed yet
+ **********************************************************************/
+uint32_t I2C_MasterTransferComplete(LPC_I2C_TypeDef *I2Cx)
+{
+	uint32_t retval, tmp;
+	tmp = I2C_getNum(I2Cx);
+	retval = I2C_MasterComplete[tmp];
+	I2C_MasterComplete[tmp] = FALSE;
+	return retval;
 }
 
 /*********************************************************************//**
- * @brief 		Standard Interrupt handler for I2C1 peripheral
- * @param[in]	None
- * @return 		None
+ * @brief 		Get status of Slave Transfer
+ * @param[in]	I2Cx	I2C peripheral selected, should be:
+ * 				- LPC_I2C0
+ * 				- LPC_I2C1
+ * 				- LPC_I2C2
+ * @return 		Complete status, could be: TRUE/FALSE
  **********************************************************************/
-void I2C1_StdIntHandler(void)
+uint32_t I2C_SlaveTransferComplete(LPC_I2C_TypeDef *I2Cx)
 {
-	i2cdat[1].inthandler(LPC_I2C1);
+	uint32_t retval, tmp;
+	tmp = I2C_getNum(I2Cx);
+	retval = I2C_SlaveComplete[tmp];
+	I2C_SlaveComplete[tmp] = FALSE;
+	return retval;
 }
 
-/*********************************************************************//**
- * @brief 		Standard Interrupt handler for I2C2 peripheral
- * @param[in]	None
- * @return 		None
- **********************************************************************/
-void I2C2_StdIntHandler(void)
-{
-	i2cdat[2].inthandler(LPC_I2C2);
-}
 
 
 /**

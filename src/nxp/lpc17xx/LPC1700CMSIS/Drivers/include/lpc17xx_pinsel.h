@@ -1,10 +1,10 @@
 /***********************************************************************//**
- * @file	: lpc17xx_pinsel.h
- * @brief	: Contains all macro definitions and function prototypes
+ * @file		lpc17xx_pinsel.h
+ * @brief		Contains all macro definitions and function prototypes
  * 				support for Pin connect block firmware library on LPC17xx
- * @version	: 1.0
- * @date	: 25. Feb. 2009
- * @author	: HoanTran
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -19,7 +19,7 @@
  **************************************************************************/
 
 /* Peripheral group ----------------------------------------------------------- */
-/** @defgroup PINSEL
+/** @defgroup PINSEL PINSEL
  * @ingroup LPC1700CMSIS_FwLib_Drivers
  * @{
  */
@@ -36,34 +36,8 @@ extern "C"
 {
 #endif
 
-
-/* Private Macros ------------------------------------------------------------- */
-/** @defgroup PINSEL_Private_Macros
- * @{
- */
-
-/** @defgroup PINSEL_REGISTER_BIT_DEFINITIONS
- * @{
- */
-
-/* Pin selection define */
-/* I2C Pin Configuration register bit description */
-#define PINSEL_I2CPADCFG_SDADRV0 	_BIT(0) /**< Drive mode control for the SDA0 pin, P0.27 */
-#define PINSEL_I2CPADCFG_SDAI2C0	_BIT(1) /**< I2C mode control for the SDA0 pin, P0.27 */
-#define PINSEL_I2CPADCFG_SCLDRV0	_BIT(2) /**< Drive mode control for the SCL0 pin, P0.28 */
-#define PINSEL_I2CPADCFG_SCLI2C0	_BIT(3) /**< I2C mode control for the SCL0 pin, P0.28 */
-
-/**
- * @}
- */
-
-/**
- * @}
- */
-
-
 /* Public Macros -------------------------------------------------------------- */
-/** @defgroup PINSEL_Public_Macros
+/** @defgroup PINSEL_Public_Macros PINSEL Public Macros
  * @{
  */
 
@@ -76,7 +50,6 @@ extern "C"
 #define PINSEL_PORT_3 	((3))	/**< PORT 3*/
 #define PINSEL_PORT_4 	((4))	/**< PORT 4*/
 
-
 /***********************************************************************
  * Macros define for Pin Function selection
  **********************************************************************/
@@ -84,8 +57,6 @@ extern "C"
 #define PINSEL_FUNC_1	((1))	/**< first alternate function*/
 #define PINSEL_FUNC_2	((2))	/**< second alternate function*/
 #define PINSEL_FUNC_3	((3))	/**< third or reserved alternate function*/
-
-
 
 /***********************************************************************
  * Macros define for Pin Number of Port
@@ -123,7 +94,6 @@ extern "C"
 #define PINSEL_PIN_30 	((30)) 	/**< Pin 30 */
 #define PINSEL_PIN_31 	((31)) 	/**< Pin 31 */
 
-
 /***********************************************************************
  * Macros define for Pin mode
  **********************************************************************/
@@ -131,13 +101,11 @@ extern "C"
 #define PINSEL_PINMODE_TRISTATE 	((2))	/**< Tri-state */
 #define PINSEL_PINMODE_PULLDOWN 	((3)) 	/**< Internal pull-down resistor */
 
-
 /***********************************************************************
  * Macros define for Pin mode (normal/open drain)
  **********************************************************************/
 #define	PINSEL_PINMODE_NORMAL		((0))	/**< Pin is in the normal (not open drain) mode.*/
 #define	PINSEL_PINMODE_OPENDRAIN	((1)) 	/**< Pin is in the open drain mode */
-
 
 /***********************************************************************
  * Macros define for I2C mode
@@ -145,6 +113,21 @@ extern "C"
 #define	PINSEL_I2C_Normal_Mode		((0))	/**< The standard drive mode */
 #define	PINSEL_I2C_Fast_Mode		((1)) 	/**<  Fast Mode Plus drive mode */
 
+/**
+ * @}
+ */
+
+/* Private Macros ------------------------------------------------------------- */
+/** @defgroup PINSEL_Private_Macros PINSEL Private Macros
+ * @{
+ */
+
+/* Pin selection define */
+/* I2C Pin Configuration register bit description */
+#define PINSEL_I2CPADCFG_SDADRV0 	_BIT(0) /**< Drive mode control for the SDA0 pin, P0.27 */
+#define PINSEL_I2CPADCFG_SDAI2C0	_BIT(1) /**< I2C mode control for the SDA0 pin, P0.27 */
+#define PINSEL_I2CPADCFG_SCLDRV0	_BIT(2) /**< Drive mode control for the SCL0 pin, P0.28 */
+#define PINSEL_I2CPADCFG_SCLI2C0	_BIT(3) /**< I2C mode control for the SCL0 pin, P0.28 */
 
 /**
  * @}
@@ -152,7 +135,7 @@ extern "C"
 
 
 /* Public Types --------------------------------------------------------------- */
-/** @defgroup PINSEL_Public_Types
+/** @defgroup PINSEL_Public_Types PINSEL Public Types
  * @{
  */
 
@@ -180,16 +163,14 @@ typedef struct
 
 
 /* Public Functions ----------------------------------------------------------- */
-/** @defgroup PINSEL_Public_Functions
+/** @defgroup PINSEL_Public_Functions PINSEL Public Functions
  * @{
  */
 
-void PINSEL_SetPinFunc ( uint8_t portnum, uint8_t pinnum, uint8_t funcnum);
-void PINSEL_ConfigTraceFunc (FunctionalState NewState);
-void PINSEL_SetResistorMode ( uint8_t portnum, uint8_t pinnum, uint8_t modenum);
-void PINSEL_SetOpenDrainMode( uint8_t portnum, uint8_t pinnum, uint8_t modenum);
-void PINSEL_SetI2C0Pins(uint8_t i2cPinMode, FunctionalState filterSlewRateEnable);
 void PINSEL_ConfigPin(PINSEL_CFG_Type *PinCfg);
+void PINSEL_ConfigTraceFunc (FunctionalState NewState);
+void PINSEL_SetI2C0Pins(uint8_t i2cPinMode, FunctionalState filterSlewRateEnable);
+
 
 /**
  * @}

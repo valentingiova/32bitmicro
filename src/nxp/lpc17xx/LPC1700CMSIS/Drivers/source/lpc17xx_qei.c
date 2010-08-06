@@ -1,9 +1,9 @@
-/**
- * @file	: lpc17xx_qei.c
- * @brief	: Contains all functions support for QEI firmware library on LPC17xx
- * @version	: 1.0
- * @date	: 26. May. 2009
- * @author	: HieuNguyen
+/***********************************************************************//**
+ * @file		lpc17xx_qei.c
+ * @brief		Contains all functions support for QEI firmware library on LPC17xx
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -41,7 +41,7 @@
 #ifdef _QEI
 
 /* Private Types -------------------------------------------------------------- */
-/** @defgroup QEI_Private_Types
+/** @defgroup QEI_Private_Types QEI Private Types
  * @{
  */
 
@@ -66,7 +66,7 @@ typedef union {
 /*********************************************************************//**
  * @brief		Resets value for each type of QEI value, such as velocity,
  * 				counter, position, etc..
- * @param[in]	QEIx			QEI peripheral, should be QEI
+ * @param[in]	QEIx			QEI peripheral, should be LPC_QEI
  * @param[in]	ulResetType		QEI Reset Type, should be one of the following:
  * 								- QEI_RESET_POS: Reset Position Counter
  * 								- QEI_RESET_POSOnIDX: Reset Position Counter on Index signal
@@ -85,7 +85,7 @@ void QEI_Reset(LPC_QEI_TypeDef *QEIx, uint32_t ulResetType)
 /*********************************************************************//**
  * @brief		Initializes the QEI peripheral according to the specified
 *               parameters in the QEI_ConfigStruct.
- * @param[in]	QEIx				QEI peripheral, should be QEI
+ * @param[in]	QEIx				QEI peripheral, should be LPC_QEI
  * @param[in]	QEI_ConfigStruct	Pointer to a QEI_CFG_Type structure
 *                    that contains the configuration information for the
 *                    specified QEI peripheral
@@ -129,7 +129,7 @@ void QEI_Init(LPC_QEI_TypeDef *QEIx, QEI_CFG_Type *QEI_ConfigStruct)
 /*********************************************************************//**
  * @brief		De-initializes the QEI peripheral registers to their
 *                  default reset values.
- * @param[in]	QEIx				QEI peripheral, should be QEI
+ * @param[in]	QEIx	QEI peripheral, should be LPC_QEI
  * @return 		None
  **********************************************************************/
 void QEI_DeInit(LPC_QEI_TypeDef *QEIx)
@@ -162,7 +162,7 @@ void QEI_ConfigStructInit(QEI_CFG_Type *QIE_InitStruct)
 
 /*********************************************************************//**
  * @brief		Check whether if specified flag status is set or not
- * @param[in]	QEIx		QEI peripheral, should be QEI
+ * @param[in]	QEIx		QEI peripheral, should be LPC_QEI
  * @param[in]	ulFlagType	Status Flag Type, should be one of the following:
  * 							- QEI_STATUS_DIR: Direction Status
  * @return		New Status of this status flag (SET or RESET)
@@ -176,7 +176,7 @@ FlagStatus QEI_GetStatus(LPC_QEI_TypeDef *QEIx, uint32_t ulFlagType)
 
 /*********************************************************************//**
  * @brief		Get current position value in QEI peripheral
- * @param[in]	QEIx		QEI peripheral, should be QEI
+ * @param[in]	QEIx	QEI peripheral, should be LPC_QEI
  * @return		Current position value of QEI peripheral
  **********************************************************************/
 uint32_t QEI_GetPosition(LPC_QEI_TypeDef *QEIx)
@@ -187,7 +187,7 @@ uint32_t QEI_GetPosition(LPC_QEI_TypeDef *QEIx)
 
 /*********************************************************************//**
  * @brief		Set max position value for QEI peripheral
- * @param[in]	QEIx		QEI peripheral, should be QEI
+ * @param[in]	QEIx		QEI peripheral, should be LPC_QEI
  * @param[in]	ulMaxPos	Max position value to set
  * @return		None
  **********************************************************************/
@@ -199,7 +199,7 @@ void QEI_SetMaxPosition(LPC_QEI_TypeDef *QEIx, uint32_t ulMaxPos)
 
 /*********************************************************************//**
  * @brief		Set position compare value for QEI peripheral
- * @param[in]	QEIx		QEI peripheral, should be QEI
+ * @param[in]	QEIx		QEI peripheral, should be LPC_QEI
  * @param[in]	bPosCompCh	Compare Position channel, should be:
  * 							- QEI_COMPPOS_CH_0: QEI compare position channel 0
  * 							- QEI_COMPPOS_CH_1: QEI compare position channel 1
@@ -220,7 +220,7 @@ void QEI_SetPositionComp(LPC_QEI_TypeDef *QEIx, uint8_t bPosCompCh, uint32_t ulP
 
 /*********************************************************************//**
  * @brief		Get current index counter of QEI peripheral
- * @param[in]	QEIx		QEI peripheral, should be QEI
+ * @param[in]	QEIx		QEI peripheral, should be LPC_QEI
  * @return		Current value of QEI index counter
  **********************************************************************/
 uint32_t QEI_GetIndex(LPC_QEI_TypeDef *QEIx)
@@ -231,7 +231,7 @@ uint32_t QEI_GetIndex(LPC_QEI_TypeDef *QEIx)
 
 /*********************************************************************//**
  * @brief		Set value for index compare in QEI peripheral
- * @param[in]	QEIx		QEI peripheral, should be QEI
+ * @param[in]	QEIx		QEI peripheral, should be LPC_QEI
  * @param[in]	ulIndexComp		Compare Index Value to set
  * @return		None
  **********************************************************************/
@@ -246,7 +246,7 @@ void QEI_SetIndexComp(LPC_QEI_TypeDef *QEIx, uint32_t ulIndexComp)
  * 				over-flow, the value that set for Timer Reload register will be loaded
  * 				into the velocity timer for next period. The calculated velocity in RPM
  * 				therefore will be affect by this value.
- * @param[in]	QEIx			QEI peripheral, should be QEI
+ * @param[in]	QEIx			QEI peripheral, should be LPC_QEI
  * @param[in]	QEIReloadStruct	QEI reload structure
  * @return		None
  **********************************************************************/
@@ -268,7 +268,7 @@ void QEI_SetTimerReload(LPC_QEI_TypeDef *QEIx, QEI_RELOADCFG_Type *QEIReloadStru
 
 /*********************************************************************//**
  * @brief		Get current timer counter in QEI peripheral
- * @param[in]	QEIx			QEI peripheral, should be QEI
+ * @param[in]	QEIx			QEI peripheral, should be LPC_QEI
  * @return		Current timer counter in QEI peripheral
  **********************************************************************/
 uint32_t QEI_GetTimer(LPC_QEI_TypeDef *QEIx)
@@ -279,7 +279,7 @@ uint32_t QEI_GetTimer(LPC_QEI_TypeDef *QEIx)
 
 /*********************************************************************//**
  * @brief		Get current velocity pulse counter in current time period
- * @param[in]	QEIx			QEI peripheral, should be QEI
+ * @param[in]	QEIx			QEI peripheral, should be LPC_QEI
  * @return		Current velocity pulse counter value
  **********************************************************************/
 uint32_t QEI_GetVelocity(LPC_QEI_TypeDef *QEIx)
@@ -292,7 +292,7 @@ uint32_t QEI_GetVelocity(LPC_QEI_TypeDef *QEIx)
  * @brief		Get the most recently measured velocity of the QEI. When
  * 				the Velocity timer in QEI is over-flow, the current velocity
  * 				value will be loaded into Velocity Capture register.
- * @param[in]	QEIx			QEI peripheral, should be QEI
+ * @param[in]	QEIx			QEI peripheral, should be LPC_QEI
  * @return		The most recently measured velocity value
  **********************************************************************/
 uint32_t QEI_GetVelocityCap(LPC_QEI_TypeDef *QEIx)
@@ -303,7 +303,7 @@ uint32_t QEI_GetVelocityCap(LPC_QEI_TypeDef *QEIx)
 
 /*********************************************************************//**
  * @brief		Set Velocity Compare value for QEI peripheral
- * @param[in]	QEIx			QEI peripheral, should be QEI
+ * @param[in]	QEIx			QEI peripheral, should be LPC_QEI
  * @param[in]	ulVelComp		Compare Velocity value to set
  * @return		None
  **********************************************************************/
@@ -316,7 +316,7 @@ void QEI_SetVelocityComp(LPC_QEI_TypeDef *QEIx, uint32_t ulVelComp)
 /*********************************************************************//**
  * @brief		Set value of sampling count for the digital filter in
  * 				QEI peripheral
- * @param[in]	QEIx			QEI peripheral, should be QEI
+ * @param[in]	QEIx			QEI peripheral, should be LPC_QEI
  * @param[in]	ulSamplingPulse	Value of sampling count to set
  * @return		None
  **********************************************************************/
@@ -329,7 +329,7 @@ void QEI_SetDigiFilter(LPC_QEI_TypeDef *QEIx, uint32_t ulSamplingPulse)
 /*********************************************************************//**
  * @brief		Check whether if specified interrupt flag status in QEI
  * 				peripheral is set or not
- * @param[in]	QEIx			QEI peripheral, should be QEI
+ * @param[in]	QEIx			QEI peripheral, should be LPC_QEI
  * @param[in]	ulIntType		Interrupt Flag Status type, should be:
 								- QEI_INTFLAG_INX_Int: index pulse was detected interrupt
 								- QEI_INTFLAG_TIM_Int: Velocity timer over flow interrupt
@@ -360,7 +360,7 @@ FlagStatus QEI_GetIntStatus(LPC_QEI_TypeDef *QEIx, uint32_t ulIntType)
 
 /*********************************************************************//**
  * @brief		Enable/Disable specified interrupt in QEI peripheral
- * @param[in]	QEIx			QEI peripheral, should be QEI
+ * @param[in]	QEIx			QEI peripheral, should be LPC_QEI
  * @param[in]	ulIntType		Interrupt Flag Status type, should be:
  * 								- QEI_INTFLAG_INX_Int: index pulse was detected interrupt
  *								- QEI_INTFLAG_TIM_Int: Velocity timer over flow interrupt
@@ -400,7 +400,7 @@ void QEI_IntCmd(LPC_QEI_TypeDef *QEIx, uint32_t ulIntType, FunctionalState NewSt
 
 /*********************************************************************//**
  * @brief		Sets (forces) specified interrupt in QEI peripheral
- * @param[in]	QEIx			QEI peripheral, should be QEI
+ * @param[in]	QEIx			QEI peripheral, should be LPC_QEI
  * @param[in]	ulIntType		Interrupt Flag Status type, should be:
 								- QEI_INTFLAG_INX_Int: index pulse was detected interrupt
 								- QEI_INTFLAG_TIM_Int: Velocity timer over flow interrupt
@@ -431,7 +431,7 @@ void QEI_IntSet(LPC_QEI_TypeDef *QEIx, uint32_t ulIntType)
 
 /*********************************************************************//**
  * @brief		Clear (force) specified interrupt (pending) in QEI peripheral
- * @param[in]	QEIx			QEI peripheral, should be QEI
+ * @param[in]	QEIx			QEI peripheral, should be LPC_QEI
  * @param[in]	ulIntType		Interrupt Flag Status type, should be:
 								- QEI_INTFLAG_INX_Int: index pulse was detected interrupt
 								- QEI_INTFLAG_TIM_Int: Velocity timer over flow interrupt
@@ -465,7 +465,7 @@ void QEI_IntClear(LPC_QEI_TypeDef *QEIx, uint32_t ulIntType)
  * @brief		Calculates the actual velocity in RPM passed via velocity
  * 				capture value and Pulse Per Round (of the encoder) value
  * 				parameter input.
- * @param[in]	QEIx			QEI peripheral, should be QEI
+ * @param[in]	QEIx			QEI peripheral, should be LPC_QEI
  * @param[in]	ulVelCapValue	Velocity capture input value that can
  * 								be got from QEI_GetVelocityCap() function
  * @param[in]	ulPPR			Pulse per round of encoder

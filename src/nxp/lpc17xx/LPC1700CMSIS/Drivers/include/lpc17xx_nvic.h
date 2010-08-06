@@ -1,11 +1,11 @@
 /***********************************************************************//**
- * @file	: lpc17xx_nvic.h
- * @brief	: Contains all macro definitions and function prototypes
+ * @file		lpc17xx_nvic.h
+ * @brief		Contains all macro definitions and function prototypes
  * 				support for Nesting Vectored Interrupt firmware library
  * 				on LPC17xx
- * @version	: 1.0
- * @date	: 18. Mar. 2009
- * @author	: HieuNguyen
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -20,7 +20,7 @@
  **************************************************************************/
 
 /* Peripheral group ----------------------------------------------------------- */
-/** @defgroup NVIC
+/** @defgroup NVIC NVIC
  * @ingroup LPC1700CMSIS_FwLib_Drivers
  * @{
  */
@@ -39,7 +39,7 @@ extern "C"
 
 
 /* Public Functions ----------------------------------------------------------- */
-/** @defgroup NVIC_Public_Functions
+/** @defgroup NVIC_Public_Functions NVIC Public Functions
  * @{
  */
 

@@ -1,10 +1,10 @@
 /***********************************************************************//**
- * @file	: lpc17xx_uart.h
- * @brief	: Contains all macro definitions and function prototypes
+ * @file		lpc17xx_uart.h
+ * @brief		Contains all macro definitions and function prototypes
  * 				support for UART firmware library on LPC17xx
- * @version	: 1.0
- * @date	: 18. Mar. 2009
- * @author	: HieuNguyen
+ * @version		3.0
+ * @date		18. June. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -19,7 +19,7 @@
  **************************************************************************/
 
 /* Peripheral group ----------------------------------------------------------- */
-/** @defgroup UART
+/** @defgroup UART UART
  * @ingroup LPC1700CMSIS_FwLib_Drivers
  * @{
  */
@@ -37,36 +37,55 @@ extern "C"
 {
 #endif
 
-
-/* Private Macros ------------------------------------------------------------- */
-/** @defgroup UART_Private_Macros
+/* Public Macros -------------------------------------------------------------- */
+/** @defgroup UART_Public_Macros  UART Public Macros
  * @{
  */
 
+/** UART time-out definitions in case of using Read() and Write function
+ * with Blocking Flag mode
+ */
+#define UART_BLOCKING_TIMEOUT			(0xFFFFFFFFUL)
 
-/** @defgroup UART_REGISTER_BIT_DEFINITIONS
+/**
+ * @}
+ */
+
+/* Private Macros ------------------------------------------------------------- */
+/** @defgroup UART_Private_Macros UART Private Macros
  * @{
  */
 
 /* Accepted Error baud rate value (in percent unit) */
 #define UART_ACCEPTED_BAUDRATE_ERROR	(3)			/*!< Acceptable UART baudrate error */
 
-/* Macro defines for UARTn Receiver Buffer Register */
+
+/* --------------------- BIT DEFINITIONS -------------------------------------- */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UARTn Receiver Buffer Register
+ **********************************************************************/
 #define UART_RBR_MASKBIT   	((uint8_t)0xFF) 		/*!< UART Received Buffer mask bit (8 bits) */
 
-/* Macro defines for UARTn Transmit Holding Register */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UARTn Transmit Holding Register
+ **********************************************************************/
 #define UART_THR_MASKBIT   	((uint8_t)0xFF) 		/*!< UART Transmit Holding mask bit (8 bits) */
 
-/* Macro defines for UARTn Divisor Latch LSB register */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UARTn Divisor Latch LSB register
+ **********************************************************************/
 #define UART_LOAD_DLL(div)	((div) & 0xFF)	/**< Macro for loading least significant halfs of divisors */
 #define UART_DLL_MASKBIT	((uint8_t)0xFF)	/*!< Divisor latch LSB bit mask */
 
-/* Macro defines for UARTn Divisor Latch MSB register */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UARTn Divisor Latch MSB register
+ **********************************************************************/
 #define UART_DLM_MASKBIT	((uint8_t)0xFF)			/*!< Divisor latch MSB bit mask */
 #define UART_LOAD_DLM(div)  (((div) >> 8) & 0xFF)	/**< Macro for loading most significant halfs of divisors */
 
-
-/* Macro defines for UART interrupt enable register */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UART interrupt enable register
+ **********************************************************************/
 #define UART_IER_RBRINT_EN		((uint32_t)(1<<0)) 	/*!< RBR Interrupt enable*/
 #define UART_IER_THREINT_EN		((uint32_t)(1<<1)) 	/*!< THR Interrupt enable*/
 #define UART_IER_RLSINT_EN		((uint32_t)(1<<2)) 	/*!< RX line status interrupt enable*/
@@ -77,8 +96,9 @@ extern "C"
 #define UART_IER_BITMASK		((uint32_t)(0x307)) /*!< UART interrupt enable register bit mask */
 #define UART1_IER_BITMASK		((uint32_t)(0x38F)) /*!< UART1 interrupt enable register bit mask */
 
-
-/* UART interrupt identification register defines */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UART interrupt identification register
+ **********************************************************************/
 #define UART_IIR_INTSTAT_PEND	((uint32_t)(1<<0))	/*!<Interrupt Status - Active low */
 #define UART_IIR_INTID_RLS		((uint32_t)(3<<1)) 	/*!<Interrupt identification: Receive line status*/
 #define UART_IIR_INTID_RDA		((uint32_t)(2<<1)) 	/*!<Interrupt identification: Receive data available*/
@@ -91,8 +111,9 @@ extern "C"
 #define UART_IIR_ABTO_INT		((uint32_t)(1<<9)) 	/*!< Auto-baud time-out interrupt */
 #define UART_IIR_BITMASK		((uint32_t)(0x3CF))	/*!< UART interrupt identification register bit mask */
 
-
-/* Macro defines for UART FIFO control register */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UART FIFO control register
+ **********************************************************************/
 #define UART_FCR_FIFO_EN		((uint8_t)(1<<0)) 	/*!< UART FIFO enable */
 #define UART_FCR_RX_RS			((uint8_t)(1<<1)) 	/*!< UART FIFO RX reset */
 #define UART_FCR_TX_RS			((uint8_t)(1<<2)) 	/*!< UART FIFO TX reset */
@@ -104,7 +125,9 @@ extern "C"
 #define UART_FCR_BITMASK		((uint8_t)(0xCF))	/*!< UART FIFO control bit mask */
 #define UART_TX_FIFO_SIZE		(16)
 
-/* Macro defines for UART line control register */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UART line control register
+ **********************************************************************/
 #define UART_LCR_WLEN5     		((uint8_t)(0))   		/*!< UART 5 bit data mode */
 #define UART_LCR_WLEN6     		((uint8_t)(1<<0))   	/*!< UART 6 bit data mode */
 #define UART_LCR_WLEN7     		((uint8_t)(2<<0))   	/*!< UART 7 bit data mode */
@@ -119,8 +142,9 @@ extern "C"
 #define UART_LCR_DLAB_EN		((uint8_t)(1<<7))    	/*!< UART Divisor Latches Access bit enable */
 #define UART_LCR_BITMASK		((uint8_t)(0xFF))		/*!< UART line control bit mask */
 
-
-/* Macro defines for UART1 Modem Control Register */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UART1 Modem Control Register
+ **********************************************************************/
 #define UART1_MCR_DTR_CTRL		((uint8_t)(1<<0))		/*!< Source for modem output pin DTR */
 #define UART1_MCR_RTS_CTRL		((uint8_t)(1<<1))		/*!< Source for modem output pin RTS */
 #define UART1_MCR_LOOPB_EN		((uint8_t)(1<<4))		/*!< Loop back mode select */
@@ -128,8 +152,9 @@ extern "C"
 #define UART1_MCR_AUTO_CTS_EN	((uint8_t)(1<<7))		/*!< Enable Auto CTS flow-control */
 #define UART1_MCR_BITMASK		((uint8_t)(0x0F3))		/*!< UART1 bit mask value */
 
-
-/* Macro defines for UART line status register */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UART line status register
+ **********************************************************************/
 #define UART_LSR_RDR		((uint8_t)(1<<0)) 	/*!<Line status register: Receive data ready*/
 #define UART_LSR_OE			((uint8_t)(1<<1)) 	/*!<Line status register: Overrun error*/
 #define UART_LSR_PE			((uint8_t)(1<<2)) 	/*!<Line status register: Parity error*/
@@ -140,8 +165,9 @@ extern "C"
 #define UART_LSR_RXFE		((uint8_t)(1<<7)) 	/*!<Error in RX FIFO*/
 #define UART_LSR_BITMASK	((uint8_t)(0xFF)) 	/*!<UART Line status bit mask */
 
-
-/* Macro defines for UART Modem (UART1 only) status register */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UART Modem (UART1 only) status register
+ **********************************************************************/
 #define UART1_MSR_DELTA_CTS		((uint8_t)(1<<0))	/*!< Set upon state change of input CTS */
 #define UART1_MSR_DELTA_DSR		((uint8_t)(1<<1))	/*!< Set upon state change of input DSR */
 #define UART1_MSR_LO2HI_RI		((uint8_t)(1<<2))	/*!< Set upon low to high transition of input RI */
@@ -152,11 +178,14 @@ extern "C"
 #define UART1_MSR_DCD			((uint8_t)(1<<7))	/*!< Data Carrier Detect State */
 #define UART1_MSR_BITMASK		((uint8_t)(0xFF))	/*!< MSR register bit-mask value */
 
-
-/* Macro defines for UART Scratch Pad Register */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UART Scratch Pad Register
+ **********************************************************************/
 #define UART_SCR_BIMASK		((uint8_t)(0xFF))	/*!< UART Scratch Pad bit mask */
 
-/* Macro defines for UART Auto baudrate control register */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UART Auto baudrate control register
+ **********************************************************************/
 #define UART_ACR_START				((uint32_t)(1<<0))	/**< UART Auto-baud start */
 #define UART_ACR_MODE				((uint32_t)(1<<1))	/**< UART Auto baudrate Mode 1 */
 #define UART_ACR_AUTO_RESTART		((uint32_t)(1<<2))	/**< UART Auto baudrate restart */
@@ -164,24 +193,31 @@ extern "C"
 #define UART_ACR_ABTOINT_CLR		((uint32_t)(1<<9))	/**< UART Auto-baud time-out interrupt clear */
 #define UART_ACR_BITMASK			((uint32_t)(0x307))	/**< UART Auto Baudrate register bit mask */
 
-/* UART IrDA control register defines */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UART IrDA control register
+ **********************************************************************/
 #define UART_ICR_IRDAEN			((uint32_t)(1<<0))			/**< IrDA mode enable */
 #define UART_ICR_IRDAINV		((uint32_t)(1<<1))			/**< IrDA serial input inverted */
 #define UART_ICR_FIXPULSE_EN	((uint32_t)(1<<2))			/**< IrDA fixed pulse width mode */
 #define UART_ICR_PULSEDIV(n)	((uint32_t)((n&0x07)<<3))	/**< PulseDiv - Configures the pulse when FixPulseEn = 1 */
 #define UART_ICR_BITMASK		((uint32_t)(0x3F))			/*!< UART IRDA bit mask */
 
-/* Macro defines for UART Fractional divider register */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UART Fractional divider register
+ **********************************************************************/
 #define UART_FDR_DIVADDVAL(n)	((uint32_t)(n&0x0F))		/**< Baud-rate generation pre-scaler divisor */
 #define UART_FDR_MULVAL(n)		((uint32_t)((n<<4)&0xF0))	/**< Baud-rate pre-scaler multiplier value */
 #define UART_FDR_BITMASK		((uint32_t)(0xFF))			/**< UART Fractional Divider register bit mask */
 
-/* Macro defines for UART Tx Enable register */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UART Tx Enable register
+ **********************************************************************/
 #define UART_TER_TXEN			((uint8_t)(1<<7)) 		/*!< Transmit enable bit */
 #define UART_TER_BITMASK		((uint8_t)(0x80))		/**< UART Transmit Enable Register bit mask */
 
-
-/* Macro defines for UART1 RS485 Control register */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UART1 RS485 Control register
+ **********************************************************************/
 #define UART1_RS485CTRL_NMM_EN		((uint32_t)(1<<0))	/*!< RS-485/EIA-485 Normal Multi-drop Mode (NMM)
 														is disabled */
 #define UART1_RS485CTRL_RX_DIS		((uint32_t)(1<<1))	/*!< The receiver is disabled */
@@ -194,22 +230,91 @@ extern "C"
 														will be driven to logic "1" when the transmitter has data to be sent */
 #define UART1_RS485CTRL_BITMASK		((uint32_t)(0x3F))	/**< RS485 control bit-mask value */
 
-
-/* Macro defines for UART1 RS-485 Address Match register */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UART1 RS-485 Address Match register
+ **********************************************************************/
 #define UART1_RS485ADRMATCH_BITMASK ((uint8_t)(0xFF)) 	/**< Bit mask value */
 
+/*********************************************************************//**
+ * Macro defines for Macro defines for UART1 RS-485 Delay value register
+ **********************************************************************/
 /* Macro defines for UART1 RS-485 Delay value register */
 #define UART1_RS485DLY_BITMASK		((uint8_t)(0xFF)) 	/** Bit mask value */
 
-
-/* Macro defines for UART FIFO Level register */
+/*********************************************************************//**
+ * Macro defines for Macro defines for UART FIFO Level register
+ **********************************************************************/
 #define UART_FIFOLVL_RXFIFOLVL(n)	((uint32_t)(n&0x0F))		/**< Reflects the current level of the UART receiver FIFO */
 #define UART_FIFOLVL_TXFIFOLVL(n)	((uint32_t)((n>>8)&0x0F))	/**< Reflects the current level of the UART transmitter FIFO */
 #define UART_FIFOLVL_BITMASK		((uint32_t)(0x0F0F))		/**< UART FIFO Level Register bit mask */
 
-/**
- * @}
- */
+
+/* ---------------- CHECK PARAMETER DEFINITIONS ---------------------------- */
+
+/** Macro to check the input UART_DATABIT parameters */
+#define PARAM_UART_DATABIT(databit)	((databit==UART_DATABIT_5) || (databit==UART_DATABIT_6)\
+|| (databit==UART_DATABIT_7) || (databit==UART_DATABIT_8))
+
+/** Macro to check the input UART_STOPBIT parameters */
+#define PARAM_UART_STOPBIT(stopbit)	((stopbit==UART_STOPBIT_1) || (stopbit==UART_STOPBIT_2))
+
+/** Macro to check the input UART_PARITY parameters */
+#define PARAM_UART_PARITY(parity)	((parity==UART_PARITY_NONE) || (parity==UART_PARITY_ODD) \
+|| (parity==UART_PARITY_EVEN) || (parity==UART_PARITY_SP_1) \
+|| (parity==UART_PARITY_SP_0))
+
+/** Macro to check the input UART_FIFO parameters */
+#define PARAM_UART_FIFO_LEVEL(fifo)	((fifo==UART_FIFO_TRGLEV0) \
+|| (fifo==UART_FIFO_TRGLEV1) || (fifo==UART_FIFO_TRGLEV2) \
+|| (fifo==UART_FIFO_TRGLEV3))
+
+/** Macro to check the input UART_INTCFG parameters */
+#define PARAM_UART_INTCFG(IntCfg)	((IntCfg==UART_INTCFG_RBR) || (IntCfg==UART_INTCFG_THRE) \
+|| (IntCfg==UART_INTCFG_RLS) || (IntCfg==UART_INTCFG_ABEO) \
+|| (IntCfg==UART_INTCFG_ABTO))
+
+/** Macro to check the input UART1_INTCFG parameters - expansion input parameter for UART1 */
+#define PARAM_UART1_INTCFG(IntCfg)	((IntCfg==UART1_INTCFG_MS) || (IntCfg==UART1_INTCFG_CTS))
+
+/** Macro to check the input UART_AUTOBAUD_MODE parameters */
+#define PARAM_UART_AUTOBAUD_MODE(ABmode)	((ABmode==UART_AUTOBAUD_MODE0) || (ABmode==UART_AUTOBAUD_MODE1))
+
+/** Macro to check the input UART_AUTOBAUD_INTSTAT parameters */
+#define PARAM_UART_AUTOBAUD_INTSTAT(ABIntStat)	((ABIntStat==UART_AUTOBAUD_INTSTAT_ABEO) || \
+		(ABIntStat==UART_AUTOBAUD_INTSTAT_ABTO))
+
+/** Macro to check the input UART_IrDA_PULSEDIV parameters */
+#define PARAM_UART_IrDA_PULSEDIV(PulseDiv)	((PulseDiv==UART_IrDA_PULSEDIV2) || (PulseDiv==UART_IrDA_PULSEDIV4) \
+|| (PulseDiv==UART_IrDA_PULSEDIV8) || (PulseDiv==UART_IrDA_PULSEDIV16) \
+|| (PulseDiv==UART_IrDA_PULSEDIV32) || (PulseDiv==UART_IrDA_PULSEDIV64) \
+|| (PulseDiv==UART_IrDA_PULSEDIV128) || (PulseDiv==UART_IrDA_PULSEDIV256))
+
+/* Macro to check the input UART1_SignalState parameters */
+#define PARAM_UART1_SIGNALSTATE(x) ((x==INACTIVE) || (x==ACTIVE))
+
+/** Macro to check the input PARAM_UART1_MODEM_PIN parameters */
+#define PARAM_UART1_MODEM_PIN(x) ((x==UART1_MODEM_PIN_DTR) || (x==UART1_MODEM_PIN_RTS))
+
+/** Macro to check the input PARAM_UART1_MODEM_MODE parameters */
+#define PARAM_UART1_MODEM_MODE(x) ((x==UART1_MODEM_MODE_LOOPBACK) || (x==UART1_MODEM_MODE_AUTO_RTS) \
+|| (x==UART1_MODEM_MODE_AUTO_CTS))
+
+/** Macro to check the direction control pin type */
+#define PARAM_UART_RS485_DIRCTRL_PIN(x)	((x==UART1_RS485_DIRCTRL_RTS) || (x==UART1_RS485_DIRCTRL_DTR))
+
+/* Macro to determine if it is valid UART port number */
+#define PARAM_UARTx(x)	((((uint32_t *)x)==((uint32_t *)LPC_UART0)) \
+|| (((uint32_t *)x)==((uint32_t *)LPC_UART1)) \
+|| (((uint32_t *)x)==((uint32_t *)LPC_UART2)) \
+|| (((uint32_t *)x)==((uint32_t *)LPC_UART3)))
+#define PARAM_UART_IrDA(x) (((uint32_t *)x)==((uint32_t *)LPC_UART3))
+#define PARAM_UART1_MODEM(x) (((uint32_t *)x)==((uint32_t *)LPC_UART1))
+
+/** Macro to check the input value for UART1_RS485_CFG_MATCHADDRVALUE parameter */
+#define PARAM_UART1_RS485_CFG_MATCHADDRVALUE(x) ((x<0xFF))
+
+/** Macro to check the input value for UART1_RS485_CFG_DELAYVALUE parameter */
+#define PARAM_UART1_RS485_CFG_DELAYVALUE(x) ((x<0xFF))
 
 /**
  * @}
@@ -217,10 +322,9 @@ extern "C"
 
 
 /* Public Types --------------------------------------------------------------- */
-/** @defgroup UART_Public_Types
+/** @defgroup UART_Public_Types UART Public Types
  * @{
  */
-
 
 /**
  * @brief UART Databit type definitions
@@ -232,10 +336,6 @@ typedef enum {
 	UART_DATABIT_8		     			/*!< UART 8 bit data mode */
 } UART_DATABIT_Type;
 
-/** Macro to check the input UART_DATABIT parameters */
-#define PARAM_UART_DATABIT(databit)	((databit==UART_DATABIT_5) || (databit==UART_DATABIT_6)\
-|| (databit==UART_DATABIT_7) || (databit==UART_DATABIT_8))
-
 /**
  * @brief UART Stop bit type definitions
  */
@@ -243,9 +343,6 @@ typedef enum {
 	UART_STOPBIT_1		= (0),   					/*!< UART 1 Stop Bits Select */
 	UART_STOPBIT_2,		 							/*!< UART Two Stop Bits Select */
 } UART_STOPBIT_Type;
-
-/** Macro to check the input UART_STOPBIT parameters */
-#define PARAM_UART_STOPBIT(stopbit)	((stopbit==UART_STOPBIT_1) || (stopbit==UART_STOPBIT_2))
 
 /**
  * @brief UART Parity type definitions
@@ -258,11 +355,6 @@ typedef enum {
 	UART_PARITY_SP_0 							/*!< Forced "0" stick parity */
 } UART_PARITY_Type;
 
-/** Macro to check the input UART_PARITY parameters */
-#define PARAM_UART_PARITY(parity)	((parity==UART_PARITY_NONE) || (parity==UART_PARITY_ODD) \
-|| (parity==UART_PARITY_EVEN) || (parity==UART_PARITY_SP_1) \
-|| (parity==UART_PARITY_SP_0))
-
 /**
  * @brief FIFO Level type definitions
  */
@@ -272,11 +364,6 @@ typedef enum {
 	UART_FIFO_TRGLEV2,		/*!< UART FIFO trigger level 2: 8 character */
 	UART_FIFO_TRGLEV3		/*!< UART FIFO trigger level 3: 14 character */
 } UART_FITO_LEVEL_Type;
-
-/** Macro to check the input UART_FIFO parameters */
-#define PARAM_UART_FIFO_LEVEL(fifo)	((fifo==UART_FIFO_TRGLEV0) \
-|| (fifo==UART_FIFO_TRGLEV1) || (fifo==UART_FIFO_TRGLEV2) \
-|| (fifo==UART_FIFO_TRGLEV3))
 
 /********************************************************************//**
 * @brief UART Interrupt Type definitions
@@ -290,15 +377,6 @@ typedef enum {
 	UART_INTCFG_ABEO,		/*!< Enables the end of auto-baud interrupt */
 	UART_INTCFG_ABTO		/*!< Enables the auto-baud time-out interrupt */
 } UART_INT_Type;
-
-/** Macro to check the input UART_INTCFG parameters */
-#define PARAM_UART_INTCFG(IntCfg)	((IntCfg==UART_INTCFG_RBR) || (IntCfg==UART_INTCFG_THRE) \
-|| (IntCfg==UART_INTCFG_RLS) || (IntCfg==UART_INTCFG_ABEO) \
-|| (IntCfg==UART_INTCFG_ABTO))
-
-/** Macro to check the input UART1_INTCFG parameters - expansion input parameter for UART1 */
-#define PARAM_UART1_INTCFG(IntCfg)	((IntCfg==UART1_INTCFG_MS) || (IntCfg==UART1_INTCFG_CTS))
-
 
 /**
  * @brief UART Line Status Type definition
@@ -314,7 +392,6 @@ typedef enum {
 	UART_LINESTAT_RXFE	= UART_LSR_RXFE			/*!<Error in RX FIFO*/
 } UART_LS_Type;
 
-
 /**
  * @brief UART Auto-baudrate mode type definition
  */
@@ -322,9 +399,6 @@ typedef enum {
 	UART_AUTOBAUD_MODE0				= 0,			/**< UART Auto baudrate Mode 0 */
 	UART_AUTOBAUD_MODE1,							/**< UART Auto baudrate Mode 1 */
 } UART_AB_MODE_Type;
-
-/** Macro to check the input UART_AUTOBAUD_MODE parameters */
-#define PARAM_UART_AUTOBAUD_MODE(ABmode)	((ABmode==UART_AUTOBAUD_MODE0) || (ABmode==UART_AUTOBAUD_MODE1))
 
 /**
  * @brief Auto Baudrate mode configuration type definition
@@ -334,7 +408,6 @@ typedef struct {
 	FunctionalState		AutoRestart;	/**< Auto Restart state */
 } UART_AB_CFG_Type;
 
-
 /**
  * @brief UART End of Auto-baudrate type definition
  */
@@ -342,9 +415,6 @@ typedef enum {
 	UART_AUTOBAUD_INTSTAT_ABEO		= UART_IIR_ABEO_INT,		/**< UART End of auto-baud interrupt  */
 	UART_AUTOBAUD_INTSTAT_ABTO		= UART_IIR_ABTO_INT			/**< UART Auto-baud time-out interrupt  */
 }UART_ABEO_Type;
-
-/** Macro to check the input UART_AUTOBAUD_INTSTAT parameters */
-#define PARAM_UART_AUTOBAUD_INTSTAT(ABIntStat)	((ABIntStat==UART_AUTOBAUD_INTSTAT_ABEO) || (ABIntStat==UART_AUTOBAUD_INTSTAT_ABTO))
 
 /**
  * UART IrDA Control type Definition
@@ -368,13 +438,6 @@ typedef enum {
 										- Configures the pulse when FixPulseEn = 1 */
 } UART_IrDA_PULSE_Type;
 
-
-/** Macro to check the input UART_IrDA_PULSEDIV parameters */
-#define PARAM_UART_IrDA_PULSEDIV(PulseDiv)	((PulseDiv==UART_IrDA_PULSEDIV2) || (PulseDiv==UART_IrDA_PULSEDIV4) \
-|| (PulseDiv==UART_IrDA_PULSEDIV8) || (PulseDiv==UART_IrDA_PULSEDIV16) \
-|| (PulseDiv==UART_IrDA_PULSEDIV32) || (PulseDiv==UART_IrDA_PULSEDIV64) \
-|| (PulseDiv==UART_IrDA_PULSEDIV128) || (PulseDiv==UART_IrDA_PULSEDIV256))
-
 /********************************************************************//**
 * @brief UART1 Full modem -  Signal states definition
 **********************************************************************/
@@ -382,9 +445,6 @@ typedef enum {
 	INACTIVE = 0,			/* In-active state */
 	ACTIVE = !INACTIVE 		/* Active state */
 }UART1_SignalState;
-
-/* Macro to check the input UART1_SignalState parameters */
-#define PARAM_UART1_SIGNALSTATE(x) ((x==INACTIVE) || (x==ACTIVE))
 
 /**
  * @brief UART modem status type definition
@@ -408,10 +468,6 @@ typedef enum {
 	UART1_MODEM_PIN_RTS						/*!< Source for modem output pin RTS */
 } UART_MODEM_PIN_Type;
 
-/** Macro to check the input PARAM_UART1_MODEM_PIN parameters */
-#define PARAM_UART1_MODEM_PIN(x) ((x==UART1_MODEM_PIN_DTR) || (x==UART1_MODEM_PIN_RTS))
-
-
 /**
  * @brief UART Modem mode type definition
  */
@@ -421,11 +477,6 @@ typedef enum {
 	UART1_MODEM_MODE_AUTO_CTS 				/*!< Enable Auto CTS flow-control */
 } UART_MODEM_MODE_Type;
 
-/** Macro to check the input PARAM_UART1_MODEM_MODE parameters */
-#define PARAM_UART1_MODEM_MODE(x) ((x==UART1_MODEM_MODE_LOOPBACK) || (x==UART1_MODEM_MODE_AUTO_RTS) \
-|| (x==UART1_MODEM_MODE_AUTO_CTS))
-
-
 /**
  * @brief UART Direction Control Pin type definition
  */
@@ -433,10 +484,6 @@ typedef enum {
 	UART1_RS485_DIRCTRL_RTS = 0,	/**< Pin RTS is used for direction control */
 	UART1_RS485_DIRCTRL_DTR			/**< Pin DTR is used for direction control */
 } UART_RS485_DIRCTRL_PIN_Type;
-
-/** Macro to check the direction control pin type */
-#define PARAM_UART_RS485_DIRCTRL_PIN(x)	((x==UART1_RS485_DIRCTRL_RTS) || (x==UART1_RS485_DIRCTRL_DTR))
-
 
 /********************************************************************//**
 * @brief UART Configuration Structure definition
@@ -487,7 +534,6 @@ typedef struct {
 										*/
 } UART_FIFO_CFG_Type;
 
-
 /********************************************************************//**
 * @brief UART1 Full modem -  RS485 Control configuration type
 **********************************************************************/
@@ -519,101 +565,66 @@ typedef struct {
 	uint8_t DelayValue;						/*!< delay time is in periods of the baud clock, 8-bit long */
 } UART1_RS485_CTRLCFG_Type;
 
-
-/* UART call-back function type definitions */
-/** UART Receive Call-back function type */
-typedef void (fnRxCbs_Type)(void);
-/** UART Transmit Call-back function type */
-typedef void (fnTxCbs_Type)(void);
-/** UART Auto-Baudrate Call-back function type */
-typedef void (fnABCbs_Type)(uint32_t bABIntType);
-/** UART Error Call-back function type */
-typedef void (fnErrCbs_Type)(uint8_t bError);
-/** UART1 modem status interrupt callback type */
-typedef void (fnModemCbs_Type)(uint8_t ModemStatus);
-
-
-/**
- * @}
- */
-
-
-/* Public Macros -------------------------------------------------------------- */
-/** @defgroup UART_Public_Macros
- * @{
- */
-
-
-/* Macro to determine if it is valid UART port number */
-#define PARAM_UARTx(x)	((((uint32_t *)x)==((uint32_t *)LPC_UART0)) \
-|| (((uint32_t *)x)==((uint32_t *)LPC_UART1)) \
-|| (((uint32_t *)x)==((uint32_t *)LPC_UART2)) \
-|| (((uint32_t *)x)==((uint32_t *)LPC_UART3)))
-#define PARAM_UART_IrDA(x) (((uint32_t *)x)==((uint32_t *)LPC_UART3))
-#define PARAM_UART1_MODEM(x) (((uint32_t *)x)==((uint32_t *)LPC_UART1))
-
-
-/** Macro to check the input value for UART1_RS485_CFG_MATCHADDRVALUE parameter */
-#define PARAM_UART1_RS485_CFG_MATCHADDRVALUE(x) ((x<0xFF))
-
-/** Macro to check the input value for UART1_RS485_CFG_DELAYVALUE parameter */
-#define PARAM_UART1_RS485_CFG_DELAYVALUE(x) ((x<0xFF))
-
-
-/** UART time-out definitions in case of using Read() and Write function
- * with Blocking Flag mode
- */
-
-#define UART_BLOCKING_TIMEOUT			(0xFFFFFFFFUL)
-
 /**
  * @}
  */
 
 
 /* Public Functions ----------------------------------------------------------- */
-/** @defgroup UART_Public_Functions
+/** @defgroup UART_Public_Functions UART Public Functions
  * @{
  */
-
-void UART_DeInit(LPC_UART_TypeDef* UARTx);
+/* UART Init/DeInit functions --------------------------------------------------*/
 void UART_Init(LPC_UART_TypeDef *UARTx, UART_CFG_Type *UART_ConfigStruct);
+void UART_DeInit(LPC_UART_TypeDef* UARTx);
 void UART_ConfigStructInit(UART_CFG_Type *UART_InitStruct);
-void UART_SendData(LPC_UART_TypeDef* UARTx, uint8_t Data);
-uint8_t UART_ReceiveData(LPC_UART_TypeDef* UARTx);
-void UART_ForceBreak(LPC_UART_TypeDef* UARTx);
-void UART_IrDAInvtInputCmd(LPC_UART_TypeDef* UARTx, FunctionalState NewState);
-void UART_IrDACmd(LPC_UART_TypeDef* UARTx, FunctionalState NewState);
-void UART_IrDAPulseDivConfig(LPC_UART_TypeDef *UARTx, UART_IrDA_PULSE_Type PulseDiv);
-void UART_IntConfig(LPC_UART_TypeDef *UARTx, UART_INT_Type UARTIntCfg, \
-				FunctionalState NewState);
-uint8_t UART_GetLineStatus(LPC_UART_TypeDef* UARTx);
-FlagStatus UART_CheckBusy(LPC_UART_TypeDef *UARTx);
+
+/* UART Send/Receive functions -------------------------------------------------*/
+void UART_SendByte(LPC_UART_TypeDef* UARTx, uint8_t Data);
+uint8_t UART_ReceiveByte(LPC_UART_TypeDef* UARTx);
+uint32_t UART_Send(LPC_UART_TypeDef *UARTx, uint8_t *txbuf,
+		uint32_t buflen, TRANSFER_BLOCK_Type flag);
+uint32_t UART_Receive(LPC_UART_TypeDef *UARTx, uint8_t *rxbuf, \
+		uint32_t buflen, TRANSFER_BLOCK_Type flag);
+
+/* UART FIFO functions ----------------------------------------------------------*/
 void UART_FIFOConfig(LPC_UART_TypeDef *UARTx, UART_FIFO_CFG_Type *FIFOCfg);
 void UART_FIFOConfigStructInit(UART_FIFO_CFG_Type *UART_FIFOInitStruct);
-void UART_ABCmd(LPC_UART_TypeDef *UARTx, UART_AB_CFG_Type *ABConfigStruct, \
+
+/* UART get information functions -----------------------------------------------*/
+uint32_t UART_GetIntId(LPC_UART_TypeDef* UARTx);
+uint8_t UART_GetLineStatus(LPC_UART_TypeDef* UARTx);
+
+/* UART operate functions -------------------------------------------------------*/
+void UART_IntConfig(LPC_UART_TypeDef *UARTx, UART_INT_Type UARTIntCfg, \
 				FunctionalState NewState);
 void UART_TxCmd(LPC_UART_TypeDef *UARTx, FunctionalState NewState);
+FlagStatus UART_CheckBusy(LPC_UART_TypeDef *UARTx);
+void UART_ForceBreak(LPC_UART_TypeDef* UARTx);
+
+/* UART Auto-baud functions -----------------------------------------------------*/
+void UART_ABClearIntPending(LPC_UART_TypeDef *UARTx, UART_ABEO_Type ABIntType);
+void UART_ABCmd(LPC_UART_TypeDef *UARTx, UART_AB_CFG_Type *ABConfigStruct, \
+				FunctionalState NewState);
+
+/* UART1 FullModem functions ----------------------------------------------------*/
 void UART_FullModemForcePinState(LPC_UART1_TypeDef *UARTx, UART_MODEM_PIN_Type Pin, \
 							UART1_SignalState NewState);
 void UART_FullModemConfigMode(LPC_UART1_TypeDef *UARTx, UART_MODEM_MODE_Type Mode, \
 							FunctionalState NewState);
 uint8_t UART_FullModemGetStatus(LPC_UART1_TypeDef *UARTx);
+
+/* UART RS485 functions ----------------------------------------------------------*/
 void UART_RS485Config(LPC_UART1_TypeDef *UARTx, \
 		UART1_RS485_CTRLCFG_Type *RS485ConfigStruct);
 void UART_RS485ReceiverCmd(LPC_UART1_TypeDef *UARTx, FunctionalState NewState);
 void UART_RS485SendSlvAddr(LPC_UART1_TypeDef *UARTx, uint8_t SlvAddr);
 uint32_t UART_RS485SendData(LPC_UART1_TypeDef *UARTx, uint8_t *pData, uint32_t size);
-uint32_t UART_Send(LPC_UART_TypeDef *UARTx, uint8_t *txbuf,
-		uint32_t buflen, TRANSFER_BLOCK_Type flag);
-uint32_t UART_Receive(LPC_UART_TypeDef *UARTx, uint8_t *rxbuf, \
-		uint32_t buflen, TRANSFER_BLOCK_Type flag);
-void UART_SetupCbs(LPC_UART_TypeDef *UARTx, uint8_t CbType, void *pfnCbs);
-void UART0_StdIntHandler(void);
-void UART1_StdIntHandler(void);
-void UART2_StdIntHandler(void);
-void UART3_StdIntHandler(void);
 
+/* UART IrDA functions-------------------------------------------------------------*/
+void UART_IrDAInvtInputCmd(LPC_UART_TypeDef* UARTx, FunctionalState NewState);
+void UART_IrDACmd(LPC_UART_TypeDef* UARTx, FunctionalState NewState);
+void UART_IrDAPulseDivConfig(LPC_UART_TypeDef *UARTx, UART_IrDA_PULSE_Type PulseDiv);
 /**
  * @}
  */
