@@ -1,10 +1,10 @@
-/**
- * @file	: uart_dma_test.c
- * @purpose	: An example of UART using DMA mode to test the UART driver
- * @version	: 1.0
- * @date	: 18. Mar. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		uart_dma_test.c
+ * @purpose		This example describes how to using UART in DMA mode
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -16,20 +16,20 @@
  * warranty that such application will be suitable for the specified
  * use without further testing or modification.
  **********************************************************************/
-
-#include "lpc17xx_uart.h"		/* Central include file */
+#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_gpdma.h"
 #include "lpc17xx_pinsel.h"
 
+/* Example group ----------------------------------------------------------- */
+/** @defgroup UART_DMA	DMA
+ * @ingroup UART_Examples
+ * @{
+ */
 
-/************************** PRIVATE MACROS *************************/
+/************************** PRIVATE DEFINITIONS *************************/
 /* Receive buffer size */
 #define RX_BUF_SIZE	0x10
-
-
-/************************** PRIVATE TYPES *************************/
 
 /************************** PRIVATE VARIABLES *************************/
 uint8_t menu1[] =
@@ -58,14 +58,12 @@ __IO uint32_t Channel1_TC;
 __IO uint32_t Channel1_Err;
 
 
-
 /************************** PRIVATE FUNCTIONS *************************/
-void print_menu(void);
 void DMA_IRQHandler (void);
-void GPDMA_Callback0(uint32_t DMA_Status);
-void GPDMA_Callback1(uint32_t DMA_Status);
 
+void print_menu(void);
 
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
 /*********************************************************************//**
  * @brief		GPDMA interrupt handler sub-routine
  * @param[in]	None
@@ -73,62 +71,55 @@ void GPDMA_Callback1(uint32_t DMA_Status);
  **********************************************************************/
 void DMA_IRQHandler (void)
 {
-	// Execute GPDMA_IntHandler() in GPDMA driver
-	GPDMA_IntHandler();
+	uint32_t tmp;
+		// Scan interrupt pending
+	for (tmp = 0; tmp <= 7; tmp++) {
+		if (GPDMA_IntGetStatus(GPDMA_STAT_INT, tmp)){
+			// Check counter terminal status
+			if(GPDMA_IntGetStatus(GPDMA_STAT_INTTC, tmp)){
+				// Clear terminate counter Interrupt pending
+				GPDMA_ClearIntPending (GPDMA_STATCLR_INTTC, tmp);
+
+				switch (tmp){
+					case 0:
+						Channel0_TC++;
+						GPDMA_ChannelCmd(0, DISABLE);
+						break;
+					case 1:
+						Channel1_TC++;
+						GPDMA_ChannelCmd(1, DISABLE);
+						break;
+					default:
+						break;
+				}
+
+			}
+				// Check error terminal status
+			if (GPDMA_IntGetStatus(GPDMA_STAT_INTERR, tmp)){
+				// Clear error counter Interrupt pending
+				GPDMA_ClearIntPending (GPDMA_STATCLR_INTERR, tmp);
+				switch (tmp){
+					case 0:
+						Channel0_Err++;
+						GPDMA_ChannelCmd(0, DISABLE);
+						break;
+					case 1:
+						Channel1_Err++;
+						GPDMA_ChannelCmd(1, DISABLE);
+						break;
+					default:
+						break;
+				}
+			}
+		}
+	}
 }
 
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief		DMA call-back function
- * @param[in]	DMA_Status	DMA status input, could be
- * 							- GPDMA_STAT_INTTC: Terminate Counter interrupt
- * 							- GPDMA_STAT_INTERR: Error interrupt
- * @return		None
- **********************************************************************/
-void GPDMA_Callback0(uint32_t DMA_Status)
-{
-	// Incase  of terminal counter
-	if(DMA_Status & GPDMA_STAT_INTTC) {
-		Channel0_TC++;
-	}
-
-	// incase of error
-	if (DMA_Status & GPDMA_STAT_INTERR) {
-		Channel0_Err++;
-	}
-
-	// Make sure GPDMA channel 0 is disabled after finish
-	GPDMA_ChannelCmd(0, DISABLE);
-}
-
-
-/*********************************************************************//**
- * @brief		DMA call-back function
- * @param[in]	DMA_Status	DMA status input, could be
- * 							- GPDMA_STAT_INTTC: Terminate Counter interrupt
- * 							- GPDMA_STAT_INTERR: Error interrupt
- * @return		None
- **********************************************************************/
-void GPDMA_Callback1(uint32_t DMA_Status)
-{
-	// Incase  of terminal counter
-	if(DMA_Status & GPDMA_STAT_INTTC) {
-		Channel1_TC++;
-	}
-
-	// incase of error
-	if (DMA_Status & GPDMA_STAT_INTERR) {
-		Channel1_Err++;
-	}
-
-	// Disable DMA channel to be able to setting a new session
-	GPDMA_ChannelCmd(1, DISABLE);
-
-}
-
-/************************** MAIN SUB-ROUTINE *************************/
-
-/*********************************************************************//**
- * @brief Main UART using GPDMA program body
+ * @brief		c_entry: Main UART program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
@@ -141,24 +132,6 @@ int c_entry(void)
 	GPDMA_Channel_CFG_Type GPDMACfg;
 	// Pin configuration for UART0
 	PINSEL_CFG_Type PinCfg;
-
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
 
 	/*
 	 * Initialize UART0 pin connect
@@ -236,11 +209,7 @@ int c_entry(void)
 	// Linker List Item - unused
 	GPDMACfg.DMALLI = 0;
 	// Setup channel with given parameter
-#ifdef __IAR_SYSTEMS_ICC__
-        GPDMA_Setup(&GPDMACfg, (fnGPDMACbs_Type *)GPDMA_Callback0);
-#else
-	GPDMA_Setup(&GPDMACfg, (void *)GPDMA_Callback0);
-#endif
+	GPDMA_Setup(&GPDMACfg);
 
 	// Setup GPDMA channel --------------------------------
 	// channel 1
@@ -261,7 +230,7 @@ int c_entry(void)
 	GPDMACfg.DstConn = 0;
 	// Linker List Item - unused
 	GPDMACfg.DMALLI = 0;
-
+	GPDMA_Setup(&GPDMACfg);
 
 	/* Reset terminal counter */
 	Channel0_TC = 0;
@@ -288,11 +257,8 @@ int c_entry(void)
     	Channel1_Err = 0;
 
     	// Setup channel with given parameter
-#ifdef __IAR_SYSTEMS_ICC__
-        GPDMA_Setup(&GPDMACfg, (fnGPDMACbs_Type *)GPDMA_Callback1);
-#else
-    	GPDMA_Setup(&GPDMACfg, (void *)GPDMA_Callback1);
-#endif
+    	GPDMA_Setup(&GPDMACfg);
+
     	// Enable GPDMA channel 1
     	GPDMA_ChannelCmd(1, ENABLE);
 
@@ -349,3 +315,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

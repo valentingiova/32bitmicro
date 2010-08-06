@@ -1,13 +1,11 @@
-/**
- * @file	: ti_test.c
- * @purpose	: This example uses two SSP peripherals in TI frame format,
- * 			one is set as master mode and the other is set as slave mode.
- * 			The master and slave transfer a number of data bytes together
- * 			in interrupt mode.
- * @version	: 1.0
- * @date	: 3. April. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		ti_test.c
+ * @purpose		This example describes how to use SPP using TI frame format
+ * 			  	(interrupt mode)
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -20,27 +18,28 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_ssp.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 #include "debug_frmwrk.h"
 
+/* Example group ----------------------------------------------------------- */
+/** @defgroup SSP_TI	TI
+ * @ingroup SSP_Examples
+ * @{
+ */
 
-/************************** PRIVATE MACROS *************************/
-
+/************************** PRIVATE DEFINITIONS ***********************/
 /* Idle char */
 #define IDLE_CHAR	0xFF
 
-/** Used I2C device as master definition */
+/** Used SSP device as master definition */
 #define USEDSSPDEV_M		0
 
-/** Used I2C device as slave definition */
+/** Used SSP device as slave definition */
 #define USEDSSPDEV_S		1
 
 /** Max buffer length */
 #define BUFFER_SIZE			0x40
-
 
 #if (USEDSSPDEV_M == USEDSSPDEV_S)
 #error "Master and Slave SSP device are duplicated!"
@@ -61,6 +60,24 @@
 #elif
 #error "Slave SSP device not defined!"
 #endif
+
+/************************** PRIVATE VARIABLES *************************/
+uint8_t menu1[] =
+"********************************************************************************\n\r"
+"Hello NXP Semiconductors \n\r"
+"SSP demo \n\r"
+"\t - MCU: LPC17xx \n\r"
+"\t - Core: ARM Cortex-M3 \n\r"
+"\t - Communicate via: UART0 - 115.200 kbps \n\r"
+" This example uses two SSP peripherals in TI frame format \n\r"
+" \t one is set as master mode and the other is set as slave mode. \n\r"
+"\t The master and slave transfer a number of data bytes together \n\r"
+"\t in interrupt mode \n\r"
+"********************************************************************************\n\r";
+uint8_t menu2[] = "Demo terminated! \n\r";
+
+// SSP Configuration structure variable
+SSP_CFG_Type SSP_ConfigStruct;
 
 /* These variable below are used in Master SSP interrupt mode -------------------- */
 /* Read data pointer */
@@ -100,42 +117,17 @@ uint8_t Slave_Tx_Buf[BUFFER_SIZE];
 uint8_t Slave_Rx_Buf[BUFFER_SIZE];
 
 
-/************************** PRIVATE TYPES *************************/
-/************************** PRIVATE VARIABLES *************************/
-uint8_t menu1[] =
-"********************************************************************************\n\r"
-"Hello NXP Semiconductors \n\r"
-"SSP demo \n\r"
-"\t - MCU: LPC17xx \n\r"
-"\t - Core: ARM Cortex-M3 \n\r"
-"\t - Communicate via: UART0 - 115.200 kbps \n\r"
-" This example uses two SSP peripherals in TI frame format \n\r"
-" \t one is set as master mode and the other is set as slave mode. \n\r"
-"\t The master and slave transfer a number of data bytes together \n\r"
-"\t in interrupt mode \n\r"
-"********************************************************************************\n\r";
-uint8_t menu2[] = "Demo terminated! \n\r";
-
-uint8_t success[] = "Verify success!\n\r";
-uint8_t failure[] = "Verify fail!\n\r";
-
-// UART Configuration structure variable
-UART_CFG_Type UARTConfigStruct;
-
-// SSP Configuration structure variable
-SSP_CFG_Type SSP_ConfigStruct;
-
-
 /************************** PRIVATE FUNCTIONS *************************/
 void SSP0_IRQHandler(void);
 void SSP1_IRQHandler(void);
-void SSP_M_IntHandler(void);
-void SSP_S_IntHandler(void);
-int32_t SSP_MReadWrite (LPC_SSP_TypeDef *SSPx,
+void ssp_Master_IntHandler(void);
+void ssp_Slave_IntHandler(void);
+
+int32_t ssp_MasterReadWrite (LPC_SSP_TypeDef *SSPx,
 	                 void *rbuffer,
 	                 void *wbuffer,
 	                 uint32_t length);
-int32_t SSP_SReadWrite (LPC_SSP_TypeDef *SSPx,
+int32_t ssp_SlaveReadWrite (LPC_SSP_TypeDef *SSPx,
 	                 void *rbuffer,
 	                 void *wbuffer,
 	                 uint32_t length);
@@ -144,14 +136,14 @@ void Buffer_Init(void);
 void Buffer_Verify(void);
 void Error_Loop(void);
 
-
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
 /*********************************************************************//**
  * @brief 		SSP Master Interrupt sub-routine used for reading
  * 				and writing handler
  * @param		None
  * @return 		None
  ***********************************************************************/
-void SSP_M_IntHandler(void)
+void ssp_Master_IntHandler(void)
 {
 	uint16_t tmp;
 
@@ -237,7 +229,7 @@ void SSP_M_IntHandler(void)
  * @param		None
  * @return 		None
  ***********************************************************************/
-void SSP_S_IntHandler(void)
+void ssp_Slave_IntHandler(void)
 {
 	uint16_t tmp;
 
@@ -324,11 +316,11 @@ void SSP_S_IntHandler(void)
 void SSP0_IRQHandler(void)
 {
 #if (USEDSSPDEV_M == 0)
-	SSP_M_IntHandler();
+	ssp_Master_IntHandler();
 #endif
 
 #if (USEDSSPDEV_S == 0)
-	SSP_S_IntHandler();
+	ssp_Slave_IntHandler();
 #endif
 }
 
@@ -340,14 +332,16 @@ void SSP0_IRQHandler(void)
 void SSP1_IRQHandler(void)
 {
 #if (USEDSSPDEV_M == 1)
-	SSP_M_IntHandler();
+	ssp_Master_IntHandler();
 #endif
 
 #if (USEDSSPDEV_S == 1)
-	SSP_S_IntHandler();
+	ssp_Slave_IntHandler();
 #endif
 }
 
+
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
 /*********************************************************************//**
  * @brief 		SSP Read write in polling mode function (Master mode)
  * @param[in]	SSPdev: Pointer to SSP device
@@ -356,17 +350,17 @@ void SSP1_IRQHandler(void)
  * @param[in]	length: length of data to read and write
  * @return 		0 if there no data to send, otherwise return 1
  ***********************************************************************/
-int32_t SSP_MReadWrite (LPC_SSP_TypeDef *SSPx,
+int32_t ssp_MasterReadWrite (LPC_SSP_TypeDef *SSPx,
 	                 void *rbuffer,
 	                 void *wbuffer,
 	                 uint32_t length)
 {
+	uint16_t tmp;
 	pRdBuf_M = (uint8_t *) rbuffer;
     pWrBuf_M = (uint8_t *) wbuffer;
     DatLen_M = length;
     RdIdx_M = 0;
     WrIdx_M = 0;
-    uint16_t tmp;
 
     // wait for current SSP activity complete
     while (SSP_GetStatus(SSPx, SSP_STAT_BUSY));
@@ -402,17 +396,17 @@ int32_t SSP_MReadWrite (LPC_SSP_TypeDef *SSPx,
  * @param[in]	length: length of data to read and write
  * @return 		0 if there no data to send, otherwise return 1
  ***********************************************************************/
-int32_t SSP_SReadWrite (LPC_SSP_TypeDef *SSPx,
+int32_t ssp_SlaveReadWrite (LPC_SSP_TypeDef *SSPx,
 	                 void *rbuffer,
 	                 void *wbuffer,
 	                 uint32_t length)
 {
+	uint16_t tmp;
 	pRdBuf_S = (uint8_t *) rbuffer;
     pWrBuf_S = (uint8_t *) wbuffer;
     DatLen_S = length;
     RdIdx_S = 0;
     WrIdx_S = 0;
-    uint16_t tmp;
 
     // wait for current SSP activity complete
     while (SSP_GetStatus(SSPx, SSP_STAT_BUSY))
@@ -492,7 +486,7 @@ void Buffer_Verify(void)
 void Error_Loop(void)
 {
 	/* Loop forever */
-	UART_Send(LPC_UART0, failure, sizeof(failure), BLOCKING);
+	_DBG_("Verify fail!\n\r");
 	while (1);
 }
 
@@ -507,33 +501,24 @@ void print_menu(void)
 	_DBG(menu1);
 }
 
+
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief	Main SSP program body
+ * @brief		c_entry: Main TI program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
 	PINSEL_CFG_Type PinCfg;
 
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
-
-	/* Init debug */
 	debug_frmwrk_init();
 
 	// print welcome screen
@@ -627,9 +612,9 @@ int c_entry(void)
 	complete_M = FALSE;
 
 	/* Slave must be ready first */
-	SSP_SReadWrite(SSPDEV_S, Slave_Rx_Buf, Slave_Tx_Buf, BUFFER_SIZE);
+	ssp_SlaveReadWrite(SSPDEV_S, Slave_Rx_Buf, Slave_Tx_Buf, BUFFER_SIZE);
 	/* Then Master can start its transferring */
-	SSP_MReadWrite(SSPDEV_M, Master_Rx_Buf, Master_Tx_Buf, BUFFER_SIZE);
+	ssp_MasterReadWrite(SSPDEV_M, Master_Rx_Buf, Master_Tx_Buf, BUFFER_SIZE);
 
 	/* Wait for complete */
 	while ((complete_S == FALSE) || (complete_M == FALSE));
@@ -637,8 +622,7 @@ int c_entry(void)
 	/* Verify buffer */
 	Buffer_Verify();
 
-	UART_Send(LPC_UART0, success, sizeof(success), BLOCKING);
-
+	_DBG_("Verify success!\n\r");
     /* Loop forever */
     while(1);
     return 1;
@@ -672,3 +656,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

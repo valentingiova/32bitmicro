@@ -1,16 +1,12 @@
-/**
- * @file	: i2c_master_slave_int_test.c
- * @purpose	: This example uses two I2C peripheral, one set as master and
- * 				the other set as slave.
- * 			First, the master transmit to slave a number of data bytes
- * 			Then, the master receive a number of data bytes from slave.
- * 			Finally, the master send two bytes to slave, send repeat start
- * 			immediately and receive from slave a number of data byte.
- * 			Both of them used in interrupt mode.
- * @version	: 1.0
- * @date	: 15. April. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		i2c_master_slave_int_test.c
+ * @purpose		This example describes how to uses two I2C peripheral on LPC1768
+ * 			  	to communicate together.
+ * 			  	One set as master and the other set as slave.
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -23,13 +19,17 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_i2c.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 #include "debug_frmwrk.h"
 
-/************************** PRIVATE MACROS *************************/
+/* Example group ----------------------------------------------------------- */
+/** @defgroup I2C_Master_Slave_Interrupt	Master_Slave_Interrupt
+ * @ingroup I2C_Examples
+ * @{
+ */
+
+/************************** PRIVATE DEFINITIONS *************************/
 /** Used I2C device as master definition */
 #define USEDI2CDEV_M		2
 
@@ -63,8 +63,6 @@
 #error "Slave I2C device not defined!"
 #endif
 
-
-/************************** PRIVATE TYPES *************************/
 /************************** PRIVATE VARIABLES *************************/
 uint8_t menu1[] =
 "********************************************************************************\n\r"
@@ -79,13 +77,12 @@ uint8_t menu1[] =
 "\t Both of them used in interrupt mode \n\r"
 "********************************************************************************\n\r";
 
-
-/** These global variables below used in interrupt mode - Master device ---------------------------------*/
+/** These global variables below used in interrupt mode - Master device -----------*/
 __IO FlagStatus complete_M;
 uint8_t Master_Buf[BUFFER_SIZE];
 
 
-/** These global variables below used in interrupt mode - Slave device ---------------------------------*/
+/** These global variables below used in interrupt mode - Slave device ------------*/
 __IO FlagStatus complete_S;
 uint8_t Slave_Buf[BUFFER_SIZE];
 
@@ -94,6 +91,7 @@ uint8_t master_test[2];
 uint8_t slave_test[2];
 
 /************************** PRIVATE FUNCTIONS *************************/
+/* Interrupt service routines */
 #if ((USEDI2CDEV_M == 0) || (USEDI2CDEV_S == 0))
 void I2C0_IRQHandler(void);
 #endif
@@ -104,12 +102,10 @@ void I2C2_IRQHandler(void);
 void print_menu(void);
 void Error_Loop_M(uint8_t ErrorCode);
 void Error_Loop_S(uint8_t ErrorCode);
-void MasterCallback(void);
-void SlaveCallback(void);
-
 
 
 #if ((USEDI2CDEV_M == 0) || (USEDI2CDEV_S == 0))
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
 /*********************************************************************//**
  * @brief 		Main I2C0 interrupt handler sub-routine
  * @param[in]	None
@@ -117,13 +113,25 @@ void SlaveCallback(void);
  **********************************************************************/
 void I2C0_IRQHandler(void)
 {
-	// Just call standard interrupt handler
-	I2C0_StdIntHandler();
+#if (USEDI2CDEV_M == 0)
+	I2C_MasterHandler(I2CDEV_M);
+	if (I2C_MasterTransferComplete(I2CDEV_M)){
+		complete_M = SET;
+	}
+#endif
+
+#if (USEDI2CDEV_S == 0)
+	I2C_SlaveHandler(I2CDEV_S);
+	if (I2C_SlaveTransferComplete(I2CDEV_S)){
+		complete_S = SET;
+	}
+#endif
 }
 #endif /* ((USEDI2CDEV_M == 0) || (USEDI2CDEV_S == 0)) */
 
 
 #if ((USEDI2CDEV_M == 2) || (USEDI2CDEV_S == 2))
+
 /*********************************************************************//**
  * @brief 		Main I2C2 interrupt handler sub-routine
  * @param[in]	None
@@ -131,12 +139,22 @@ void I2C0_IRQHandler(void)
  **********************************************************************/
 void I2C2_IRQHandler(void)
 {
-	// Just call standard interrupt handler
-	I2C2_StdIntHandler();
+#if (USEDI2CDEV_M == 2)
+	I2C_MasterHandler(I2CDEV_M);
+	if (I2C_MasterTransferComplete(I2CDEV_M)){
+		complete_M = SET;
+	}
+#endif
+#if (USEDI2CDEV_S == 2)
+	I2C_SlaveHandler(I2CDEV_S);
+	if (I2C_SlaveTransferComplete(I2CDEV_S)){
+		complete_S = SET;
+	}
+#endif
 }
 #endif /* ((USEDI2CDEV_M == 2) || (USEDI2CDEV_S == 2)) */
 
-
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
 /*********************************************************************//**
  * @brief		Print Welcome menu
  * @param[in]	none
@@ -205,31 +223,11 @@ void Error_Loop_S(uint8_t ErrorCode)
 	while(1);
 }
 
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief		A master call back routine, will be called after I2C operation
- * 				complete
+ * @brief		c_entry: Main program body
  * @param[in]	None
- * @return 		None
- **********************************************************************/
-void MasterCallback(void)
-{
-	complete_M = SET;
-}
-
-/*********************************************************************//**
- * @brief		A slave call back routine, will be called after I2C operation
- * 				complete
- * @param[in]	None
- * @return 		None
- **********************************************************************/
-void SlaveCallback(void)
-{
-	complete_S = SET;
-}
-
-
-/*********************************************************************//**
- * @brief	Main I2C master and slave program body
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
@@ -240,27 +238,16 @@ int c_entry(void)
 	uint32_t tempp;
 	uint8_t *sp, *dp;
 
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
-	/* Initialize debug */
 	debug_frmwrk_init();
 
+	//print menu screen
 	print_menu();
 
 
@@ -355,7 +342,6 @@ int c_entry(void)
 	transferSCfg.tx_length = 0;
 	transferSCfg.rx_data = Slave_Buf;
 	transferSCfg.rx_length = sizeof(Slave_Buf);
-	transferSCfg.callback = SlaveCallback;
 	I2C_SlaveTransferData(I2CDEV_S, &transferSCfg, I2C_TRANSFER_INTERRUPT);
 
 	/* Then start I2C master device */
@@ -365,7 +351,6 @@ int c_entry(void)
 	transferMCfg.rx_data = NULL;
 	transferMCfg.rx_length = 0;
 	transferMCfg.retransmissions_max = 3;
-	transferMCfg.callback = MasterCallback;
 	I2C_MasterTransferData(I2CDEV_M, &transferMCfg, I2C_TRANSFER_INTERRUPT);
 
 	/* Wait until both of them complete */
@@ -399,7 +384,6 @@ int c_entry(void)
 	transferSCfg.tx_length = sizeof(Slave_Buf);
 	transferSCfg.rx_data = NULL;
 	transferSCfg.rx_length = 0;
-	transferSCfg.callback = SlaveCallback;
 	I2C_SlaveTransferData(I2CDEV_S, &transferSCfg, I2C_TRANSFER_INTERRUPT);
 
 	/* Then start I2C master device */
@@ -409,7 +393,6 @@ int c_entry(void)
 	transferMCfg.rx_data = Master_Buf;
 	transferMCfg.rx_length = sizeof(Master_Buf);
 	transferMCfg.retransmissions_max = 3;
-	transferMCfg.callback = MasterCallback;
 	I2C_MasterTransferData(I2CDEV_M, &transferMCfg, I2C_TRANSFER_INTERRUPT);
 
 	/* Wait until both of them complete */
@@ -450,7 +433,6 @@ int c_entry(void)
 	transferSCfg.tx_length = sizeof(Slave_Buf);
 	transferSCfg.rx_data = slave_test;
 	transferSCfg.rx_length = sizeof(slave_test);
-	transferSCfg.callback = SlaveCallback;
 	I2C_SlaveTransferData(I2CDEV_S, &transferSCfg, I2C_TRANSFER_INTERRUPT);
 
 	/* Then start I2C master device */
@@ -460,7 +442,6 @@ int c_entry(void)
 	transferMCfg.rx_data = Master_Buf;
 	transferMCfg.rx_length = sizeof(Master_Buf);
 	transferMCfg.retransmissions_max = 3;
-	transferMCfg.callback = MasterCallback;
 	I2C_MasterTransferData(I2CDEV_M, &transferMCfg, I2C_TRANSFER_INTERRUPT);
 
 	/* Wait until both of them complete */
@@ -528,3 +509,6 @@ void check_failed(uint8_t *file, uint32_t line)
 }
 #endif
 
+/*
+ * @}
+ */

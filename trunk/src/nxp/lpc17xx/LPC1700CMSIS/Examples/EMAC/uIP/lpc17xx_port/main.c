@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-
+#include "debug_frmwrk.h"
 #include "clock-arch.h"
 #include "timer.h"
 #include "uip-conf.h"
@@ -12,6 +12,7 @@
 #include "lpc_types.h"
 #include "lpc17xx_libcfg.h"
 #include "lpc17xx_pinsel.h"
+#include "lpc17xx_gpio.h"
 
 
 #define BUF ((struct uip_eth_hdr *)&uip_buf[0])
@@ -20,14 +21,11 @@
 #define LED2_MASK	((1<<2) | (1<<3) | (1<<4) | (1<<5) | (1<<6))
 #define LED1_MASK	((1<<28) | (1<<29) | (1<<31))
 
+
 /* For debugging... */
-#include "debug_frmwrk.h"
 #include <stdio.h>
 #define DB	_DBG((uint8_t *)_db)
 char _db[64];
-
-
-//extern void init_serial (unsigned int);
 
 void LED_Init (void)
 {
@@ -55,14 +53,13 @@ void LED_Init (void)
 	PinCfg.Pinnum = 31;
 	PINSEL_ConfigPin(&PinCfg);
 
-
 	// Set direction to output
-	LPC_GPIO2->FIODIR |= LED2_MASK;
-	LPC_GPIO1->FIODIR |= LED1_MASK;
+	GPIO_SetDir(2, LED2_MASK, 1);
+	GPIO_SetDir(1, LED1_MASK, 1);
 
 	/* Turn off all LEDs */
-	LPC_GPIO2->FIOCLR = LED2_MASK;
-	LPC_GPIO2->FIOCLR = LED1_MASK;
+	GPIO_ClearValue(2, LED2_MASK);
+	GPIO_ClearValue(1, LED1_MASK);
 }
 
 /*************************************************************************
@@ -96,10 +93,13 @@ int c_entry(void)
 	uip_ipaddr_t ipaddr;
 	struct timer periodic_timer, arp_timer;
 
-	// System init
-	SystemInit();
-
-	// Init debug frmwrk
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
+	 */
 	debug_frmwrk_init();
 
 	_DBG_("Hello NXP Semiconductors");

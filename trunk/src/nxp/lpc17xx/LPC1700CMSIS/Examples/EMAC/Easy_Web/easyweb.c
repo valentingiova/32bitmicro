@@ -15,20 +15,22 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+#include "adc.h"
+#include "lpc17xx_libcfg.h"
+#include "EMAC.h"         // Keil: *.c -> *.h    // ethernet packet driver
 #define extern            // Keil: Line added for modular project management
 
 #include "easyweb.h"
-#include "EMAC.h"         // Keil: *.c -> *.h    // ethernet packet driver
 #include "tcpip.h"        // Keil: *.c -> *.h    // easyWEB TCP/IP stack
 #include "webpage.h"                             // webside for our HTTP server (HTML)
-#include "adc.h"
+
+/* Example group ----------------------------------------------------------- */
+/** @defgroup EMAC_Easy_Web	Easy_Web
+ * @ingroup EMAC_Examples
+ * @{
+ */
 
 // NXP: Include some header files that differs from the origin
-#include "lpc17xx_libcfg.h"
-
-
-//void main(void)
 int main(void)
 {
   TCPLowLevelInit();
@@ -105,7 +107,7 @@ void HTTPServer(void)
     HTTPStatus &= ~HTTP_SEND_PAGE;               // reset help-flag if not connected
 }
 
-// samples and returns the AD-converter value of channel 0
+// samples and returns the AD-converter value of channel 2 (MCB1700 board) or channel 5 (IAR board)
 
 unsigned int GetAD7Val(void)
 {
@@ -179,3 +181,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

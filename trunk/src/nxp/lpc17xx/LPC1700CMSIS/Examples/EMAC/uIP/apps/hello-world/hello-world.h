@@ -1,3 +1,7 @@
+/** @addtogroup EMAC_uIP
+ * @{
+ */
+
 /**
  * \addtogroup apps
  * @{
@@ -48,5 +52,7 @@ void hello_world_appcall(void);
 void hello_world_init(void);
 
 #endif /* __HELLO_WORLD_H__ */
+/** @} */
+/** @} */
 /** @} */
 /** @} */

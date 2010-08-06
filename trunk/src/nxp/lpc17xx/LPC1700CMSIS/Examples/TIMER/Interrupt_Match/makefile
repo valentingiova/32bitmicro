@@ -24,7 +24,7 @@
 # use without further testing or modification. 
 ########################################################################
 
-EXECNAME    =timer_interrupt_test
+EXECNAME    =timer_int_match
 EXDIR		=TIMER/Interrupt_Match
 
 

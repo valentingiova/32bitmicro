@@ -1,4 +1,7 @@
 #define DEBUG_PRINTF(...) /*printf(__VA_ARGS__)*/
+/** @addtogroup EMAC_uIP
+ * @{
+ */
 
 /**
  * \defgroup uip The uIP TCP/IP stack
@@ -11,6 +14,10 @@
  * with a very small code footprint and RAM requirements - the uIP
  * code size is on the order of a few kilobytes and RAM usage is on
  * the order of a few hundred bytes.
+ */
+
+/** @addtogroup EMAC_uIP
+ * @{
  */
 
 /**
@@ -1907,4 +1914,5 @@ uip_send(const void *data, int len)
     }
   }
 }
+/** @} */
 /** @} */

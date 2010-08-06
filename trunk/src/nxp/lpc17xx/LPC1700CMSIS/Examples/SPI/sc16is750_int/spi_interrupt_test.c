@@ -1,12 +1,12 @@
-/**
- * @file	: spi_interrupt_test.c
- * @purpose	: An example of SPI using interrupt mode to test the SPI driver.
- * 				Using SPI at mode SPI master/8bit on LPC1766 to communicate with
- * 				SC16IS750/760 Demo Board
- * @version	: 1.0
- * @date	: 3. April. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		spi_interrupt_test.c
+ * @purpose		This example describes how to use SPI at mode SPI master/8bit
+ * 			  	on LPC1768 to communicate with SC16IS750/760 Demo board
+ * 			  	in interrupt mode
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -19,14 +19,18 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_spi.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 #include "debug_frmwrk.h"
 #include "lpc17xx_gpio.h"
 
-/************************** PRIVATE MACROS *************************/
+/* Example group ----------------------------------------------------------- */
+/** @defgroup SPI_sc16is750_int	sc16is750_int
+ * @ingroup SPI_Examples
+ * @{
+ */
+
+/************************** PRIVATE DEFINTIONS *********************/
 // PORT number that /CS pin assigned on
 #define CS_PORT_NUM		0
 // PIN number that  /CS pin assigned on
@@ -44,18 +48,6 @@
 #define SC16IS740_IOSTATE_REG	0x0B
 #define SC16IS740_IOCON_REG		0x0E
 
-uint8_t iocon_cfg[2] = {SC16IS740_WR_CMD(SC16IS740_IOCON_REG), 0x00};
-uint8_t iodir_cfg[2] = {SC16IS740_WR_CMD(SC16IS740_IODIR_REG), 0xFF};
-uint8_t iostate_on[2] = {SC16IS740_WR_CMD(SC16IS740_IOSTATE_REG), 0x00};
-uint8_t iostate_off[2] = {SC16IS740_WR_CMD(SC16IS740_IOSTATE_REG), 0xFF};
-uint8_t spireadbuf[2];
-
-/* Status Flag indicates current SPI transmission complete or not */
-__IO FlagStatus complete;
-
-/************************** PRIVATE TYPES *************************/
-
-
 /************************** PRIVATE VARIABLES *************************/
 uint8_t menu1[] =
 "********************************************************************************\n\r"
@@ -70,17 +62,29 @@ uint8_t menu1[] =
 "********************************************************************************\n\r";
 uint8_t menu2[] = "Demo terminated! \n\r";
 
+uint8_t iocon_cfg[2] = {SC16IS740_WR_CMD(SC16IS740_IOCON_REG), 0x00};
+uint8_t iodir_cfg[2] = {SC16IS740_WR_CMD(SC16IS740_IODIR_REG), 0xFF};
+uint8_t iostate_on[2] = {SC16IS740_WR_CMD(SC16IS740_IOSTATE_REG), 0x00};
+uint8_t iostate_off[2] = {SC16IS740_WR_CMD(SC16IS740_IOSTATE_REG), 0xFF};
+uint8_t spireadbuf[2];
+
+/* Status Flag indicates current SPI transmission complete or not */
+__IO FlagStatus complete;
+
 // SPI Configuration structure variable
 SPI_CFG_Type SPI_ConfigStruct;
+// SPI Data Setup structure variable
+SPI_DATA_SETUP_Type xferConfig;
+
 
 /************************** PRIVATE FUNCTIONS *************************/
 void SPI_IRQHandler(void);
-void SPICallBack(void);
+
 void CS_Init(void);
 void CS_Force(int32_t state);
 void print_menu(void);
 
-
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
 /*********************************************************************//**
  * @brief 		SPI Interrupt used for reading and writing handler
  * @param		None
@@ -88,23 +92,79 @@ void print_menu(void);
  ***********************************************************************/
 void SPI_IRQHandler(void)
 {
-    // Call standard interrupt handler
-	SPI_StdIntHandler();
+	SPI_DATA_SETUP_Type *xf_setup;
+	uint16_t tmp;
+	uint8_t dataword;
+
+	xf_setup = &xferConfig;
+
+	if(SPI_GetDataSize(LPC_SPI) == 8)
+		dataword = 0;
+	else dataword = 1;
+
+	/* Dummy read to clear SPI interrupt flag */
+	SPI_ClearIntPending(LPC_SPI);
+
+	// save status
+	tmp = SPI_GetStatus(LPC_SPI);
+	xf_setup->status = tmp;
+	// Check for error
+	if (tmp & (SPI_SPSR_ABRT | SPI_SPSR_MODF | SPI_SPSR_ROVR | SPI_SPSR_WCOL)){
+		xf_setup->status |= SPI_STAT_ERROR;
+		// Disable Interrupt and call call-back
+		SPI_IntCmd(LPC_SPI, DISABLE);
+		// Set Complete Flag
+		complete = SET;
+		return;
+	}
+
+	/* Check SPI complete flag */
+	if (tmp & SPI_SPSR_SPIF){
+	   // Read data from SPI data
+		tmp = SPI_ReceiveData(LPC_SPI);
+		if (xf_setup->rx_data != NULL)
+		{
+			if (dataword == 0){
+				*(uint8_t *)((uint8_t *)(xf_setup->rx_data) + xf_setup->counter) = (uint8_t) tmp;
+			} else {
+				*(uint16_t *)((uint8_t *)(xf_setup->rx_data) + xf_setup->counter) = (uint8_t) tmp;
+			}
+		}
+		// Increase counter
+		if (dataword == 0){
+			xf_setup->counter++;
+		} else {
+			xf_setup->counter += 2;
+		}
+	}
+
+	if (xf_setup->counter < xf_setup->length){
+		// Write data to buffer
+		if(xf_setup->tx_data == NULL){
+			if (dataword == 0){
+				SPI_SendData(LPC_SPI, 0xFF);
+			} else {
+				SPI_SendData(LPC_SPI, 0xFFFF);
+			}
+		} else {
+			if (dataword == 0){
+				SPI_SendData(LPC_SPI, (*(uint8_t *)((uint8_t *)(xf_setup->tx_data) + xf_setup->counter)));
+			} else {
+				SPI_SendData(LPC_SPI, (*(uint16_t *)((uint8_t *)(xf_setup->tx_data) + xf_setup->counter)));
+			}
+		}
+	}
+	// No more data to send
+	else {
+		xf_setup->status |= SPI_STAT_DONE;
+		// Disable Interrupt and call call-back
+		SPI_IntCmd(LPC_SPI, DISABLE);
+		// Set Complete Flag
+		complete = SET;
+	}
 }
 
-
-/**
- * @brief 		User SPI callback function
- * @param[in]	None
- * @return 		None
- */
-void SPICallBack(void)
-{
-	// Set Complete Flag
-	complete = SET;
-}
-
-
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
 /*********************************************************************//**
  * @brief 		Initialize CS pin as GPIO function to drive /CS pin
  * 				due to definition of CS_PORT_NUM and CS_PORT_NUM
@@ -146,34 +206,17 @@ void print_menu(void)
 	_DBG(menu1);
 }
 
-
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief	Main SPI program body
+ * @brief		c_entry: Main SPI program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
 	uint8_t tmpchar[2] = {0, 0};
 	PINSEL_CFG_Type PinCfg;
 	__IO FlagStatus exitflag;
-	SPI_DATA_SETUP_Type xferConfig;
-
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
 
 	/*
 	 * Initialize SPI pin connect
@@ -196,8 +239,12 @@ int c_entry(void)
 	PinCfg.Funcnum = 0;
 	PINSEL_ConfigPin(&PinCfg);
 
-	/*
-	 * Initialize debug via UART
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
 	debug_frmwrk_init();
 
@@ -225,7 +272,6 @@ int c_entry(void)
 	xferConfig.tx_data = iocon_cfg;
 	xferConfig.rx_data = spireadbuf;
 	xferConfig.length = sizeof (iocon_cfg);
-	xferConfig.callback = SPICallBack;
 	SPI_ReadWrite(LPC_SPI, &xferConfig, SPI_TRANSFER_INTERRUPT);
 	while (complete == RESET);
 	CS_Force(1);
@@ -235,7 +281,6 @@ int c_entry(void)
 	xferConfig.tx_data = iodir_cfg;
 	xferConfig.rx_data = spireadbuf;
 	xferConfig.length = sizeof (iodir_cfg);
-	xferConfig.callback = SPICallBack;
 	SPI_ReadWrite(LPC_SPI, &xferConfig, SPI_TRANSFER_INTERRUPT);
 	while (complete == RESET);
 	CS_Force(1);
@@ -281,12 +326,7 @@ int c_entry(void)
 			_DBG_(tmpchar);
 		}
 	}
-
-    // wait for current transmission complete - THR must be empty
-    while (UART_CheckBusy(LPC_UART0)==SET);
-
     // DeInitialize UART0 peripheral
-    UART_DeInit(LPC_UART0);
     SPI_DeInit(LPC_SPI);
     /* Loop forever */
     while(1);
@@ -321,3 +361,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

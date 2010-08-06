@@ -1,10 +1,11 @@
-/**
- * @file	: wdt_reset_test.c
- * @purpose	: A simple wdt driver example
- * @version	: 1.0
- * @date	: 3. April. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		wdt_interrupt_test.c
+ * @purpose		This example describes how to use Watch-dog timer application
+ *            	in interrupt mode
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -17,23 +18,23 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_wdt.h"
-#include "lpc17xx_uart.h"
-#include "lpc17xx_timer.h"
 #include "lpc17xx_libcfg.h"
 #include "lpc17xx_pinsel.h"
-#include "lpc17xx_nvic.h"
 #include "debug_frmwrk.h"
 #include "lpc17xx_gpio.h"
 
+/* Example group ----------------------------------------------------------- */
+/** @defgroup WDT_INTERRUPT	INTERRUPT
+ * @ingroup WDT_Examples
+ * @{
+ */
 
+/************************** PRIVATE DEFINITIONS *************************/
+#define MCB_LPC_1768
+//#define IAR_LPC_1768
 
-#define LED_PIN 	(1<<6)
-#define LED2_MASK	((1<<2) | (1<<3) | (1<<4) | (1<<5) | (1<<6))
-#define LED1_MASK	((1<<28) | (1<<29) | (1<<31))
-
-/************************** PRIVATE TYPES *************************/
-//Watchodog time out in 2 seconds
-#define WDT_TIMEOUT 	1000000
+//Watchodog time out in 5 seconds
+#define WDT_TIMEOUT 	5000000
 
 
 /************************** PRIVATE VARIABLES *************************/
@@ -49,135 +50,81 @@ uint8_t menu1[] =
 "********************************************************************************\n\r";
 uint8_t info1[] = "BEFORE WDT interrupt!\n\r";
 uint8_t info2[] = "AFTER WDT interrupt\n\r";
-// UART Configuration structure variable
-UART_CFG_Type UARTConfigStruct;
-//timer init
-TIM_TIMERCFG_Type TIM_ConfigStruct;
-TIM_MATCHCFG_Type TIM_MatchConfigStruct ;
 
 __IO Bool wdt_flag = FALSE;
 __IO Bool LED_toggle = FALSE;
 
 /************************** PRIVATE FUNCTION *************************/
+void WDT_IRQHandler(void);
+
 void print_menu(void);
-void Timer_Wait(uint32_t time);
+void LED_Init (void);
 
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
+/*********************************************************************//**
+ * @brief		WDT interrupt handler sub-routine
+ * @param[in]	None
+ * @return 		None
+ **********************************************************************/
+void WDT_IRQHandler(void)
+{
+	// Disable WDT interrupt
+	NVIC_DisableIRQ(WDT_IRQn);
+	// Set WDT flag according
+	if (wdt_flag == TRUE)
+		wdt_flag = FALSE;
+	else
+		wdt_flag = TRUE;
+	// Clear TimeOut flag
+	WDT_ClrTimeOutFlag();
+}
 
-// Print Menu 1
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
+/*********************************************************************//**
+ * @brief		Print menu
+ * @param[in]	None
+ * @return 		None
+ **********************************************************************/
 void print_menu(void)
 {
 	_DBG(menu1);
 }
 
-void LED_Init (void)
-{
-	PINSEL_CFG_Type PinCfg;
-
-	uint8_t temp;
-
-	PinCfg.Funcnum = 0;
-	PinCfg.OpenDrain = 0;
-	PinCfg.Pinmode = 0;
-	PinCfg.Portnum = 2;
-	for (temp = 2; temp <= 6; temp++){
-		PinCfg.Pinnum = temp;
-		PINSEL_ConfigPin(&PinCfg);
-	}
-
-	PinCfg.Funcnum = 0;
-	PinCfg.OpenDrain = 0;
-	PinCfg.Pinmode = 0;
-	PinCfg.Portnum = 1;
-	PinCfg.Pinnum = 28;
-	PINSEL_ConfigPin(&PinCfg);
-	PinCfg.Pinnum = 29;
-	PINSEL_ConfigPin(&PinCfg);
-	PinCfg.Pinnum = 31;
-	PINSEL_ConfigPin(&PinCfg);
-
-
-	// Set direction to output
-	LPC_GPIO2->FIODIR |= LED2_MASK;
-	LPC_GPIO1->FIODIR |= LED1_MASK;
-
-	/* Turn off all LEDs */
-	LPC_GPIO2->FIOCLR = LED2_MASK;
-	LPC_GPIO1->FIOCLR = LED1_MASK;
-}
-
-
-
 /*********************************************************************//**
- * @brief		Delay millisecond
- * @param[in]	time (ms)
+ * @brief		Initialize LEDs
+ * @param[in]	None
  * @return 		None
  **********************************************************************/
-void Timer_Wait(uint32_t time)
+void LED_Init (void)
 {
-	// Initialize timer 0, prescale count time of 1ms
-	TIM_ConfigStruct.PrescaleOption = TIM_PRESCALE_USVAL;
-	TIM_ConfigStruct.PrescaleValue	= 1000;
-	// use channel 0, MR0
-	TIM_MatchConfigStruct.MatchChannel = 0;
-	// Enable interrupt when MR0 matches the value in TC register
-	TIM_MatchConfigStruct.IntOnMatch   = TRUE;
-	//Enable reset on MR0: TIMER will not reset if MR0 matches it
-	TIM_MatchConfigStruct.ResetOnMatch = FALSE;
-	//Stop on MR0 if MR0 matches it
-	TIM_MatchConfigStruct.StopOnMatch  = TRUE;
-	//do no thing for external output
-	TIM_MatchConfigStruct.ExtMatchOutputType =TIM_EXTMATCH_NOTHING;
-	// Set Match value, count value is timer (timer * 1000uS = timer mS )
-	TIM_MatchConfigStruct.MatchValue   = time;
-
-	// Set configuration for Tim_config and Tim_MatchConfig
-	TIM_Init(LPC_TIM0, TIM_TIMER_MODE,&TIM_ConfigStruct);
-	TIM_ConfigMatch(LPC_TIM0,&TIM_MatchConfigStruct);
-	// To start timer 0
-	TIM_Cmd(LPC_TIM0,ENABLE);
-	while ( !(TIM_GetIntStatus(LPC_TIM0,0)));
-	TIM_ClearIntPending(LPC_TIM0,0);
-
+#ifdef MCB_LPC_1768 /* Using LED2.2 for testing */
+	//turn on LED2.2
+	FIO_SetDir(2,(1<<2),1);
+	FIO_SetValue(2,(1<<2));
+#elif defined(IAR_LPC_1768) /* Using LED1 (P1.25 for testing */
+	FIO_SetDir(1,(1<<25),1);
+	FIO_ClearValue(1,(1<<25));
+#endif
 }
 
-void WDT_IRQHandler(void)
-{
-
-	// Disable WDT interrupt
-	NVIC_DisableIRQ(WDT_IRQn);
-
-	// Set WDT flag according
-	wdt_flag = TRUE;
-
-	// Clear TimeOut flag
-	WDT_ClrTimeOutFlag();
-
-}
+/*-------------------------MAIN FUNCTION------------------------------*/
+/*********************************************************************//**
+ * @brief		c_entry: Main WDT program body
+ * @param[in]	None
+ * @return 		int
+ **********************************************************************/
 int c_entry(void)
 {
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
+	uint32_t delay;
 	// Init LED port
 	LED_Init();
 
-	/*
-	 * Initialize debug via UART
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
 	debug_frmwrk_init();
 
@@ -186,37 +133,55 @@ int c_entry(void)
 
 	/* Install interrupt for WDT interrupt */
 	NVIC_SetPriority(WDT_IRQn, 0x10);
-	// Set Watchdog use internal RC, just generate interrupt only in 1ms if Watchdog is not feed
+	// Set Watchdog use internal RC, just generate interrupt only in 5ms if Watchdog is not feed
 
-	// Init WDT, IRC OSC, interrupt mode, timeout = 1000000 microsecond
+	// Init WDT, IRC OSC, interrupt mode, timeout = 5000000 us = 5s
 	WDT_Init(WDT_CLKSRC_IRC, WDT_MODE_INT_ONLY);
 
 	/* Enable the Watch dog interrupt*/
 	NVIC_EnableIRQ(WDT_IRQn);
 
-	// Start watchdog with timeout given
-	WDT_Start(WDT_TIMEOUT);
-
-	while (1){
-
-		if (wdt_flag == FALSE){
+	while (1)
+	{
+		if (wdt_flag == FALSE){ //before WDT interrupt
 			_DBG_(info1);
-		} else {
+			_DBG_("Press '1' to enable Watchdog timer...");
+			while(_DG !='1');
+			// Start watchdog with timeout given
+			WDT_Start(WDT_TIMEOUT);
+			while(wdt_flag == FALSE)
+			{
+				_DBD32(WDT_GetCurrentCount()); _DBG_("");
+			}
+		} else { // after WDT interrupt
 			_DBG_(info2);
+			_DBG_("LED is blinking...");
+			while(wdt_flag == TRUE)
+			{
+				if (LED_toggle == FALSE)
+				{
+#ifdef MCB_LPC_1768
+					//turn on LED
+					GPIO_SetValue(2,(1<<2));
+#elif defined(IAR_LPC_1768)
+					GPIO_ClearValue(1,(1<<25));
+#endif
+					LED_toggle = TRUE;
+				}
+				else
+				{
+#ifdef MCB_LPC_1768
+					//turn off LED
+					GPIO_ClearValue(2,(1<<2));
+#elif defined(IAR_LPC_1768)
+					GPIO_SetValue(1,(1<<25));
+#endif
+					LED_toggle = FALSE;
+				}
+				//delay
+				for(delay = 0; delay<1000000; delay ++);
+			}
 		}
-
-		if (LED_toggle == FALSE){
-			//turn on led
-			FIO_ByteSetValue(2, 0, LED_PIN);
-			LED_toggle = TRUE;
-		} else {
-			//turn off led
-			FIO_ByteClearValue(2, 0, LED_PIN);
-			LED_toggle = FALSE;
-		}
-
-		// Wait for 500 millisecond
-		Timer_Wait(500);
 	}
 	return 1;
 }
@@ -244,3 +209,6 @@ void check_failed(uint8_t *file, uint32_t line)
 }
 #endif
 
+/*
+ * @}
+ */

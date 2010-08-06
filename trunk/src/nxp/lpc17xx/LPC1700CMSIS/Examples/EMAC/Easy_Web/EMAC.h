@@ -10,13 +10,24 @@
 #ifndef __EMAC_H
 #define __EMAC_H
 
+#include "lpc17xx_emac.h"
+
+#ifdef MCB_LPC_1768
 #define MYMAC_1         0x1E            /* our ethernet (MAC) address        */
 #define MYMAC_2         0x30            /* (MUST be unique in LAN!)          */
 #define MYMAC_3         0x6c
 #define MYMAC_4         0xa2
 #define MYMAC_5         0x45
 #define MYMAC_6         0x5e
-
+#elif defined(IAR_LPC_1768)
+/* Using IAR LPC1768 KickStart board */
+#define MYMAC_1         0x00            /* our ethernet (MAC) address        */
+#define MYMAC_2         0xFF            /* (MUST be unique in LAN!)          */
+#define MYMAC_3         0xFF
+#define MYMAC_4         0xFF
+#define MYMAC_5         0xFF
+#define MYMAC_6         0xFF
+#endif
 
 // prototypes
 void           Init_EMAC(void);

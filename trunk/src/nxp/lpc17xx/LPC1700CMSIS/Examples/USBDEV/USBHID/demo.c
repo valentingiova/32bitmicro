@@ -28,6 +28,12 @@
 #include "lpc17xx_libcfg.h"
 #include "lpc17xx_nvic.h"
 
+/* Example group ----------------------------------------------------------- */
+/** @defgroup USBDEV_USBHID	USBHID
+ * @ingroup USBDEV_Examples
+ * @{
+ */
+
 
 uint8_t InReport;                              /* HID Input Report    */
                                             /*   Bit0   : Buttons  */
@@ -56,37 +62,67 @@ void GetInReport (void) {
  */
 
 void SetOutReport (void) {
-
+	//Because 8 LEDs are not ordered, so we have check each bit
+	//of OurReport to turn on/off LED correctly
+	uint8_t led_num;
 	LPC_GPIO2 -> FIOCLR = LEDMSK;
-	LPC_GPIO2 -> FIOSET = OutReport;
+	LPC_GPIO1 -> FIOCLR = 0xF0000000;
+	//LED0 (P2.6)
+	led_num = OutReport & (1<<0);
+	if(led_num == 0)
+		LPC_GPIO2 -> FIOCLR |= (1<<6);
+	else
+		LPC_GPIO2 -> FIOSET |= (1<<6);
+	//LED1 (P2.5)
+	led_num = OutReport & (1<<1);
+	if(led_num == 0)
+		LPC_GPIO2 -> FIOCLR |= (1<<5);
+	else
+		LPC_GPIO2 -> FIOSET |= (1<<5);
+	//LED2 (P2.4)
+	led_num = OutReport & (1<<2);
+	if(led_num == 0)
+		LPC_GPIO2 -> FIOCLR |= (1<<4);
+	else
+		LPC_GPIO2 -> FIOSET |= (1<<4);
+	//LED3 (P2.3)
+	led_num = OutReport & (1<<3);
+	if(led_num == 0)
+		LPC_GPIO2 -> FIOCLR |= (1<<3);
+	else
+		LPC_GPIO2 -> FIOSET |= (1<<3);
+	//LED4 (P2.2)
+	led_num = OutReport & (1<<4);
+	if(led_num == 0)
+		LPC_GPIO2 -> FIOCLR |= (1<<2);
+	else
+		LPC_GPIO2 -> FIOSET |= (1<<2);
+	//LED5 (P1.31)
+	led_num = OutReport & (1<<5);
+	if(led_num == 0)
+		LPC_GPIO1 -> FIOCLR |= (1<<31);
+	else
+		LPC_GPIO1 -> FIOSET |= (1<<31);
+	//LED6 (P1.29)
+	led_num = OutReport & (1<<6);
+	if(led_num == 0)
+		LPC_GPIO1 -> FIOCLR |= (1<<29);
+	else
+		LPC_GPIO1 -> FIOSET |= (1<<29);
+	//LED7 (P1.28)
+	led_num = OutReport & (1<<7);
+	if(led_num == 0)
+		LPC_GPIO1 -> FIOCLR |= (1<<28);
+	else
+		LPC_GPIO1 -> FIOSET |= (1<<28);
 }
 
 
 /* Main Program */
 
 int main (void) {
-
-	SystemInit();
-
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
-	LPC_GPIO2 -> FIODIR = LEDMSK;                 /* LEDs, port 2, bit 0~7 output only */
+	LPC_GPIO2 -> FIODIR = LEDMSK;             /* LEDs, port 2, bit 0~7 output only */
+	LPC_GPIO1 -> FIODIR = 0xF0000000;				/* LEDs, port 1, bit 28-31 output */
 
 	USB_Init();                               /* USB Initialization */
 	USB_Connect(TRUE);                        /* USB Connect */
@@ -111,4 +147,8 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */
 

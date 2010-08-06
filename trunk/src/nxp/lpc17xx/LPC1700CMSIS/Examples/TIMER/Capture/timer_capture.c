@@ -1,10 +1,10 @@
-/**
- * @file	: timer_capture.c
- * @purpose	: A simple driver to test TIMER capture function
- * @version	: 1.0
- * @date	: 24. Sep. 2009
- * @author	: NguyenCao
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		timer_capture.c
+ * @purpose		This example describes how to use TIMER capture function
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -17,22 +17,16 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_timer.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
 #include "lpc17xx_pinsel.h"
-#include "lpc17xx_nvic.h"
 #include "debug_frmwrk.h"
 #include "lpc17xx_gpio.h"
 
-
-#define LED_PIN 	(1<<6)
-#define LED2_MASK	((1<<2) | (1<<3) | (1<<4) | (1<<5) | (1<<6))
-#define LED1_MASK	((1<<29) | (1<<31))
-#define MAX_MATCH	1000000
-#define START_MATCH	10000
-
-
-/************************** PRIVATE TYPES *************************/
+/* Example group ----------------------------------------------------------- */
+/** @defgroup TIMER_Capture	Capture
+ * @ingroup TIMER_Examples
+ * @{
+ */
 
 /************************** PRIVATE VARIABLES *************************/
 uint8_t menu1[] =
@@ -55,16 +49,19 @@ TIM_TIMERCFG_Type TIM_ConfigStruct;
 TIM_MATCHCFG_Type TIM_MatchConfigStruct ;
 TIM_CAPTURECFG_Type TIM_CaptureConfigStruct;
 uint8_t volatile timer0_flag = FALSE, timer1_flag = FALSE;
-/************************** PRIVATE FUNCTION *************************/
-void print_menu(void);
+
+/************************** PRIVATE FUNCTIONS *************************/
+/* Interrupt service routines */
 void TIMER0_IRQHandler(void);
 void TIMER1_IRQHandler(void);
-// Print Menu 1
-void print_menu(void)
-{
-	_DBG(menu1);
-}
 
+void print_menu(void);
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
+/*********************************************************************//**
+ * @brief		TIMER0 interrupt handler sub-routine
+ * @param[in]	None
+ * @return 		None
+ **********************************************************************/
 void TIMER0_IRQHandler(void)
 {
 	if (TIM_GetIntCaptureStatus(LPC_TIM0,0))
@@ -74,6 +71,12 @@ void TIMER0_IRQHandler(void)
 		_DBH32(TIM_GetCaptureValue(LPC_TIM0,0));_DBG_("");
 	}
 }
+
+/*********************************************************************//**
+ * @brief		TIMER1 interrupt handler sub-routine
+ * @param[in]	None
+ * @return 		None
+ **********************************************************************/
 void TIMER1_IRQHandler(void)
 {
 	if (TIM_GetIntCaptureStatus(LPC_TIM1,0))
@@ -84,29 +87,35 @@ void TIMER1_IRQHandler(void)
 	}
 }
 
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
+/*********************************************************************//**
+ * @brief		Print menu
+ * @param[in]	None
+ * @return 		None
+ **********************************************************************/
+void print_menu(void)
+{
+	_DBG(menu1);
+}
+
+
+/*-------------------------MAIN FUNCTION------------------------------*/
+/*********************************************************************//**
+ * @brief		c_entry: Main TIMER program body
+ * @param[in]	None
+ * @return 		int
+ **********************************************************************/
 int c_entry(void)
 {
 	PINSEL_CFG_Type PinCfg;
 
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
-	/* Init debug */
 	debug_frmwrk_init();
 
 	// print welcome screen
@@ -174,3 +183,6 @@ void check_failed(uint8_t *file, uint32_t line)
 }
 #endif
 
+/*
+ * @}
+ */

@@ -1,10 +1,10 @@
-/**
- * @file	: rit_interrupt.c
- * @purpose	: This example used to test RIT operation in interrupt mode
- * @version	: 1.0
- * @date	: 7. May . 2009
- * @author	: NguyenCao
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		rit_interrupt.c
+ * @purpose		This example used RIT to generate interrupt each 1s
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -18,10 +18,20 @@
  **********************************************************************/
 #include "lpc17xx_rit.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "debug_frmwrk.h"
 #include "lpc17xx_gpio.h"
-#include "lpc17xx_pinsel.h"
+
+/* Example group ----------------------------------------------------------- */
+/** @defgroup RIT_Interrupt	Interrupt
+ * @ingroup RIT_Examples
+ * @{
+ */
+
+/************************** PRIVATE DEFINITIONS ***********************/
+#define MCB_LPC_1768
+//#define IAR_LPC_1768
+
+#define TIME_INTERVAL 	1000
 
 /************************** PRIVATE VARIABLE ***********************/
 uint8_t menu[]=
@@ -31,84 +41,80 @@ uint8_t menu[]=
 	"\t - MCU: LPC17xx \n\r"
 	"\t - Core: ARM CORTEX-M3 \n\r"
 	"\t - Communicate via: UART0 - 115200 bps \n\r"
-	" Use RIT as a timer to generate interrupt each specified time interval \n\r"
+	" Use RIT as a timer to generate interrupt to turn on/off LED each 1s \n\r"
 	"********************************************************************************\n\r";
-uint8_t menu1[] = "LED: ON";
-uint8_t menu2[] = "LED: OFF";
-
-//just use for debugging
-LPC_RIT_TypeDef* RITx=LPC_RIT;
 FunctionalState LEDStatus = ENABLE;
 
-void RIT_IRQHandler()
+/************************** PRIVATE FUNCTION *************************/
+void RIT_IRQHandler(void);
+
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
+/*********************************************************************//**
+ * @brief		RIT interrupt handler sub-routine
+ * @param[in]	None
+ * @return 		None
+ **********************************************************************/
+void RIT_IRQHandler(void)
 {
 	RIT_GetIntStatus(LPC_RIT); //call this to clear interrupt flag
 	if(LEDStatus == ENABLE)
 	{
 		LEDStatus = DISABLE;
+#ifdef MCB_LPC_1768
 		//turn off LED
 		GPIO_ClearValue(2,(1<<2));
-		_DBG_(menu2);
+#elif defined(IAR_LPC_1768)
+		GPIO_SetValue(1,(1<<25));
+#endif
 	}
 	else
 	{
 		LEDStatus = ENABLE;
+#ifdef MCB_LPC_1768
 		//turn off LED
 		GPIO_SetValue(2,(1<<2));
-		_DBG_(menu1);
+#elif defined(IAR_LPC_1768)
+		GPIO_ClearValue(1,(1<<25));
+#endif
 	}
 }
 
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief	Main I2S program body
+ * @brief		c_entry: Main RIT program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
-int c_entry (void) {                       /* Main Program  */
-	RIT_CMP_VAL  value;
-	PINSEL_CFG_Type PinCfg;
+int c_entry (void) {
 
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
 	debug_frmwrk_init();
 	 _DBG(menu);
 
-	value.CMPVAL = 10000000;
-	value.COUNTVAL = 0x00000000;
-	value.MASKVAL = 0x00000000;
 	RIT_Init(LPC_RIT);
-	RIT_TimerConfig(LPC_RIT,&value);
-	RIT_TimerClearCmd(LPC_RIT,ENABLE);
+	/* Configure time_interval for RIT
+	 * In this case: time_interval = 1000 ms = 1s
+	 * So, RIT will generate interrupt each 1s
+	 */
+	RIT_TimerConfig(LPC_RIT,TIME_INTERVAL);
 
-	_DBG("The value compare is: ");
-	_DBD32(value.CMPVAL); _DBG_(" system tick");
+	_DBG("The time interval is: ");
+	_DBD32(TIME_INTERVAL); _DBG_(" millisecond..");
 
-	//Config P2.2 as GPO2.2
-	PinCfg.Funcnum = 0;
-	PinCfg.OpenDrain = 0;
-	PinCfg.Pinmode = 0;
-	PinCfg.Portnum = 2;
-	PinCfg.Pinnum = 2;
-	PINSEL_ConfigPin(&PinCfg);
-
+#ifdef MCB_LPC_1768 /* Using LED2.2 for testing */
 	//turn on LED2.2
-	GPIO_SetDir(2,(1<<2),1);
-	GPIO_SetValue(2,(1<<2));
-
+	FIO_SetDir(2,(1<<2),1);
+	FIO_SetValue(2,(1<<2));
+#elif defined(IAR_LPC_1768) /* Using LED1 (P1.25 for testing */
+	FIO_SetDir(1,(1<<25),1);
+	FIO_ClearValue(1,(1<<25));
+#endif
 	NVIC_EnableIRQ(RIT_IRQn);
 
 	while(1);
@@ -142,3 +148,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

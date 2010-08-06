@@ -1,13 +1,12 @@
-/**
- * @file	: ssp_dma.c
- * @purpose	: This example uses SSP function in MASTER mode
- * 			with Loop-back mode (MOSI <-> MISO).
- * 			Transfer 64 bytes of data (in DMA mode for both Tx and Rx
- * 			channel).
- * @version	: 1.0
- * @date	: 21. April. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		ssp_dma.c
+ * @purpose		This example describes how to use SPP in Master mode with
+ * 			 	loop-back mode (MOSI <-> MISO), using DMA for both Tx and
+ * 			  	Rx channel.
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -20,15 +19,18 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_ssp.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 #include "lpc17xx_gpdma.h"
 #include "debug_frmwrk.h"
 
+/* Example group ----------------------------------------------------------- */
+/** @defgroup SSP_dma	dma
+ * @ingroup SSP_Examples
+ * @{
+ */
 
-/************************** PRIVATE MACROS *************************/
+/************************** PRIVATE DEFINITIONS ***********************/
 /* For DMA controller */
 #define DMA_DATA_SIZE	65
 
@@ -46,9 +48,6 @@ uint8_t menu1[] =
 " channel) \n\r"
 "********************************************************************************\n\r";
 uint8_t menu2[] = "Demo terminated! \n\r";
-
-// UART Configuration structure variable
-UART_CFG_Type UARTConfigStruct;
 
 // SSP Configuration structure variable
 SSP_CFG_Type SSP_ConfigStruct;
@@ -74,14 +73,13 @@ uint8_t dma_dst[DMA_DATA_SIZE];
 
 /************************** PRIVATE FUNCTIONS *************************/
 void DMA_IRQHandler (void);
-void GPDMA_Callback0(uint32_t DMA_Status);
-void GPDMA_Callback1(uint32_t DMA_Status);
+
 void print_menu(void);
 void Buffer_Init(void);
 void Buffer_Verify(void);
 void Error_Loop(void);
 
-
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
 /*********************************************************************//**
  * @brief		GPDMA interrupt handler sub-routine
  * @param[in]	None
@@ -89,50 +87,39 @@ void Error_Loop(void);
  **********************************************************************/
 void DMA_IRQHandler (void)
 {
-	// Execute GPDMA_IntHandler() in GPDMA driver
-	GPDMA_IntHandler();
-}
-
-/*********************************************************************//**
- * @brief		DMA call-back function
- * @param[in]	DMA_Status	DMA status input, could be
- * 							- GPDMA_STAT_INTTC: Terminate Counter interrupt
- * 							- GPDMA_STAT_INTERR: Error interrupt
- * @return		None
- **********************************************************************/
-void GPDMA_Callback0(uint32_t DMA_Status)
-{
-	// Incase  of terminal counter
-	if(DMA_Status & GPDMA_STAT_INTTC) {
-		Channel0_TC++;
+	// check GPDMA interrupt on channel 0
+	if (GPDMA_IntGetStatus(GPDMA_STAT_INT, 0)){
+		// Check counter terminal status
+		if(GPDMA_IntGetStatus(GPDMA_STAT_INTTC, 0)){
+			// Clear terminate counter Interrupt pending
+			GPDMA_ClearIntPending (GPDMA_STATCLR_INTTC, 0);
+				Channel0_TC++;
+		}
+		// Check error terminal status
+		if (GPDMA_IntGetStatus(GPDMA_STAT_INTERR, 0)){
+			// Clear error counter Interrupt pending
+			GPDMA_ClearIntPending (GPDMA_STATCLR_INTERR, 0);
+			Channel0_Err++;
+		}
 	}
-
-	// incase of error
-	if (DMA_Status & GPDMA_STAT_INTERR) {
-		Channel0_Err++;
-	}
-}
-
-/*********************************************************************//**
- * @brief		DMA call-back function
- * @param[in]	DMA_Status	DMA status input, could be
- * 							- GPDMA_STAT_INTTC: Terminate Counter interrupt
- * 							- GPDMA_STAT_INTERR: Error interrupt
- * @return		None
- **********************************************************************/
-void GPDMA_Callback1(uint32_t DMA_Status)
-{
-	// Incase  of terminal counter
-	if(DMA_Status & GPDMA_STAT_INTTC) {
-		Channel1_TC++;
-	}
-
-	// incase of error
-	if (DMA_Status & GPDMA_STAT_INTERR) {
-		Channel1_Err++;
+	// check GPDMA interrupt on channel 1
+	if (GPDMA_IntGetStatus(GPDMA_STAT_INT, 1)){
+		// Check counter terminal status
+		if(GPDMA_IntGetStatus(GPDMA_STAT_INTTC, 1)){
+			// Clear terminate counter Interrupt pending
+			GPDMA_ClearIntPending (GPDMA_STATCLR_INTTC, 1);
+				Channel1_TC++;
+		}
+		// Check error terminal status
+		if (GPDMA_IntGetStatus(GPDMA_STAT_INTERR, 1)){
+			// Clear error counter Interrupt pending
+			GPDMA_ClearIntPending (GPDMA_STATCLR_INTERR, 1);
+			Channel1_Err++;
+		}
 	}
 }
 
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
 /*********************************************************************//**
  * @brief		Initialize buffer
  * @param[in]	none
@@ -194,36 +181,19 @@ void print_menu(void)
 	_DBG(menu1);
 }
 
-
-
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief	Main SSP program body
+ * @brief		c_entry: Main SSP program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
 	GPDMA_Channel_CFG_Type GPDMACfg;
 	PINSEL_CFG_Type PinCfg;
 
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
 	/*
-	 * Initialize SPI pin connect
+	 * Initialize SSP pin connect
 	 * P0.15 - SCK;
 	 * P0.16 - SSEL
 	 * P0.17 - MISO
@@ -235,15 +205,19 @@ int c_entry(void)
 	PinCfg.Portnum = 0;
 	PinCfg.Pinnum = 15;
 	PINSEL_ConfigPin(&PinCfg);
+	PinCfg.Pinnum = 16;
+	PINSEL_ConfigPin(&PinCfg);
 	PinCfg.Pinnum = 17;
 	PINSEL_ConfigPin(&PinCfg);
 	PinCfg.Pinnum = 18;
 	PINSEL_ConfigPin(&PinCfg);
-	PinCfg.Pinnum = 16;
-	PINSEL_ConfigPin(&PinCfg);
 
-	/*
-	 * Initialize debug via UART
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
 	debug_frmwrk_init();
 
@@ -301,7 +275,7 @@ int c_entry(void)
 	// Linker List Item - unused
 	GPDMACfg.DMALLI = 0;
 	// Setup channel with given parameter
-	GPDMA_Setup(&GPDMACfg, GPDMA_Callback0);
+	GPDMA_Setup(&GPDMACfg);
 
 	/* Reset terminal counter */
 	Channel0_TC = 0;
@@ -329,7 +303,7 @@ int c_entry(void)
 	// Linker List Item - unused
 	GPDMACfg.DMALLI = 0;
 	// Setup channel with given parameter
-	GPDMA_Setup(&GPDMACfg, GPDMA_Callback1);
+	GPDMA_Setup(&GPDMACfg);
 
 	/* Reset terminal counter */
 	Channel1_TC = 0;
@@ -392,3 +366,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

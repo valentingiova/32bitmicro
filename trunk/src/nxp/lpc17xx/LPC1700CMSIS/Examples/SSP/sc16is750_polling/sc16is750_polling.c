@@ -1,12 +1,11 @@
-/**
- * @file	: sc16is750_polling.c
- * @purpose	: An example of SSP using polling mode to test the SSP driver.
- * 				Using SSP at mode SSP master/8bit on LPC1766 to communicate with
- * 				SC16IS750/760 Demo Board
- * @version	: 1.0
- * @date	: 3. April. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		sc16is750_polling.c
+ * @purpose		This example describes how to use SPP using polling mode,
+ * 			  	SSP frame format to communicate with SC16IS750/760 Demo board
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -19,14 +18,19 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_ssp.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 #include "debug_frmwrk.h"
 #include "lpc17xx_gpio.h"
 
-/************************** PRIVATE MACROS *************************/
+/* Example group ----------------------------------------------------------- */
+/** @defgroup SSP_sc16is750_polling	sc16is750_polling
+ * @ingroup SSP_Examples
+ * @{
+ */
+
+
+/************************** PRIVATE DEFINITIONS ***********************/
 // PORT number that /CS pin assigned on
 #define CS_PORT_NUM		0
 // PIN number that  /CS pin assigned on
@@ -41,16 +45,6 @@
 #define SC16IS740_IOSTATE_REG	0x0B
 #define SC16IS740_IOCON_REG		0x0E
 
-uint8_t iocon_cfg[2] = {SC16IS740_WR_CMD(SC16IS740_IOCON_REG), 0x00};
-uint8_t iodir_cfg[2] = {SC16IS740_WR_CMD(SC16IS740_IODIR_REG), 0xFF};
-uint8_t iostate_on[2] = {SC16IS740_WR_CMD(SC16IS740_IOSTATE_REG), 0x00};
-uint8_t iostate_off[2] = {SC16IS740_WR_CMD(SC16IS740_IOSTATE_REG), 0xFF};
-uint8_t sspreadbuf[2];
-
-
-
-
-/************************** PRIVATE TYPES *************************/
 
 /************************** PRIVATE VARIABLES *************************/
 uint8_t menu1[] =
@@ -61,21 +55,27 @@ uint8_t menu1[] =
 "\t - Core: ARM Cortex-M3 \n\r"
 "\t - Communicate via: UART0 - 9.6 kbps \n\r"
 " Communicate with SSP0 function on SC16IS750/760 Demo Board\n\r"
+" in polling mode\n\r"
 " Use IO function on SC16IS740/750/760 chip to turn ON/OFF LEDs\n\r"
-"Press '1' to turn ON LEDs, '2' to turn OFF LEDs \n\r"
+" Press '1' to turn ON LEDs, '2' to turn OFF LEDs \n\r"
 "********************************************************************************\n\r";
 uint8_t menu2[] = "Demo terminated! \n\r";
 
 // SSP Configuration structure variable
 SSP_CFG_Type SSP_ConfigStruct;
 
+uint8_t iocon_cfg[2] = {SC16IS740_WR_CMD(SC16IS740_IOCON_REG), 0x00};
+uint8_t iodir_cfg[2] = {SC16IS740_WR_CMD(SC16IS740_IODIR_REG), 0xFF};
+uint8_t iostate_on[2] = {SC16IS740_WR_CMD(SC16IS740_IOSTATE_REG), 0x00};
+uint8_t iostate_off[2] = {SC16IS740_WR_CMD(SC16IS740_IOSTATE_REG), 0xFF};
+uint8_t sspreadbuf[2];
+
 /************************** PRIVATE FUNCTIONS *************************/
 void CS_Init(void);
 void CS_Force(int32_t state);
 void print_menu(void);
 
-
-
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
 /*********************************************************************//**
  * @brief 		Initialize CS pin as GPIO function to drive /CS pin
  * 				due to definition of CS_PORT_NUM and CS_PORT_NUM
@@ -117,9 +117,11 @@ void print_menu(void)
 	_DBG(menu1);
 }
 
-
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief	Main SSP program body
+ * @brief		c_entry: Main SSP program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
@@ -127,24 +129,6 @@ int c_entry(void)
 	PINSEL_CFG_Type PinCfg;
 	__IO FlagStatus exitflag;
 	SSP_DATA_SETUP_Type xferConfig;
-
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
 
 	/*
 	 * Initialize SPI pin connect
@@ -167,8 +151,12 @@ int c_entry(void)
 	PinCfg.Funcnum = 0;
 	PINSEL_ConfigPin(&PinCfg);
 
-	/*
-	 * Initialize debug via UART
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
 	debug_frmwrk_init();
 
@@ -283,3 +271,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

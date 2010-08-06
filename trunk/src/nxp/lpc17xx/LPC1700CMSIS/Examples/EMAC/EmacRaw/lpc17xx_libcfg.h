@@ -2,8 +2,8 @@
  * @file	: lpc17xx_libcfg.h
  * @purpose	: Library configuration file
  * @version	: 1.0
- * @date	: 26. Mar. 2009
- * @author	: HieuNguyen
+ * @date	: 21. May. 2010
+ * @author	: NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -27,26 +27,92 @@
 /* Un-comment the line below to compile the library in DEBUG mode, this will expanse
    the "CHECK_PARAM" macro in the FW library code */
 
-#define DEBUG    1
+#define DEBUG
 
 
 /******************* PERIPHERAL FW LIBRARY CONFIGURATION DEFINITIONS ***********************/
 
 /* Comment the line below to disable the specific peripheral inclusion */
 
-/* UART ------------------------------- */
-#define _UART 	1
-#define _UART0 	1
-#define _UART1 	1
-//#define _UART2 	1
-//#define _UART3 	1
-
-/* EMAC ------------------------------- */
-#define _EMAC	1
+/* DEBUG_FRAMWORK ------------------------------ */
+#define _DBGFWK
 
 /* GPIO ------------------------------- */
-#define _GPIO 	1
+#define _GPIO
 
+/* EXTI ------------------------------- */
+//#define _EXTI
+
+/* UART ------------------------------- */
+#define _UART
+#define _UART0
+//#define _UART1
+//#define _UART2
+//#define _UART3
+
+/* SPI ------------------------------- */
+//#define _SPI
+
+/* SSP ------------------------------- */
+//#define _SSP
+//#define _SSP0
+//#define _SSP1
+
+/* SYSTICK --------------------------- */
+//#define _SYSTICK
+
+/* I2C ------------------------------- */
+//#define _I2C
+//#define _I2C0
+//#define _I2C1
+//#define _I2C2
+
+/* TIMER ------------------------------- */
+//#define _TIM
+
+/* WDT ------------------------------- */
+//#define _WDT
+
+
+/* GPDMA ------------------------------- */
+//#define _GPDMA
+
+
+/* DAC ------------------------------- */
+//#define _DAC
+
+/* DAC ------------------------------- */
+//#define _ADC
+
+
+/* PWM ------------------------------- */
+//#define _PWM
+//#define _PWM1
+
+/* RTC ------------------------------- */
+//#define _RTC
+
+/* I2S ------------------------------- */
+//#define _I2S
+
+/* USB device ------------------------------- */
+//#define _USBDEV
+//#define _USB_DMA
+
+/* QEI ------------------------------- */
+//#define _QEI
+
+/* MCPWM ------------------------------- */
+//#define _MCPWM
+
+/* CAN--------------------------------*/
+//#define _CAN
+
+/* RIT ------------------------------- */
+//#define _RIT
+
+/* EMAC ------------------------------ */
+#define _EMAC
 
 
 /************************** GLOBAL/PUBLIC MACRO DEFINITIONS *********************************/

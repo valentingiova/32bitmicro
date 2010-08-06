@@ -1,10 +1,10 @@
-/**
- * @file	: uart_interrupt_test.c
- * @purpose	: An example of UART using interrupt mode to test the UART driver
- * @version	: 1.0
- * @date	: 18. Mar. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		uart_interrupt_test.c
+ * @purpose		This example describes how to using UART in interrupt mode
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -16,23 +16,17 @@
  * warranty that such application will be suitable for the specified
  * use without further testing or modification.
  **********************************************************************/
-
-#include "lpc17xx_uart.h"		/* Central include file */
+#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 
+/* Example group ----------------------------------------------------------- */
+/** @defgroup UART_Interrupt	Interrupt
+ * @ingroup UART_Examples
+ * @{
+ */
 
-#define UART_PORT 0
-
-#if (UART_PORT == 0)
-#define TEST_UART LPC_UART0
-#elif (UART_PORT == 1)
-#define TEST_UART LPC_UART1
-#endif
-
-/************************** PRIVATE MACROS *************************/
-
+/************************** PRIVATE DEFINTIONS *************************/
 /* buffer size definition */
 #define UART_RING_BUFSIZE 256
 
@@ -79,78 +73,54 @@ __IO FlagStatus TxIntStat;
 
 
 /************************** PRIVATE FUNCTIONS *************************/
-void print_menu(void);
-
-#if (UART_PORT == 0)
+/* Interrupt service routines */
 void UART0_IRQHandler(void);
-#elif (UART_PORT == 1)
-void UART1_IRQHandler(void);
-#endif
-
+void UART_IntErr(uint8_t bLSErrType);
 void UART_IntTransmit(void);
 void UART_IntReceive(void);
+
 uint32_t UARTReceive(LPC_UART_TypeDef *UARTPort, uint8_t *rxbuf, uint8_t buflen);
 uint32_t UARTSend(LPC_UART_TypeDef *UARTPort, uint8_t *txbuf, uint8_t buflen);
+void print_menu(void);
 
-
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
 /*********************************************************************//**
- * @brief	Print Welcome Screen Menu subroutine
- * @param	None
- * @return	None
- **********************************************************************/
-void print_menu(void)
-{
-	uint32_t tmp, tmp2;
-	uint8_t *pDat;
-
-	tmp = sizeof(menu1);
-	tmp2 = 0;
-	pDat = (uint8_t *)&menu1[0];
-	while(tmp) {
-		tmp2 = UARTSend(TEST_UART, pDat, tmp);
-		pDat += tmp2;
-		tmp -= tmp2;
-	}
-
-	tmp = sizeof(menu2);
-	tmp2 = 0;
-	pDat = (uint8_t *)&menu2[0];
-	while(tmp) {
-		tmp2 = UARTSend(TEST_UART, pDat, tmp);
-		pDat += tmp2;
-		tmp -= tmp2;
-	}
-}
-
-
-#if (UART_PORT == 0)
-/*********************************************************************//**
- * @brief	UART0 interrupt handler sub-routine reference, just to call the
- * 				standard interrupt handler in uart driver
- * @param	None
- * @return	None
+ * @brief		UART0 interrupt handler sub-routine
+ * @param[in]	None
+ * @return 		None
  **********************************************************************/
 void UART0_IRQHandler(void)
 {
-	// Call Standard UART 0 interrupt handler
-	UART0_StdIntHandler();
-}
-#endif
+	uint32_t intsrc, tmp, tmp1;
 
-#if (UART_PORT == 1)
-/*********************************************************************//**
- * @brief	UART1 interrupt handler sub-routine reference, just to call the
- * 				standard interrupt handler in uart driver
- * @param	None
- * @return	None
- **********************************************************************/
-void UART1_IRQHandler(void)
-{
-	// Call Standard UART 0 interrupt handler
-	UART1_StdIntHandler();
-}
-#endif
+	/* Determine the interrupt source */
+	intsrc = UART_GetIntId(LPC_UART0);
+	tmp = intsrc & UART_IIR_INTID_MASK;
 
+	// Receive Line Status
+	if (tmp == UART_IIR_INTID_RLS){
+		// Check line status
+		tmp1 = UART_GetLineStatus(LPC_UART0);
+		// Mask out the Receive Ready and Transmit Holding empty status
+		tmp1 &= (UART_LSR_OE | UART_LSR_PE | UART_LSR_FE \
+				| UART_LSR_BI | UART_LSR_RXFE);
+		// If any error exist
+		if (tmp1) {
+				UART_IntErr(tmp1);
+		}
+	}
+
+	// Receive Data Available or Character time-out
+	if ((tmp == UART_IIR_INTID_RDA) || (tmp == UART_IIR_INTID_CTI)){
+			UART_IntReceive();
+	}
+
+	// Transmit Holding Empty
+	if (tmp == UART_IIR_INTID_THRE){
+			UART_IntTransmit();
+	}
+
+}
 
 /********************************************************************//**
  * @brief 		UART receive function (ring buffer used)
@@ -164,7 +134,7 @@ void UART_IntReceive(void)
 
 	while(1){
 		// Call UART read function in UART driver
-		rLen = UART_Receive(TEST_UART, &tmpc, 1, NONE_BLOCKING);
+		rLen = UART_Receive((LPC_UART_TypeDef *)LPC_UART0, &tmpc, 1, NONE_BLOCKING);
 		// If data received
 		if (rLen){
 			/* Check if buffer is more space
@@ -182,7 +152,6 @@ void UART_IntReceive(void)
 	}
 }
 
-
 /********************************************************************//**
  * @brief 		UART transmit function (ring buffer used)
  * @param[in]	None
@@ -191,17 +160,17 @@ void UART_IntReceive(void)
 void UART_IntTransmit(void)
 {
     // Disable THRE interrupt
-    UART_IntConfig(TEST_UART, UART_INTCFG_THRE, DISABLE);
+    UART_IntConfig((LPC_UART_TypeDef *)LPC_UART0, UART_INTCFG_THRE, DISABLE);
 
 	/* Wait for FIFO buffer empty, transfer UART_TX_FIFO_SIZE bytes
 	 * of data or break whenever ring buffers are empty */
 	/* Wait until THR empty */
-    while (UART_CheckBusy(TEST_UART) == SET);
+    while (UART_CheckBusy((LPC_UART_TypeDef *)LPC_UART0) == SET);
 
 	while (!__BUF_IS_EMPTY(rb.tx_head,rb.tx_tail))
     {
         /* Move a piece of data into the transmit FIFO */
-    	if (UART_Send(TEST_UART, (uint8_t *)&rb.tx[rb.tx_tail], 1, NONE_BLOCKING)){
+    	if (UART_Send((LPC_UART_TypeDef *)LPC_UART0, (uint8_t *)&rb.tx[rb.tx_tail], 1, NONE_BLOCKING)){
         /* Update transmit ring FIFO tail pointer */
         __BUF_INCR(rb.tx_tail);
     	} else {
@@ -212,20 +181,20 @@ void UART_IntTransmit(void)
     /* If there is no more data to send, disable the transmit
        interrupt - else enable it or keep it enabled */
 	if (__BUF_IS_EMPTY(rb.tx_head, rb.tx_tail)) {
-    	UART_IntConfig(TEST_UART, UART_INTCFG_THRE, DISABLE);
+    	UART_IntConfig((LPC_UART_TypeDef *)LPC_UART0, UART_INTCFG_THRE, DISABLE);
     	// Reset Tx Interrupt state
     	TxIntStat = RESET;
     }
     else{
       	// Set Tx Interrupt state
 		TxIntStat = SET;
-    	UART_IntConfig(TEST_UART, UART_INTCFG_THRE, ENABLE);
+    	UART_IntConfig((LPC_UART_TypeDef *)LPC_UART0, UART_INTCFG_THRE, ENABLE);
     }
 }
 
 
 /*********************************************************************//**
- * @brief		UART Line Status Error callback
+ * @brief		UART Line Status Error
  * @param[in]	bLSErrType	UART Line Status Error Type
  * @return		None
  **********************************************************************/
@@ -239,7 +208,7 @@ void UART_IntErr(uint8_t bLSErrType)
 	}
 }
 
-
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
 /*********************************************************************//**
  * @brief		UART transmit function for interrupt mode (using ring buffers)
  * @param[in]	UARTPort	Selected UART peripheral used to send data,
@@ -334,13 +303,40 @@ uint32_t UARTReceive(LPC_UART_TypeDef *UARTPort, uint8_t *rxbuf, uint8_t buflen)
     return bytes;
 }
 
-
 /*********************************************************************//**
- * @brief	Main UART testing example sub-routine
- * 			Print welcome screen first, then press any key to have it
- * 			read in from the terminal and returned back to the terminal.
- * 			- Press ESC to exit
- * 			- Press 'r' to print welcome screen menu again
+ * @brief	Print Welcome Screen Menu subroutine
+ * @param	None
+ * @return	None
+ **********************************************************************/
+void print_menu(void)
+{
+	uint32_t tmp, tmp2;
+	uint8_t *pDat;
+
+	tmp = sizeof(menu1);
+	tmp2 = 0;
+	pDat = (uint8_t *)&menu1[0];
+	while(tmp) {
+		tmp2 = UARTSend((LPC_UART_TypeDef *)LPC_UART0, pDat, tmp);
+		pDat += tmp2;
+		tmp -= tmp2;
+	}
+
+	tmp = sizeof(menu2);
+	tmp2 = 0;
+	pDat = (uint8_t *)&menu2[0];
+	while(tmp) {
+		tmp2 = UARTSend((LPC_UART_TypeDef *)LPC_UART0, pDat, tmp);
+		pDat += tmp2;
+		tmp -= tmp2;
+	}
+}
+
+/*-------------------------MAIN FUNCTION------------------------------*/
+/*********************************************************************//**
+ * @brief		c_entry: Main UART program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
@@ -355,25 +351,6 @@ int c_entry(void)
 	__IO FlagStatus exitflag;
 	uint8_t buffer[10];
 
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
-#if (UART_PORT == 0)
 	/*
 	 * Initialize UART0 pin connect
 	 */
@@ -385,21 +362,7 @@ int c_entry(void)
 	PINSEL_ConfigPin(&PinCfg);
 	PinCfg.Pinnum = 3;
 	PINSEL_ConfigPin(&PinCfg);
-#endif
 
-#if (UART_PORT == 1)
-	/*
-	 * Initialize UART1 pin connect
-	 */
-	PinCfg.Funcnum = 2;
-	PinCfg.OpenDrain = 0;
-	PinCfg.Pinmode = 0;
-	PinCfg.Pinnum = 0;
-	PinCfg.Portnum = 2;
-	PINSEL_ConfigPin(&PinCfg);
-	PinCfg.Pinnum = 1;
-	PINSEL_ConfigPin(&PinCfg);
-#endif
 
 	/* Initialize UART Configuration parameter structure to default state:
 	 * Baudrate = 9600bps
@@ -410,7 +373,7 @@ int c_entry(void)
 	UART_ConfigStructInit(&UARTConfigStruct);
 
 	// Initialize UART0 peripheral with given to corresponding parameter
-	UART_Init(TEST_UART, &UARTConfigStruct);
+	UART_Init((LPC_UART_TypeDef *)LPC_UART0, &UARTConfigStruct);
 
 
 	/* Initialize FIFOConfigStruct to default state:
@@ -423,23 +386,16 @@ int c_entry(void)
 	UART_FIFOConfigStructInit(&UARTFIFOConfigStruct);
 
 	// Initialize FIFO for UART0 peripheral
-	UART_FIFOConfig(TEST_UART, &UARTFIFOConfigStruct);
+	UART_FIFOConfig((LPC_UART_TypeDef *)LPC_UART0, &UARTFIFOConfigStruct);
 
-	// Setup callback ---------------
-	// Receive callback
-	UART_SetupCbs(TEST_UART, 0, (void *)UART_IntReceive);
-	// Transmit callback
-	UART_SetupCbs(TEST_UART, 1, (void *)UART_IntTransmit);
-	// Line Status Error callback
-	UART_SetupCbs(TEST_UART, 3, (void *)UART_IntErr);
 
 	// Enable UART Transmit
-	UART_TxCmd(TEST_UART, ENABLE);
+	UART_TxCmd((LPC_UART_TypeDef *)LPC_UART0, ENABLE);
 
     /* Enable UART Rx interrupt */
-	UART_IntConfig(TEST_UART, UART_INTCFG_RBR, ENABLE);
+	UART_IntConfig((LPC_UART_TypeDef *)LPC_UART0, UART_INTCFG_RBR, ENABLE);
 	/* Enable UART line status interrupt */
-	UART_IntConfig(TEST_UART, UART_INTCFG_RLS, ENABLE);
+	UART_IntConfig((LPC_UART_TypeDef *)LPC_UART0, UART_INTCFG_RLS, ENABLE);
 	/*
 	 * Do not enable transmit interrupt here, since it is handled by
 	 * UART_Send() function, just to reset Tx Interrupt state for the
@@ -453,19 +409,11 @@ int c_entry(void)
 	__BUF_RESET(rb.tx_head);
 	__BUF_RESET(rb.tx_tail);
 
-#if (UART_PORT == 0)
     /* preemption = 1, sub-priority = 1 */
     NVIC_SetPriority(UART0_IRQn, ((0x01<<3)|0x01));
 	/* Enable Interrupt for UART0 channel */
     NVIC_EnableIRQ(UART0_IRQn);
-#endif
 
-#if (UART_PORT == 1)
-    /* preemption = 1, sub-priority = 1 */
-    NVIC_SetPriority(UART1_IRQn, ((0x01<<3)|0x01));
-	/* Enable Interrupt for UART0 channel */
-    NVIC_EnableIRQ(UART1_IRQn);
-#endif
 
 	// print welcome screen
 	print_menu();
@@ -479,7 +427,7 @@ int c_entry(void)
        len = 0;
         while (len == 0)
         {
-            len = UARTReceive(TEST_UART, buffer, sizeof(buffer));
+            len = UARTReceive((LPC_UART_TypeDef *)LPC_UART0, buffer, sizeof(buffer));
         }
 
         /* Got some data */
@@ -489,7 +437,7 @@ int c_entry(void)
             if (buffer[idx] == 27)
             {
                 /* ESC key, set exit flag */
-            	UARTSend(TEST_UART, menu3, sizeof(menu3));
+            	UARTSend((LPC_UART_TypeDef *)LPC_UART0, menu3, sizeof(menu3));
                 exitflag = SET;
             }
             else if (buffer[idx] == 'r')
@@ -499,17 +447,17 @@ int c_entry(void)
             else
             {
                 /* Echo it back */
-            	UARTSend(TEST_UART, &buffer[idx], 1);
+            	UARTSend((LPC_UART_TypeDef *)LPC_UART0, &buffer[idx], 1);
             }
             idx++;
         }
     }
 
     // wait for current transmission complete - THR must be empty
-    while (UART_CheckBusy(TEST_UART));
+    while (UART_CheckBusy((LPC_UART_TypeDef *)LPC_UART0));
 
     // DeInitialize UART0 peripheral
-    UART_DeInit(TEST_UART);
+    UART_DeInit((LPC_UART_TypeDef *)LPC_UART0);
 
     /* Loop forever */
     while(1);
@@ -543,3 +491,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

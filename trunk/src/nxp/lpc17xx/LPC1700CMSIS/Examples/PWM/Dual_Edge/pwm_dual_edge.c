@@ -1,29 +1,11 @@
-/**
- * @file	: pwm_dual_edge.c
- * @purpose	: This program illustrates the PWM signal on 3 Channels in both edge mode
- * and single mode.
- * Peripheral clock for PWM: PWM_PCLK = CCLK / 4 = 72MHz/4 = 18MHz and there is no
- * prescale for PWM. The PWM timer/counter clock is at 18MHz. The base rate is set to 100
- * The base PWM frequency is at 18MHz/100 = 180 KHz.
- * Each PWM channel will be configured as following:
- * - Channel 2: Double Edge
- * - Channel 4: Double Edge
- * - Channel 5: Single Edge
- * The Match register values are as follows:
- * - MR0 = 100 (PWM rate)
- * - MR1 = 41, MR2 = 78 (PWM2 output)
- * - MR3 = 53, MR4 = 27 (PWM4 output)
- * - MR5 = 65 (PWM5 output)
- * PWM Duty on each PWM channel:
- * - Channel 2: Set by match 1, Reset by match 2.
- * - Channel 4: Set by match 3, Reset by match 4.
- * - Channel 5: Set by match 0, Reset by match 5.
- * Using Oscilloscope to observe the PWM signals
- *
- * @version	: 1.0
- * @date	: 22. Apr. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		pwm_dual_edge.c
+ * @purpose		This program illustrates the PWM signal on 3 Channels in
+ * 			  	both edge mode and single mode.
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -36,71 +18,20 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_pwm.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
-#include "debug_frmwrk.h"
 
+/* Example group ----------------------------------------------------------- */
+/** @defgroup PWM_Dual_Edge	Dual_Edge
+ * @ingroup PWM_Examples
+ * @{
+ */
 
-
-/************************** PRIVATE MACROS *************************/
-
-/************************** PRIVATE TYPES *************************/
-
-/************************** PRIVATE VARIABLES *************************/
-uint8_t menu1[] =
-"********************************************************************************\n\r"
-"Hello NXP Semiconductors \n\r"
-"PWM demo \n\r"
-"\t - MCU: LPC1766 \n\r"
-"\t - Core: Cortex M3 \n\r"
-"\t - Communicate via: UART0 - 9.6 kbps \n\r"
-" This program illustrates the PWM signal on 3 Channels in both edge mode \n\r"
-" and single mode. \n\r"
-" Peripheral clock for PWM: PWM_PCLK = CCLK / 4 = 72MHz/4 = 18MHz and there is no \n\r"
-" prescale for PWM. The PWM timer/counter clock is at 18MHz. The base rate is set to 100 \n\r"
-" The base PWM frequency is at 18MHz/100 = 180 KHz. \n\r"
-" Each PWM channel will be configured as following: \n\r"
-" - Channel 2: Double Edge \n\r"
-" - Channel 4: Double Edge \n\r"
-" - Channel 5: Single Edge \n\r"
-" The Match register values are as follows: \n\r"
-" - MR0 = 100 (PWM rate) \n\r"
-" - MR1 = 41, MR2 = 78 (PWM2 output) \n\r"
-" - MR3 = 53, MR4 = 27 (PWM4 output) \n\r"
-" - MR5 = 65 (PWM5 output) \n\r"
-" PWM Duty on each PWM channel: \n\r"
-" - Channel 2: Set by match 1, Reset by match 2. \n\r"
-" - Channel 4: Set by match 3, Reset by match 4. \n\r"
-" - Channel 5: Set by match 0, Reset by match 5. \n\r"
-"  Using Oscilloscope to observe the PWM signals \n\r"
-"********************************************************************************\n\r";
-uint8_t menu2[] = "Demo terminated! \n\r";
-
-
-// UART Configuration structure variable
-UART_CFG_Type UARTConfigStruct;
-
-
-
-
-/************************** PRIVATE FUNCTIONS *************************/
-void print_menu(void);
-
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief		Print Welcome menu
- * @param[in]	none
- * @return 		None
- **********************************************************************/
-void print_menu(void)
-{
-	_DBG(menu1);
-}
-
-
-/*********************************************************************//**
- * @brief	Main PWM program body
+ * @brief		c_entry: Main PWM program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
@@ -108,30 +39,6 @@ int c_entry(void)
 	PWM_TIMERCFG_Type PWMCfgDat;
 	PWM_MATCHCFG_Type PWMMatchCfgDat;
 	PINSEL_CFG_Type PinCfg;
-
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
-	/* Initialize debug */
-	debug_frmwrk_init();
-
-	// print welcome screen
-	print_menu();
 
 	/* PWM block section -------------------------------------------- */
 	/* Initialize PWM peripheral, timer mode
@@ -142,6 +49,7 @@ int c_entry(void)
 
 	/*
 	 * Initialize PWM pin connect
+	 *
 	 */
 	PinCfg.Funcnum = 1;
 	PinCfg.OpenDrain = 0;
@@ -251,3 +159,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

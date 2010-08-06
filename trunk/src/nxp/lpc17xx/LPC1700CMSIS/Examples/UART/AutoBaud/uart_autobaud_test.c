@@ -1,11 +1,11 @@
-/**
- * @file	: uart_autobaud_test.c
- * @purpose	: An example of UART using auto baud rate and interrupt mode
- * 				to test the UART driver
- * @version	: 1.0
- * @date	: 18. Mar. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		uart_autobaud_test.c
+ * @purpose		This example describes how to configure UART using auto-baud
+ * 			  	rate in interrupt mode
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -17,24 +17,16 @@
  * warranty that such application will be suitable for the specified
  * use without further testing or modification.
  **********************************************************************/
-
-#include "lpc17xx_uart.h"		/* Central include file */
+#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 
+/* Example group ----------------------------------------------------------- */
+/** @defgroup UART_AutoBaud	AutoBaud
+ * @ingroup UART_Examples
+ * @{
+ */
 
-#define UART_PORT 0
-
-#if (UART_PORT == 0)
-#define TEST_UART LPC_UART0
-#elif (UART_PORT == 1)
-#define TEST_UART LPC_UART1
-#endif
-
-
-/************************** PRIVATE MACROS *************************/
-/************************** PRIVATE TYPES *************************/
 /************************** PRIVATE VARIABLES *************************/
 uint8_t syncmenu[] = "AutoBaudrate Status: Synchronous! \n\r";
 uint8_t menu1[] = "Hello NXP Semiconductors \n\r";
@@ -48,108 +40,88 @@ uint8_t menu3[] = "UART demo terminated!\n";
 __IO FlagStatus Synchronous;
 
 /************************** PRIVATE FUNCTIONS *************************/
+void UART0_IRQHandler(void);
+
 void print_menu(void);
 
-#if (UART_PORT == 0)
-void UART0_IRQHandler(void);
-#elif (UART_PORT == 1)
-void UART1_IRQHandler(void);
-#endif
-
-
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
 /*********************************************************************//**
- * @brief	Print Welcome Screen Menu subroutine
- * @param	None
- * @return	None
- **********************************************************************/
-void print_menu(void)
-{
-	UART_Send(TEST_UART, menu1, sizeof(menu1), BLOCKING);
-	UART_Send(TEST_UART, menu2, sizeof(menu2), BLOCKING);
-}
-
-#if (UART_PORT == 0)
-/*********************************************************************//**
- * @brief	UART0 interrupt handler sub-routine reference, just to call the
- * 				standard interrupt handler in uart driver
+ * @brief	UART0 interrupt handler sub-routine
  * @param	None
  * @return	None
  **********************************************************************/
 void UART0_IRQHandler(void)
 {
 	// Call Standard UART 0 interrupt handler
-	UART0_StdIntHandler();
-}
-#endif
+	uint32_t intsrc, tmp, tmp1;
 
+	/* Determine the interrupt source */
+	intsrc = UART_GetIntId(LPC_UART0);
+	tmp = intsrc & UART_IIR_INTID_MASK;
 
-#if (UART_PORT == 1)
-/*********************************************************************//**
- * @brief	UART1 interrupt handler sub-routine reference, just to call the
- * 				standard interrupt handler in uart driver
- * @param	None
- * @return	None
- **********************************************************************/
-void UART1_IRQHandler(void)
-{
-	// Call Standard UART 0 interrupt handler
-	UART1_StdIntHandler();
-}
-#endif
+	// Receive Line Status
+	if (tmp == UART_IIR_INTID_RLS){
+		// Check line status
+		tmp1 = UART_GetLineStatus(LPC_UART0);
+		// Mask out the Receive Ready and Transmit Holding empty status
+		tmp1 &= (UART_LSR_OE | UART_LSR_PE | UART_LSR_FE \
+				| UART_LSR_BI | UART_LSR_RXFE);
+		// If any error exist
+		if (tmp1) {
 
-
-/*********************************************************************//**
- * @brief		Auto baudrate callback function
- * @param[in]	bABType	Auto baudrate interrupt type
- * @return		None
- **********************************************************************/
-void UART_ABIntCallback(uint32_t bABIntType)
-{
-	if (Synchronous == RESET)
-	{
-		/* Interrupt caused by End of auto-baud */
-		if (bABIntType & UART_AUTOBAUD_INTSTAT_ABEO){
-			// Disable AB interrupt
-			UART_IntConfig(TEST_UART, UART_INTCFG_ABEO, DISABLE);
-			// Set Sync flag
-			Synchronous = SET;
-		}
-
-		/* Auto-Baudrate Time-Out interrupt (not implemented) */
-		if (bABIntType & UART_AUTOBAUD_INTSTAT_ABTO) {
-			/* Just clear this bit - Add your code here */
-			TEST_UART->ACR |= (1<<9);
+			while(tmp1){
+				; //implement error handling here
+			}
 		}
 	}
-}
 
-/*********************************************************************//**
- * @brief		UART Line Status Error callback
- * @param[in]	bLSErrType	UART Line Status Error Type
- * @return		None
- **********************************************************************/
-void UART_IntErr(uint8_t bLSErrType)
-{
-	uint8_t test;
-	// Loop forever
-	while (1){
-		// For testing purpose
-		test = bLSErrType;
+
+	intsrc &= (UART_IIR_ABEO_INT | UART_IIR_ABTO_INT);
+	// Check if End of auto-baudrate interrupt or Auto baudrate time out
+	if (intsrc){
+		// Clear interrupt pending
+		if(intsrc & UART_IIR_ABEO_INT)
+			UART_ABClearIntPending(LPC_UART0, UART_AUTOBAUD_INTSTAT_ABEO);
+		if (intsrc & UART_IIR_ABTO_INT)
+			UART_ABClearIntPending(LPC_UART0, UART_AUTOBAUD_INTSTAT_ABTO);
+			if (Synchronous == RESET)
+			{
+				/* Interrupt caused by End of auto-baud */
+				if (intsrc & UART_AUTOBAUD_INTSTAT_ABEO){
+					// Disable AB interrupt
+					UART_IntConfig(LPC_UART0, UART_INTCFG_ABEO, DISABLE);
+					// Set Sync flag
+					Synchronous = SET;
+				}
+
+				/* Auto-Baudrate Time-Out interrupt (not implemented) */
+				if (intsrc & UART_AUTOBAUD_INTSTAT_ABTO) {
+					/* Just clear this bit - Add your code here */
+					UART_ABClearIntPending(LPC_UART0, UART_AUTOBAUD_INTSTAT_ABTO);
+				}
+			}
 	}
 }
 
 
-/************************** MAIN SUB-ROUTINE *************************/
-
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
 /*********************************************************************//**
- * @brief	Main UART testing example sub-routine
- * 			First, the user must type 'A' or 'a' character to start
- * 			Auto baud rate mode.
- * 			Once Auto baud rate mode completed, print welcome screen,
- * 			then press any key to have it read in from the terminal
- * 			and returned back to the terminal.
- * 			- Press ESC to exit
- * 			- Press 'r' to print welcome screen menu again
+ * @brief		Print menu
+ * @param[in]	None
+ * @return 		None
+ **********************************************************************/
+void print_menu(void)
+{
+	UART_Send(LPC_UART0, menu1, sizeof(menu1), BLOCKING);
+	UART_Send(LPC_UART0, menu2, sizeof(menu2), BLOCKING);
+}
+
+
+/*-------------------------MAIN FUNCTION------------------------------*/
+/*********************************************************************//**
+ * @brief		c_entry: Main UART program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
@@ -166,25 +138,6 @@ int c_entry(void)
 	__IO FlagStatus exitflag;
 	uint8_t buffer[10];
 
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
-#if (UART_PORT == 0)
 	/*
 	 * Initialize UART0 pin connect
 	 */
@@ -196,21 +149,6 @@ int c_entry(void)
 	PINSEL_ConfigPin(&PinCfg);
 	PinCfg.Pinnum = 3;
 	PINSEL_ConfigPin(&PinCfg);
-#endif
-
-#if (UART_PORT == 1)
-	/*
-	 * Initialize UART1 pin connect
-	 */
-	PinCfg.Funcnum = 1;
-	PinCfg.OpenDrain = 0;
-	PinCfg.Pinmode = 0;
-	PinCfg.Pinnum = 15;
-	PinCfg.Portnum = 0;
-	PINSEL_ConfigPin(&PinCfg);
-	PinCfg.Pinnum = 16;
-	PINSEL_ConfigPin(&PinCfg);
-#endif
 
 	/* Initialize UART Configuration parameter structure to default state:
 	 * Baudrate = 9600bps
@@ -224,7 +162,7 @@ int c_entry(void)
 	 * in this case, don't care the baudrate value UART initialized
 	 * since this will be determine when running auto baudrate
 	 */
-	UART_Init(TEST_UART, &UARTConfigStruct);
+	UART_Init(LPC_UART0, &UARTConfigStruct);
 
 	/* Initialize FIFOConfigStruct to default state:
 	 * 				- FIFO_DMAMode = DISABLE
@@ -236,37 +174,22 @@ int c_entry(void)
 	UART_FIFOConfigStructInit(&UARTFIFOConfigStruct);
 
 	// Initialize FIFO for UART0 peripheral
-	UART_FIFOConfig(TEST_UART, &UARTFIFOConfigStruct);
+	UART_FIFOConfig(LPC_UART0, &UARTFIFOConfigStruct);
 
 
 	// Enable UART Transmit
-	UART_TxCmd(TEST_UART, ENABLE);
+	UART_TxCmd(LPC_UART0, ENABLE);
 
-
-	// Setup callback ---------------
-	// Line Status Error callback
-	UART_SetupCbs(TEST_UART, 3, (void *)UART_IntErr);
-	// UART Auto baudrate callback
-	UART_SetupCbs(TEST_UART, 2, (void *)UART_ABIntCallback);
 
     /* Enable UART End of Auto baudrate interrupt */
-	UART_IntConfig(TEST_UART, UART_INTCFG_ABEO, ENABLE);
+	UART_IntConfig(LPC_UART0, UART_INTCFG_ABEO, ENABLE);
 	/* Enable UART Auto baudrate timeout interrupt */
-	UART_IntConfig(TEST_UART, UART_INTCFG_ABTO, ENABLE);
+	UART_IntConfig(LPC_UART0, UART_INTCFG_ABTO, ENABLE);
 
-#if (UART_PORT == 0)
     /* preemption = 1, sub-priority = 1 */
     NVIC_SetPriority(UART0_IRQn, ((0x01<<3)|0x01));
 	/* Enable Interrupt for UART0 channel */
     NVIC_EnableIRQ(UART0_IRQn);
-#endif
-
-#if (UART_PORT == 1)
-    /* preemption = 1, sub-priority = 1 */
-    NVIC_SetPriority(UART1_IRQn, ((0x01<<3)|0x01));
-	/* Enable Interrupt for UART0 channel */
-    NVIC_EnableIRQ(UART1_IRQn);
-#endif
 
 
 /* ---------------------- Auto baud rate section ----------------------- */
@@ -278,14 +201,15 @@ int c_entry(void)
     ABConfig.AutoRestart = ENABLE;
 
     // Start auto baudrate mode
-    UART_ABCmd(TEST_UART, &ABConfig, ENABLE);
+    UART_ABCmd(LPC_UART0, &ABConfig, ENABLE);
+    print_menu();
 
     /* Loop until auto baudrate mode complete */
     while (Synchronous == RESET);
 
 
     // Print status of auto baudrate
-    UART_Send(TEST_UART, syncmenu, sizeof(syncmenu), BLOCKING);
+    UART_Send(LPC_UART0, syncmenu, sizeof(syncmenu), BLOCKING);
 /* ---------------------- End of Auto baud rate section ----------------------- */
 
 	// print welcome screen
@@ -300,7 +224,7 @@ int c_entry(void)
        len = 0;
         while (len == 0)
         {
-            len = UART_Receive(TEST_UART, buffer, sizeof(buffer), NONE_BLOCKING);
+            len = UART_Receive(LPC_UART0, buffer, sizeof(buffer), NONE_BLOCKING);
         }
 
         /* Got some data */
@@ -310,7 +234,7 @@ int c_entry(void)
             if (buffer[idx] == 27)
             {
                 /* ESC key, set exit flag */
-            	UART_Send(TEST_UART, menu3, sizeof(menu3), BLOCKING);
+            	UART_Send(LPC_UART0, menu3, sizeof(menu3), BLOCKING);
                 exitflag = SET;
             }
             else if (buffer[idx] == 'r')
@@ -320,17 +244,17 @@ int c_entry(void)
             else
             {
                 /* Echo it back */
-            	UART_Send(TEST_UART, &buffer[idx], 1, BLOCKING);
+            	UART_Send(LPC_UART0, &buffer[idx], 1, BLOCKING);
             }
             idx++;
         }
     }
 
     // wait for current transmission complete - THR must be empty
-    while (UART_CheckBusy(TEST_UART) == SET);
+    while (UART_CheckBusy(LPC_UART0) == SET);
 
     // DeInitialize UART0 peripheral
-    UART_DeInit(TEST_UART);
+    UART_DeInit(LPC_UART0);
 
     /* Loop forever */
     while(1);

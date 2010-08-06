@@ -60,7 +60,6 @@ ADDOBJS		+=  $(EXDIRINC)/uip/psock.o \
 # 'lpc17xx_port' files 								
 ADDOBJS		+=  $(EXDIRINC)/lpc17xx_port/emac.o \
 				$(EXDIRINC)/lpc17xx_port/clock-arch.o \
-				$(EXDIRINC)/lpc17xx_port/debug_frmwrk.o \
 				$(EXDIRINC)/lpc17xx_port/main.o 
 				
 				

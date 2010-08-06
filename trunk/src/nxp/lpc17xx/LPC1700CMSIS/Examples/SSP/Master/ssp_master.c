@@ -1,13 +1,10 @@
-/**
- * @file	: ssp_master.c
- * @purpose	: An example of SSP using Polling mode to test the SSP driver.
-				This example uses SSP in SPI frame as master to communicate
-				with an SSP slave device.
-				The master and slave transfer together a number of data byte.
- * @version	: 1.0
- * @date	: 3. April. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		ssp_master.c
+ * @purpose		This example describes how to use SPP in master mode
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -20,24 +17,27 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_ssp.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 #include "debug_frmwrk.h"
 #include "lpc17xx_gpio.h"
 
-/************************** PRIVATE MACROS *************************/
+/* Example group ----------------------------------------------------------- */
+/** @defgroup SSP_Master	Master
+ * @ingroup SSP_Examples
+ * @{
+ */
+
+/************************** PRIVATE DEFINTIONS ************************/
 /** Max buffer length */
 #define BUFFER_SIZE			0x40
 
 
-/************************** PRIVATE TYPES *************************/
 /************************** PRIVATE VARIABLES *************************/
 uint8_t menu1[] =
 "********************************************************************************\n\r"
 "Hello NXP Semiconductors \n\r"
-"SPI demo \n\r"
+"SSP demo \n\r"
 "\t - MCU: LPC17xx \n\r"
 "\t - Core: ARM Cortex-M3 \n\r"
 "\t - Communicate via: UART0 - 115200bps \n\r"
@@ -62,7 +62,7 @@ void Buffer_Init(void);
 void Error_Loop(void);
 void Buffer_Verify(void);
 
-
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
 /*********************************************************************//**
  * @brief		Initialize buffer
  * @param[in]	None
@@ -123,34 +123,16 @@ void print_menu(void)
 	_DBG(menu1);
 }
 
-
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief	Main SPI program body
+ * @brief		c_entry: Main SSP program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
-	//uint32_t tmp;
 	PINSEL_CFG_Type PinCfg;
 	SSP_DATA_SETUP_Type xferConfig;
-	//uint8_t tx, rx;
-
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
 
 	/*
 	 * Initialize SPI pin connect
@@ -172,8 +154,12 @@ int c_entry(void)
 	PinCfg.Pinnum = 16;
 	PINSEL_ConfigPin(&PinCfg);
 
-	/*
-	 * Initialize debug via UART
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
 	debug_frmwrk_init();
 
@@ -187,7 +173,6 @@ int c_entry(void)
 
 	// Enable SSP peripheral
 	SSP_Cmd(LPC_SSP0, ENABLE);
-
 
 	_DBG_("Press '1' to start transfer...");
 	while (_DG != '1');

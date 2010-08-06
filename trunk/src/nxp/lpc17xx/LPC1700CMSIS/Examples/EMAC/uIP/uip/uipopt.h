@@ -1,3 +1,7 @@
+/** @addtogroup EMAC_uIP
+ * @{
+ */
+
 /**
  * \defgroup uipopt Configuration options for uIP
  * @{
