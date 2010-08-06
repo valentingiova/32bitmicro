@@ -11,7 +11,7 @@ const unsigned char WebSide[] = {
 "<p><b>This is a dynamic website hosted by the embedded Webserver</b> <b>easyWEB.</b></p>\r\n"
 "<p><b>Hardware:</b></p>\r\n"
 "<ul>\r\n"
-"<li><b>Keil MCB2300 board (with LPC1768 ARM Cortex-M3), 72MHz, 256KB Flash, 64KB SRAM</b></li>\r\n"
+"<li><b>Keil MCB1700 board (with LPC1768 ARM Cortex-M3), 72MHz, 512KB Flash, 64KB SRAM</b></li>\r\n"
 "<li><b>Embedded EMAC Ethernet Controller</b></li>\r\n"
 "</ul>\r\n"
 "\r\n"

@@ -1,12 +1,12 @@
-/**
- * @file	: i2c_interrupt_test.c
- * @purpose	: An example of I2C using interrupt mode to test the I2C driver.
+/***********************************************************************//**
+ * @file		i2c_interrupt_test.c
+ * @purpose		An example of I2C using interrupt mode to test the I2C driver.
  * 				Using I2C at mode I2C master/8bit on LPC1766 to communicate with
  * 				SC16IS750/760 Demo Board
- * @version	: 1.0
- * @date	: 15. April. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -19,14 +19,17 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_i2c.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 #include "debug_frmwrk.h"
 
-/************************** PRIVATE MACROS *************************/
+/* Example group ----------------------------------------------------------- */
+/** @defgroup I2C_sc16is750_int	sc16is750_int
+ * @ingroup I2C_Examples
+ * @{
+ */
 
+/************************** PRIVATE DEFINITIONS *************************/
 /** Used I2C device definition, should be 0 or 2 */
 #define USEDI2CDEV	0
 
@@ -45,9 +48,6 @@
 #else
 #error "I2C device not defined!"
 #endif
-
-
-/************************** PRIVATE TYPES *************************/
 
 /************************** PRIVATE VARIABLES *************************/
 uint8_t menu1[] =
@@ -80,10 +80,10 @@ void I2C2_IRQHandler(void);
 
 void print_menu(void);
 void Error_Loop(uint8_t ErrorCode);
-void user_callback(void);
 
 
 #if (USEDI2CDEV == 0)
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
 /*********************************************************************//**
  * @brief 		Main I2C0 interrupt handler sub-routine
  * @param[in]	None
@@ -91,7 +91,10 @@ void user_callback(void);
  **********************************************************************/
 void I2C0_IRQHandler(void){
 	// just call std int handler
-	I2C0_StdIntHandler();
+	I2C_MasterHandler(I2CDEV);
+	if (I2C_MasterTransferComplete(I2CDEV)){
+		complete = SET;
+	}
 }
 #elif (USEDI2CDEV == 2)
 /*********************************************************************//**
@@ -101,11 +104,14 @@ void I2C0_IRQHandler(void){
  **********************************************************************/
 void I2C2_IRQHandler(void){
 	// just call std int handler
-	I2C2_StdIntHandler();
+	I2C_MasterHandler(I2CDEV);
+	if (I2C_MasterTransferComplete(I2CDEV)){
+		complete = SET;
+	}
 }
 #endif
 
-
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
 /*********************************************************************//**
  * @brief		Print Welcome menu
  * @param[in]	none
@@ -131,20 +137,12 @@ void Error_Loop(uint8_t ErrorCode)
 	while(1);
 }
 
+
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief		A call back routine, will be called after I2C operation
- * 				complete
+ * @brief		c_entry: Main program body
  * @param[in]	None
- * @return 		None
- **********************************************************************/
-void user_callback(void)
-{
-	complete = SET;
-}
-
-
-/*********************************************************************//**
- * @brief	Main I2C interrupt program body
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
@@ -153,24 +151,6 @@ int c_entry(void)
 	PINSEL_CFG_Type PinCfg;
 	I2C_M_SETUP_Type transferCfg;
 	uint8_t SC16IS_RegStat;
-
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
 
 #if (USEDI2CDEV == 0)
     /* Disable I2C0 interrupt */
@@ -184,8 +164,12 @@ int c_entry(void)
     NVIC_SetPriority(I2C2_IRQn, ((0x01<<3)|0x01));
 #endif
 
-	/*
-	 * Init debug
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
 	debug_frmwrk_init();
 
@@ -228,11 +212,8 @@ int c_entry(void)
 	transferCfg.rx_data = &SC16IS_RegStat;
 	transferCfg.rx_length = 1;
 	transferCfg.retransmissions_max = 2;
-	transferCfg.callback = user_callback;
 	I2C_MasterTransferData(I2CDEV, &transferCfg, I2C_TRANSFER_INTERRUPT);
 	while (complete == RESET);
-
-
 
 	/* Configure SC16IS750 ---------------------------------------------------------- */
 	/* First, send some command to reset SC16IS740 chip via I2C bus interface */
@@ -243,7 +224,6 @@ int c_entry(void)
 	transferCfg.rx_data = NULL;
 	transferCfg.rx_length = 0;
 	transferCfg.retransmissions_max = 2;
-	transferCfg.callback = user_callback;
 	I2C_MasterTransferData(I2CDEV, &transferCfg, I2C_TRANSFER_INTERRUPT);
 	while (complete == RESET);
 
@@ -254,7 +234,6 @@ int c_entry(void)
 	transferCfg.rx_data = NULL;
 	transferCfg.rx_length = 0;
 	transferCfg.retransmissions_max = 2;
-	transferCfg.callback = user_callback;
 	I2C_MasterTransferData(I2CDEV, &transferCfg, I2C_TRANSFER_INTERRUPT);
 	while (complete == RESET);
 
@@ -265,7 +244,6 @@ int c_entry(void)
 	transferCfg.rx_data = NULL;
 	transferCfg.rx_length = 0;
 	transferCfg.retransmissions_max = 2;
-	transferCfg.callback = user_callback;
 	I2C_MasterTransferData(I2CDEV, &transferCfg, I2C_TRANSFER_INTERRUPT);
 	while (complete == RESET);
 
@@ -279,7 +257,6 @@ int c_entry(void)
 	transferCfg.rx_data = &SC16IS_RegStat;
 	transferCfg.rx_length = 1;
 	transferCfg.retransmissions_max = 2;
-	transferCfg.callback = user_callback;
 	I2C_MasterTransferData(I2CDEV, &transferCfg, I2C_TRANSFER_INTERRUPT);
 	while (complete == RESET);
 
@@ -290,7 +267,6 @@ int c_entry(void)
 	transferCfg.rx_data = &SC16IS_RegStat;
 	transferCfg.rx_length = 1;
 	transferCfg.retransmissions_max = 2;
-	transferCfg.callback = user_callback;
 	I2C_MasterTransferData(I2CDEV, &transferCfg, I2C_TRANSFER_INTERRUPT);
 	while (complete == RESET);
 
@@ -301,7 +277,6 @@ int c_entry(void)
 	transferCfg.rx_data = &SC16IS_RegStat;
 	transferCfg.rx_length = 1;
 	transferCfg.retransmissions_max = 2;
-	transferCfg.callback = user_callback;
 	I2C_MasterTransferData(I2CDEV, &transferCfg, I2C_TRANSFER_INTERRUPT);
 	while (complete == RESET);
 
@@ -395,3 +370,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

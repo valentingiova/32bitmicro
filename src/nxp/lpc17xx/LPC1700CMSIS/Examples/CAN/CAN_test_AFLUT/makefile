@@ -24,8 +24,8 @@
 # use without further testing or modification. 
 ########################################################################
 
-EXECNAME    =can_test_AFLUT
-EXDIR		=CAN/CAN_test_AFLUT
+EXECNAME    =can_test_aflut
+EXDIR		=CAN/CAN_test_aflut
 
 
 

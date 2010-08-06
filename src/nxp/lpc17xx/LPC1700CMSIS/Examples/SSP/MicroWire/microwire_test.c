@@ -1,13 +1,11 @@
-/**
- * @file	: microwire_test.c
- * @purpose	: This example uses two SSP peripherals in MicroWire frame format,
- * 			one is set as master mode and the other is set as slave mode.
- * 			The master and slave transfer a number of data bytes together
- * 			in polling mode.
- * @version	: 1.0
- * @date	: 3. April. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		microwire_test.c
+ * @purpose		This example describes how to use SPP peripheral in
+ * 			  	MicroWire frame format.
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -20,23 +18,25 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_ssp.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 #include "debug_frmwrk.h"
 #include "lpc17xx_pinsel.h"
 
+/* Example group ----------------------------------------------------------- */
+/** @defgroup SSP_MicroWire	MicroWire
+ * @ingroup SSP_Examples
+ * @{
+ */
 
-/************************** PRIVATE MACROS *************************/
-
+/************************** PRIVATE DEFINTIONS *************************/
 /* Idle char */
 #define IDLE_CHAR	0xFF
 
-/** Used I2C device as master definition */
+/** Used SSP device as master definition */
 #define USEDSSPDEV_M		0
 
-/** Used I2C device as slave definition */
+/** Used SSP device as slave definition */
 #define USEDSSPDEV_S		1
 
 /** Max buffer length */
@@ -95,9 +95,6 @@ uint8_t Slave_Tx_Buf[BUFFER_SIZE];
 /* Last command */
 uint8_t Last_cmd;
 
-
-/************************** PRIVATE TYPES *************************/
-
 /************************** PRIVATE VARIABLES *************************/
 uint8_t menu1[] =
 "********************************************************************************\n\r"
@@ -111,36 +108,27 @@ uint8_t menu1[] =
 "\t The master and slave transfer a number of data bytes together \n\r"
 "\t in polling mode \n\r"
 "********************************************************************************\n\r";
-uint8_t menu2[] = "Demo terminated! \n\r";
-
-uint8_t success[] = "Verify success!\n\r";
-uint8_t failure[] = "Verify fail!\n\r";
-
-
-// UART Configuration structure variable
-UART_CFG_Type UARTConfigStruct;
 
 // SSP Configuration structure variable
 SSP_CFG_Type SSP_ConfigStruct;
 
-
 /************************** PRIVATE FUNCTIONS *************************/
-void SSP_MW_SendCMD(LPC_SSP_TypeDef *SSPx, uint8_t cmd);
-uint16_t SSP_MW_GetRSP(LPC_SSP_TypeDef *SSPx);
-uint8_t SSP_MW_GetCMD(LPC_SSP_TypeDef *SSPx);
-void SSP_MW_SendRSP(LPC_SSP_TypeDef *SSPx, uint16_t Rsp);
+void ssp_MW_SendCMD(LPC_SSP_TypeDef *SSPx, uint8_t cmd);
+uint16_t ssp_MW_GetRSP(LPC_SSP_TypeDef *SSPx);
+uint8_t ssp_MW_GetCMD(LPC_SSP_TypeDef *SSPx);
+void ssp_MW_SendRSP(LPC_SSP_TypeDef *SSPx, uint16_t Rsp);
 void print_menu(void);
 void Buffer_Init(void);
 void Buffer_Verify(void);
 void Error_Loop(void);
 
-
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
 /*********************************************************************//**
  * @brief		Send command to slave in master mode
  * @param[in]	None
  * @return 		None
  **********************************************************************/
-void SSP_MW_SendCMD(LPC_SSP_TypeDef *SSPx, uint8_t cmd)
+void ssp_MW_SendCMD(LPC_SSP_TypeDef *SSPx, uint8_t cmd)
 {
 	// wait for current SSP activity complete
 	while (SSP_GetStatus(SSPx, SSP_STAT_BUSY) ==  SET);
@@ -153,7 +141,7 @@ void SSP_MW_SendCMD(LPC_SSP_TypeDef *SSPx, uint8_t cmd)
  * @param[in]	None
  * @return 		None
  **********************************************************************/
-uint16_t SSP_MW_GetRSP(LPC_SSP_TypeDef *SSPx)
+uint16_t ssp_MW_GetRSP(LPC_SSP_TypeDef *SSPx)
 {
 	while (SSP_GetStatus(SSPx, SSP_STAT_RXFIFO_NOTEMPTY) == RESET);
 	return (SSP_ReceiveData(SSPx));
@@ -164,7 +152,7 @@ uint16_t SSP_MW_GetRSP(LPC_SSP_TypeDef *SSPx)
  * @param[in]	None
  * @return 		None
  **********************************************************************/
-uint8_t SSP_MW_GetCMD(LPC_SSP_TypeDef *SSPx)
+uint8_t ssp_MW_GetCMD(LPC_SSP_TypeDef *SSPx)
 {
 	// Wait for coming CMD
 	while (SSP_GetStatus(SSPx, SSP_STAT_RXFIFO_NOTEMPTY) == RESET);
@@ -177,7 +165,7 @@ uint8_t SSP_MW_GetCMD(LPC_SSP_TypeDef *SSPx)
  * @param[in]	None
  * @return 		None
  **********************************************************************/
-void SSP_MW_SendRSP(LPC_SSP_TypeDef *SSPx, uint16_t Rsp)
+void ssp_MW_SendRSP(LPC_SSP_TypeDef *SSPx, uint16_t Rsp)
 {
 	// wait for current SSP activity complete
 	while (SSP_GetStatus(SSPx, SSP_STAT_BUSY) ==  SET);
@@ -230,10 +218,9 @@ void Buffer_Verify(void)
 void Error_Loop(void)
 {
 	/* Loop forever */
-	UART_Send(LPC_UART0, failure, sizeof(failure), BLOCKING);
+	_DBG_("Verify fail!\n\r");
 	while (1);
 }
-
 
 /*********************************************************************//**
  * @brief		Print Welcome menu
@@ -246,34 +233,24 @@ void print_menu(void)
 }
 
 
-
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief	Main SSP program body
+ * @brief		c_entry: Main MICROWIRE program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
 	uint32_t cnt;
 	PINSEL_CFG_Type PinCfg;
 
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
-	/* Init debug */
 	debug_frmwrk_init();
 
 	// print welcome screen
@@ -378,29 +355,29 @@ int c_entry(void)
 		if (Last_cmd == MicroWire_RD_CMD)
 		{
 			// Then send the respond to master, this contains data
-			SSP_MW_SendRSP(SSPDEV_S, (uint16_t) *(pWrBuf_S + WrIdx_S++));
+			ssp_MW_SendRSP(SSPDEV_S, (uint16_t) *(pWrBuf_S + WrIdx_S++));
 		}
 		else
 		{
 			// Then send the respond to master, this contains data
-			SSP_MW_SendRSP(SSPDEV_S, 0xFF);
+			ssp_MW_SendRSP(SSPDEV_S, 0xFF);
 		}
 		/* Master must send a read command to slave,
 		 * the slave then respond with its data in FIFO
 		 */
-		SSP_MW_SendCMD(SSPDEV_M, MicroWire_RD_CMD);
+		ssp_MW_SendCMD(SSPDEV_M, MicroWire_RD_CMD);
 
 		// Master receive respond
-		*(pRdBuf_M + RdIdx_M++) = (uint8_t) SSP_MW_GetRSP(SSPDEV_M);
+		*(pRdBuf_M + RdIdx_M++) = (uint8_t) ssp_MW_GetRSP(SSPDEV_M);
 
 		// Re-assign Last command
-		Last_cmd = SSP_MW_GetCMD(SSPDEV_S);
+		Last_cmd = ssp_MW_GetCMD(SSPDEV_S);
 	}
 
 	/* Verify buffer */
 	Buffer_Verify();
 
-	UART_Send(LPC_UART0, success, sizeof(success), BLOCKING);
+	_DBG_("Verify success!\n\r");
 
     /* Loop forever */
     while(1);
@@ -435,3 +412,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

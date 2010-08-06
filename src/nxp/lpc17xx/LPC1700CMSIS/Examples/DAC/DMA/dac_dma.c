@@ -1,16 +1,11 @@
-/***********************************************************************
- * ID: dac_ex.c 2008-11-09 HieuNguyen
- *
- * Project: DAC driver example
- *
- * Description:
- *     This example is to test DAC peripheral through speaker on MCB2300 board.
- * The DAC peripheral will generate the sin tone, in which will increase
- * step by step to max and reduce to 0 and continue to increase to max again
- * in the same frequency continuously. We are able to hear the tone from the
- * speaker for many cycles.
- *
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		dac_dma.c
+ * @purpose		This example describes how to use DAC conversion and
+ * 			  	using DMA to transfer data
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -23,31 +18,21 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_dac.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
 #include "lpc17xx_pinsel.h"
 #include "lpc17xx_gpdma.h"
-#include "lpc17xx_nvic.h"
-#include "debug_frmwrk.h"
 
-/************************** PRIVATE TYPES *************************/
+/* Example group ----------------------------------------------------------- */
+/** @defgroup DAC_DMA	DMA
+ * @ingroup DAC_Examples
+ * @{
+ */
+
+/************************** PRIVATE MACROS *************************/
 /** DMA size of transfer */
 #define DMA_SIZE		1
 
-
 /************************** PRIVATE VARIABLES *************************/
-uint8_t menu1[] =
-"********************************************************************************\n\r"
-"Hello NXP Semiconductors \n\r"
-" DAC demo \n\r"
-"\t - MCU: LPC17xx \n\r"
-"\t - Core: ARM Cortex-M3 \n\r"
-"\t - Communicate via: UART0 - 115200 kbps \n\r"
-"DMA testing : DAC  memory to peripheral \n\r"
-" Value update for DAC is taken from one cell memory, using DMA function to transfer this value to DAC \n\r"
-"********************************************************************************\n\r";
-uint8_t menu2[] = "Starting DAC demo....... \n\r";
-
 // Terminal Counter flag for Channel 0
 __IO uint32_t Channel0_TC;
 
@@ -57,19 +42,10 @@ __IO uint32_t Channel0_Err;
 GPDMA_Channel_CFG_Type GPDMACfg;
 
 /************************** PRIVATE FUNCTION *************************/
-void print_menu(void);
-void GPDMA_Callback(uint32_t DMA_Status);
 void DMA_IRQHandler (void);
 
 
-/**
- * @brief Print menu
- */
-void print_menu(void)
-{
-	_DBG(menu1);
-}
-
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
 /*********************************************************************//**
  * @brief		GPDMA interrupt handler sub-routine
  * @param[in]	None
@@ -77,59 +53,34 @@ void print_menu(void)
  **********************************************************************/
 void DMA_IRQHandler (void)
 {
-	// Execute GPDMA_IntHandler() in GPDMA driver
-	GPDMA_IntHandler();
+	// check GPDMA interrupt on channel 0
+	if (GPDMA_IntGetStatus(GPDMA_STAT_INT, 0)){
+		// Check counter terminal status
+		if(GPDMA_IntGetStatus(GPDMA_STAT_INTTC, 0)){
+			GPDMA_ClearIntPending (GPDMA_STATCLR_INTTC, 0);
+			Channel0_TC++;
+		}
+		// Check error terminal status
+		if (GPDMA_IntGetStatus(GPDMA_STAT_INTERR, 0)){
+			GPDMA_ClearIntPending (GPDMA_STATCLR_INTERR, 0);
+			Channel0_Err++;
+		}
+	}
 }
 
 
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief		DMA call-back function
- * @param[in]	DMA_Status	DMA status input, could be
- * 							- GPDMA_STAT_INTTC: Terminate Counter interrupt
- * 							- GPDMA_STAT_INTERR: Error interrupt
- * @return		None
+ * @brief		c_entry: Main DAC program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
-void GPDMA_Callback(uint32_t DMA_Status)
-{
-	// Incase  of terminal counter
-	if(DMA_Status & GPDMA_STAT_INTTC) {
-		Channel0_TC++;
-	}
-
-	// incase of error
-	if (DMA_Status & GPDMA_STAT_INTERR) {
-		Channel0_Err++;
-	}
-}
-
-
-/**
- * @brief Main Program body
- */
 int c_entry(void)
 {
 	PINSEL_CFG_Type PinCfg;
 	DAC_CONVERTER_CFG_Type DAC_ConverterConfigStruct;
 	uint32_t dac_value =0;
-
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
+	uint32_t i;
 	/*
 	 * Init DAC pin connect
 	 * AOUT on P0.26
@@ -140,14 +91,6 @@ int c_entry(void)
 	PinCfg.Pinnum = 26;
 	PinCfg.Portnum = 0;
 	PINSEL_ConfigPin(&PinCfg);
-
-	/*
-	 * Initialize debug via UART
-	 */
-	debug_frmwrk_init();
-
-	// print welcome screen
-	print_menu();
 
 	/* GPDMA block section -------------------------------------------- */
 
@@ -187,7 +130,7 @@ int c_entry(void)
 	// Linker List Item - unused
 	GPDMACfg.DMALLI = 0;
 	// Setup channel with given parameter
-	GPDMA_Setup(&GPDMACfg, GPDMA_Callback);
+	GPDMA_Setup(&GPDMACfg);
 
 	/* Reset terminal counter */
 	Channel0_TC = 0;
@@ -209,13 +152,15 @@ int c_entry(void)
 		GPDMA_ChannelCmd(0, DISABLE);
 
 		dac_value ++;
-		if (dac_value == 0xFFFF) dac_value =0;
+		if (dac_value == 0x3FF) dac_value =0;
+		//delay
+		for(i=0;i<100000;i++);
 
 		/* Reset terminal counter */
 		Channel0_TC = 0;
 
 		// Re-setup channel
-		GPDMA_Setup(&GPDMACfg, GPDMA_Callback);
+		GPDMA_Setup(&GPDMACfg);
 	}
 
 	return 1;
@@ -248,3 +193,6 @@ void check_failed(uint8_t *file, uint32_t line)
 }
 #endif
 
+/*
+ * @}
+ */

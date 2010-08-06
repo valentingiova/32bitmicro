@@ -1,28 +1,12 @@
-/**
- * @file	: rs485_master.c
- * @purpose	: This example used to test RS485 functionality on UART1 of
- * 			LPC1768.
- * 			In this case, RS485 function on UART1 acts as slave mode on
- * 			RS485 bus.
- * 			RS485 Slave device in this example can operate in separate mode
- * 			as following:
- * 			-  Slave device always receives all frames on RS485 bus, regardless
- * 			data frame (9 bit mode with parity stick '0') or slave address
- * 			frame (9 bit mode with parity stick '1').
- * 			- Slave device does not always receive all frames on RS485 bus. In this
- * 			case, only slave address frame can trigger an interrupt event,
- * 			then slave device can accept the following data frame by determine that
- * 			slave address frame is its own address or not(implemented by software).
- * 			- Slave device is in auto slave address detection mode. In this mode,
- * 			only slave address frame with slave address value that matched with
- * 			pre-configured slave address will be accepted automatically (by hardware)
- * 			and trigger an interrupt callback event to handle following data frames.
- * 			UART0 (115.2Kbps - 8N1) is used to display information during
- * 			RS485 operation of slave.
- * @version	: 1.0
- * @date	: 8. Sep. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		rs485_slave.c
+ * @purpose		This example used to test RS485 functionality on UART1 of
+ * 			  	LPC1768.In this case, RS485 function on UART1 acts as SLave
+ * 			  	on RS485 bus.
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -34,13 +18,17 @@
  * warranty that such application will be suitable for the specified
  * use without further testing or modification.
  **********************************************************************/
-#include "lpc17xx_uart.h"		/* Central include file */
+#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 
+/* Example group ----------------------------------------------------------- */
+/** @defgroup UART_RS485_Slave	RS485_Slave
+ * @ingroup UART_Examples
+ * @{
+ */
 
-
+/************************** PRIVATE DEFINITIONS *************************/
 /*
  * These following defines can be modified:
  * - RECEIVER_ALWAYS_EN (0/1)
@@ -52,7 +40,6 @@
  * - When receiving a data frame, slave will display that data frame content
  * via UART0.
  * - When receiving a slave address frame (9bit mode), line error interrupt
- * callback function will be called and display this state via UART0 (parity error).
  * - 0: Receiver is not always enabled, only slave address frame can trigger
  * an interrupt event to allow slave handle.
  * - 1: Receiver always be enabled */
@@ -76,7 +63,6 @@
 #define SLAVE_ADDR 'A'
 #endif
 
-
 /* buffer size definition */
 #define UART_RING_BUFSIZE 256
 
@@ -91,6 +77,18 @@
 /* Reset buf */
 #define __BUF_RESET(bufidx)	(bufidx=0)
 #define __BUF_INCR(bufidx)	(bufidx=(bufidx+1)&__BUF_MASK)
+
+/************************** PRIVATE TYPES *************************/
+/** @brief UART Ring buffer structure */
+typedef struct
+{
+    __IO uint32_t tx_head;                /*!< UART Tx ring buffer head index */
+    __IO uint32_t tx_tail;                /*!< UART Tx ring buffer tail index */
+    __IO uint32_t rx_head;                /*!< UART Rx ring buffer head index */
+    __IO uint32_t rx_tail;                /*!< UART Rx ring buffer tail index */
+    __IO uint8_t  tx[UART_RING_BUFSIZE];  /*!< UART Tx data ring buffer */
+    __IO uint8_t  rx[UART_RING_BUFSIZE];  /*!< UART Rx data ring buffer */
+} UART_RING_BUFFER_T;
 
 /************************** PRIVATE VARIABLES *************************/
 #if (RECEIVER_ALWAYS_EN)
@@ -112,7 +110,6 @@ uint8_t menu1[] =
 #endif
 #endif
 
-
 uint8_t send_msg[] = "Sending... \n\r";
 uint8_t recv_msg[] = "Receive: ";
 uint8_t p_err_menu[] = "Parity error";
@@ -126,47 +123,49 @@ uint8_t nextline[] = "\n\r";
 uint8_t ack_msg[] = "ACK";
 uint8_t terminator = 13;
 
-/** @brief UART Ring buffer structure */
-typedef struct
-{
-    __IO uint32_t tx_head;                /*!< UART Tx ring buffer head index */
-    __IO uint32_t tx_tail;                /*!< UART Tx ring buffer tail index */
-    __IO uint32_t rx_head;                /*!< UART Rx ring buffer head index */
-    __IO uint32_t rx_tail;                /*!< UART Rx ring buffer tail index */
-    __IO uint8_t  tx[UART_RING_BUFSIZE];  /*!< UART Tx data ring buffer */
-    __IO uint8_t  rx[UART_RING_BUFSIZE];  /*!< UART Rx data ring buffer */
-} UART_RING_BUFFER_T;
-
 // UART Ring buffer
 UART_RING_BUFFER_T rb;
 
 /************************** PRIVATE FUNCTIONS *************************/
-void print_menu(void);
 void UART1_IRQHandler(void);
 void UART_IntReceive(void);
 void UART_IntErr(uint8_t bLSErrType);
+
 uint32_t UARTReceive(LPC_UART_TypeDef *UARTPort, uint8_t *rxbuf, uint8_t buflen);
+void print_menu(void);
 
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
 /*********************************************************************//**
- * @brief		Print Welcome menu
- * @param[in]	none
+ * @brief		UART1 interrupt handler sub-routine
+ * @param[in]	None
  * @return 		None
- **********************************************************************/
-void print_menu(void)
-{
-	UART_Send(LPC_UART0, menu1, sizeof(menu1), BLOCKING);
-}
-
-/*********************************************************************//**
- * @brief	UART0 interrupt handler sub-routine reference, just to call the
- * 				standard interrupt handler in uart driver
- * @param	None
- * @return	None
  **********************************************************************/
 void UART1_IRQHandler(void)
 {
 	// Call Standard UART 0 interrupt handler
-	UART1_StdIntHandler();
+	uint32_t intsrc, tmp, tmp1;
+
+	/* Determine the interrupt source */
+	intsrc = UART_GetIntId(LPC_UART0);
+	tmp = intsrc & UART_IIR_INTID_MASK;
+
+	// Receive Line Status
+	if (tmp == UART_IIR_INTID_RLS){
+		// Check line status
+		tmp1 = UART_GetLineStatus(LPC_UART0);
+		// Mask out the Receive Ready and Transmit Holding empty status
+		tmp1 &= (UART_LSR_OE | UART_LSR_PE | UART_LSR_FE \
+				| UART_LSR_BI | UART_LSR_RXFE);
+		// If any error exist
+		if (tmp1) {
+			UART_IntErr(tmp1);
+		}
+	}
+
+	// Receive Data Available or Character time-out
+	if ((tmp == UART_IIR_INTID_RDA) || (tmp == UART_IIR_INTID_CTI)){
+		UART_IntReceive();
+	}
 }
 
 
@@ -253,7 +252,7 @@ void UART_IntReceive(void)
 
 
 /*********************************************************************//**
- * @brief		UART Line Status Error callback
+ * @brief		UART Line Status Error
  * @param[in]	bLSErrType	UART Line Status Error Type
  * @return		None
  **********************************************************************/
@@ -305,10 +304,9 @@ void UART_IntErr(uint8_t bLSErrType)
 	}
 #endif
 #endif
-
 }
 
-
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
 /*********************************************************************//**
  * @brief		UART read function for interrupt mode (using ring buffers)
  * @param[in]	UARTPort	Selected UART peripheral used to send data,
@@ -349,13 +347,22 @@ uint32_t UARTReceive(LPC_UART_TypeDef *UARTPort, uint8_t *rxbuf, uint8_t buflen)
     return bytes;
 }
 
-
 /*********************************************************************//**
- * @brief	Main UART testing example sub-routine
- * 			Print welcome screen first, then press any key to have it
- * 			read in from the terminal and returned back to the terminal.
- * 			- Press ESC to exit
- * 			- Press 'r' to print welcome screen menu again
+ * @brief		Print Welcome menu
+ * @param[in]	none
+ * @return 		None
+ **********************************************************************/
+void print_menu(void)
+{
+	UART_Send(LPC_UART0, menu1, sizeof(menu1), BLOCKING);
+}
+
+
+/*-------------------------MAIN FUNCTION------------------------------*/
+/*********************************************************************//**
+ * @brief		c_entry: Main UART-RS485 program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
@@ -370,24 +377,6 @@ int c_entry(void)
 	uint32_t idx, len;
 	uint8_t buffer[10];
 	uint32_t tmp;
-
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
 
 	// UART0 section ----------------------------------------------------
 	/*
@@ -504,13 +493,6 @@ int c_entry(void)
 #endif
 	UART_RS485Config(LPC_UART1, &rs485cfg);
 
-
-	// Setup callback ---------------
-	// Receive callback
-	UART_SetupCbs((LPC_UART_TypeDef *)LPC_UART1, 0, (void *)UART_IntReceive);
-	// Line Status Error callback
-	UART_SetupCbs((LPC_UART_TypeDef *)LPC_UART1, 3, (void *)UART_IntErr);
-
     /* Enable UART Rx interrupt */
 	UART_IntConfig((LPC_UART_TypeDef *)LPC_UART1, UART_INTCFG_RBR, ENABLE);
 	/* Enable UART line status interrupt */
@@ -549,7 +531,6 @@ int c_entry(void)
 		}
 	}
 
-	while (1);
     return 1;
 }
 
@@ -581,3 +562,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

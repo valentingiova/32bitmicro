@@ -1,12 +1,12 @@
-/**
- * @file	: spi_polling_test.c
- * @purpose	: An example of SPI using polling mode to test the SPI driver.
- * 				Using SPI at mode SPI master/8bit on LPC1766 to communicate with
- * 				SC16IS750/760 Demo Board
- * @version	: 1.0
- * @date	: 3. April. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		spi_polling_test.c
+ * @purpose		This example describes how to use SPI at mode SPI master/8bit
+ * 			  	on LPC1768 to communicate with SC16IS750/760 Demo board
+ * 			  	in polling mode
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -19,19 +19,23 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_spi.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 #include "debug_frmwrk.h"
 #include "lpc17xx_gpio.h"
 
-/************************** PRIVATE MACROS *************************/
+/* Example group ----------------------------------------------------------- */
+/** @defgroup SPI_sc16is750_polling	sc16is750_polling
+ * @ingroup SPI_Examples
+ * @{
+ */
+
+
+/************************** PRIVATE DEFINITONS **********************/
 // PORT number that /CS pin assigned on
 #define CS_PORT_NUM		0
 // PIN number that  /CS pin assigned on
 #define CS_PIN_NUM		16
-
 
 // Define macro used in command when using SPI with SC16IS740
 #define SC16IS740_WR_CMD(x)		((uint8_t) (x << 3))
@@ -42,16 +46,7 @@
 #define SC16IS740_IOSTATE_REG	0x0B
 #define SC16IS740_IOCON_REG		0x0E
 
-uint8_t iocon_cfg[2] = {SC16IS740_WR_CMD(SC16IS740_IOCON_REG), 0x00};
-uint8_t iodir_cfg[2] = {SC16IS740_WR_CMD(SC16IS740_IODIR_REG), 0xFF};
-uint8_t iostate_on[2] = {SC16IS740_WR_CMD(SC16IS740_IOSTATE_REG), 0x00};
-uint8_t iostate_off[2] = {SC16IS740_WR_CMD(SC16IS740_IOSTATE_REG), 0xFF};
-uint8_t spireadbuf[2];
 
-
-
-
-/************************** PRIVATE TYPES *************************/
 /************************** PRIVATE VARIABLES *************************/
 uint8_t menu1[] =
 "********************************************************************************\n\r"
@@ -69,12 +64,19 @@ uint8_t menu2[] = "Demo terminated! \n\r";
 // SPI Configuration structure variable
 SPI_CFG_Type SPI_ConfigStruct;
 
+uint8_t iocon_cfg[2] = {SC16IS740_WR_CMD(SC16IS740_IOCON_REG), 0x00};
+uint8_t iodir_cfg[2] = {SC16IS740_WR_CMD(SC16IS740_IODIR_REG), 0xFF};
+uint8_t iostate_on[2] = {SC16IS740_WR_CMD(SC16IS740_IOSTATE_REG), 0x00};
+uint8_t iostate_off[2] = {SC16IS740_WR_CMD(SC16IS740_IOSTATE_REG), 0xFF};
+uint8_t spireadbuf[2];
+
 
 /************************** PRIVATE FUNCTIONS *************************/
 void CS_Init(void);
 void CS_Force(int32_t state);
 void print_menu(void);
 
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
 /*********************************************************************//**
  * @brief 		Initialize CS pin as GPIO function to drive /CS pin
  * 				due to definition of CS_PORT_NUM and CS_PORT_NUM
@@ -117,9 +119,11 @@ void print_menu(void)
 }
 
 
-
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief	Main SPI program body
+ * @brief		c_entry: Main SPI program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
@@ -127,24 +131,6 @@ int c_entry(void)
 	PINSEL_CFG_Type PinCfg;
 	__IO FlagStatus exitflag;
 	SPI_DATA_SETUP_Type xferConfig;
-
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
 
 	/*
 	 * Initialize SPI pin connect
@@ -167,8 +153,12 @@ int c_entry(void)
 	PinCfg.Funcnum = 0;
 	PINSEL_ConfigPin(&PinCfg);
 
-	/*
-	 * Initialize debug via UART
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
 	debug_frmwrk_init();
 
@@ -239,12 +229,6 @@ int c_entry(void)
 			_DBG_(tmpchar);
 		}
     }
-
-    // wait for current transmission complete - THR must be empty
-    while (UART_CheckBusy(LPC_UART0) == SET);
-
-    // DeInitialize UART0 peripheral
-    UART_DeInit(LPC_UART0);
     SPI_DeInit(LPC_SPI);
     /* Loop forever */
     while(1);
@@ -279,3 +263,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

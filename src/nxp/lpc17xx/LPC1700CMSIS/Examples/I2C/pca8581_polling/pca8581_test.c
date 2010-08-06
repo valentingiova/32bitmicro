@@ -1,11 +1,11 @@
-/**
- * @file	: pca8581_test.c
- * @purpose	: An example of I2C using polling mode to test the I2C driver.
+/***********************************************************************//**
+ * @file		pca8581_test.c
+ * @purpose		An example of I2C using polling mode to test the I2C driver.
  * 				Using EEPROM PCA8581 to transfer a number of data byte.
- * @version	: 1.0
- * @date	: 7. Jul. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -18,20 +18,23 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_i2c.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 #include "debug_frmwrk.h"
 
-/************************** PRIVATE MACROS *************************/
+/* Example group ----------------------------------------------------------- */
+/** @defgroup I2C_pca8581_polling	pca8581_polling
+ * @ingroup I2C_Examples
+ * @{
+ */
+
+/************************** PRIVATE DEFINITIONS *************************/
 /** Used I2C device definition, should be 0 or 2 */
 #define USEDI2CDEV	0
 
 /* Definition of internal register of EEPROM PCA8581 */
 /* 7 bit address */
 #define PCA8581_SLVADDR		(0xA0>>1)
-
 
 #if (USEDI2CDEV == 0)
 #define I2CDEV LPC_I2C0
@@ -41,8 +44,6 @@
 #error "I2C device not defined!"
 #endif
 
-
-/************************** PRIVATE TYPES *************************/
 
 /************************** PRIVATE VARIABLES *************************/
 uint8_t menu1[] =
@@ -89,18 +90,18 @@ I2C_M_SETUP_Type txsetup;
 /* Receive setup */
 I2C_M_SETUP_Type rxsetup;
 
-
 /************************** PRIVATE FUNCTIONS *************************/
-void print_menu(void);
 int32_t PCA8581_Write(void);
 int32_t PCA8581_Read(void);
+void print_menu(void);
+void Error_Loop(uint32_t ErrorCode);
 
-
-/**
- * @brief 		Write a number of data byte into EEPROM PCA8581
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
+/*********************************************************************//**
+ * @brief		Write a number of data byte into EEPROM PCA8581
  * @param[in]	None
- * @return		0: if success, otherwise (-1) returned.
- */
+ * @return 		0: if success, otherwise (-1) returned.
+ **********************************************************************/
 int32_t PCA8581_Write(void)
 {
 	txsetup.sl_addr7bit = PCA8581_SLVADDR;
@@ -117,12 +118,11 @@ int32_t PCA8581_Write(void)
 	}
 }
 
-
-/**
- * @brief 		Read a number of data byte from EEPROM PCA8581
+/*********************************************************************//**
+ * @brief		Read a number of data byte from EEPROM PCA8581
  * @param[in]	None
- * @return		0: if success, otherwise (-1) returned.
- */
+ * @return 		0: if success, otherwise (-1) returned.
+ **********************************************************************/
 int32_t PCA8581_Read(void)
 {
 
@@ -140,7 +140,6 @@ int32_t PCA8581_Read(void)
 	}
 }
 
-
 /*********************************************************************//**
  * @brief		Print Welcome menu
  * @param[in]	none
@@ -151,7 +150,6 @@ void print_menu(void)
 	_DBG_(menu1);
 }
 
-
 /*********************************************************************//**
  * @brief		A subroutine that will be called if there's any error
  * 				on I2C operation
@@ -160,8 +158,7 @@ void print_menu(void)
  **********************************************************************/
 void Error_Loop(uint32_t ErrorCode)
 {
-	uint32_t test;
-
+        uint32_t test;
 	// for testing purpose
 	test = ErrorCode;
 	/*
@@ -171,8 +168,11 @@ void Error_Loop(uint32_t ErrorCode)
 }
 
 
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief	Main I2C polling program body
+ * @brief		c_entry: Main program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
@@ -180,25 +180,13 @@ int c_entry(void)
 	uint32_t tmp;
 	uint8_t *dp, *sp;
 
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
-	/* Initialize debug */
 	debug_frmwrk_init();
 
 	// print welcome screen
@@ -297,3 +285,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

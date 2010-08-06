@@ -1,11 +1,11 @@
-/**
- * @file	: qei_test.c
- * @purpose	: This example used to test QEI driver in Quadrature mode with
- * 				velocity calculation (RMP)
- * @version	: 1.0
- * @date	: 27. May. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		qei_test.c
+ * @purpose		This example used to test QEI driver in Quadrature mode with
+ * 			  	velocity calculation (RPM)
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -19,14 +19,20 @@
  **********************************************************************/
 #include "lpc17xx_qei.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_timer.h"
 #include "lpc17xx_clkpwr.h"
 #include "debug_frmwrk.h"
 #include "lpc17xx_pinsel.h"
+#include "lpc17xx_gpio.h"
 
 
-/************************** PRIVATE MACROS *************************/
+/* Example group ----------------------------------------------------------- */
+/** @defgroup QEI_Velo	QEI_Velo
+ * @ingroup QEI_Examples
+ * @{
+ */
+
+/************************** PRIVATE DEFINITIONS *************************/
 /** In case of using QEI virtual signal, this macro below must be set to 1 */
 #define VIRTUAL_QEI_SIGNAL	1
 
@@ -64,13 +70,12 @@
 #else
 #define COUNT_MODE			2
 #endif
+#endif
 
 /* Pin on Port 0 assigned to Phase A */
 #define PHASE_A_PIN			(1<<19)
 /* Pin on Port 0 assigned to Phase B */
 #define PHASE_B_PIN			(1<<21)
-
-/************************** PRIVATE TYPES *************************/
 
 /************************** PRIVATE VARIABLES *************************/
 #ifdef VIRTUAL_QEI_SIGNAL
@@ -115,12 +120,86 @@ void TIMER0_IRQHandler(void);
 void QEI_IRQHandler(void);
 
 
-/**
- * @brief 	Initializes signal supplying for QEI peripheral by using timer
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
+#ifdef VIRTUAL_QEI_SIGNAL
+/*********************************************************************//**
+ * @brief		Timer 0 interrupt handler. This sub-routine will set/clear
+ * 				two Phase A-B output pin to their phase state
+ * @param[in]	None
+ * @return 		None
+ **********************************************************************/
+void TIMER0_IRQHandler(void)
+{
+	if (TIM_GetIntStatus(LPC_TIM0,TIM_MR0_INT)) {
+
+		// Set/Clear phase A/B pin corresponding to their state
+		switch (PhaseCnt) {
+		case 0:
+			GPIO_SetValue(0,PHASE_A_PIN);
+			GPIO_ClearValue(0,PHASE_B_PIN);
+			break;
+		case 1:
+			GPIO_SetValue(0, PHASE_A_PIN | PHASE_B_PIN);
+			break;
+		case 2:
+			GPIO_SetValue(0, PHASE_B_PIN);
+			GPIO_ClearValue(0, PHASE_A_PIN);
+			break;
+		case 3:
+			GPIO_ClearValue(0, PHASE_A_PIN | PHASE_B_PIN);
+			break;
+
+		default:
+			break;
+		}
+
+		// update PhaseCnt
+		PhaseCnt = (PhaseCnt + 1) & 0x03;
+
+		// Clear Timer 0 match interrupt pending
+		TIM_ClearIntPending(LPC_TIM0,TIM_MR0_INT);
+	}
+}
+#endif
+/*********************************************************************//**
+ * @brief		QEI interrupt handler. This sub-routine will update current
+ * 				value of captured velocity in to velocity accumulate.
+ * @param[in]	None
+ * @return 		None
+ **********************************************************************/
+void QEI_IRQHandler(void)
+{
+	// Check whether if velocity timer overflow
+	if (QEI_GetIntStatus(LPC_QEI, QEI_INTFLAG_TIM_Int) == SET) {
+		if (VeloAccFlag == RESET) {
+
+			// Get current velocity captured and update to accumulate
+			VeloAcc += QEI_GetVelocityCap(LPC_QEI);
+
+			// Update Velocity capture times
+			VeloAccFlag = ((VeloCapCnt++) >= MAX_CAP_TIMES) ? SET : RESET;
+		}
+		// Reset Interrupt flag pending
+		QEI_IntClear(LPC_QEI, QEI_INTFLAG_TIM_Int);
+	}
+
+	// Check whether if direction change occurred
+	if (QEI_GetIntStatus(LPC_QEI, QEI_INTFLAG_DIR_Int) == SET) {
+		// Print direction status
+		_DBG("Direction has changed: ");
+		_DBG_((QEI_GetStatus(LPC_QEI, QEI_STATUS_DIR) == SET) ? "1" : "0");
+		// Reset Interrupt flag pending
+		QEI_IntClear(LPC_QEI, QEI_INTFLAG_DIR_Int);
+	}
+}
+
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
+#ifdef VIRTUAL_QEI_SIGNAL
+/*********************************************************************//**
+ * @brief		Initializes signal supplying for QEI peripheral by using timer
  * 			match interrupt output, that will generate two virtual signal on
- * 			Phase-A and Phase-B. These two clock two clocks are 90 degrees out
- * 			of phase. In this case, a 'virtual encoder' that has these following
- * 			parameter:
+ * 			Phase-A and Phase-B. These two clock are 90 degrees out of phase.
+ * 			In this case, a 'virtual encoder' that has these following parameter:
  * 			- Encoder type			: Quadrature encoder
  * 			- Max velocity			: MAX_VEL (Round Per Minute)
  * 			- Encoder Resolution	: ENC_RES (Pulse Per Round)
@@ -137,7 +216,7 @@ void QEI_IRQHandler(void);
  *
  * @param[in]	None
  * @return 		None
- */
+ **********************************************************************/
 void VirtualQEISignal_Init(void)
 {
 	uint32_t pclk;
@@ -164,9 +243,9 @@ void VirtualQEISignal_Init(void)
 	TIM_ConfigMatch(LPC_TIM0, &TimerMatchConfig);
 
 	// Reconfigures GPIO for pin used as Phase A and Phase B output
-	LPC_GPIO0->FIODIR |= PHASE_A_PIN | PHASE_B_PIN;
+	GPIO_SetDir(0, PHASE_A_PIN | PHASE_B_PIN, 1);
 	// Set default State after initializing
-	LPC_GPIO0->FIOCLR = PHASE_A_PIN | PHASE_B_PIN;
+	GPIO_ClearValue(0, PHASE_A_PIN | PHASE_B_PIN);
 	// Reset Phase Counter
 	PhaseCnt = 0;
 
@@ -177,116 +256,27 @@ void VirtualQEISignal_Init(void)
 	// To start timer 0
 	TIM_Cmd(LPC_TIM0,ENABLE);
 }
-
-/**
- * @brief Timer 0 interrupt handler. This sub-routine will set/clear
- * 			two Phase A-B output pin to their phase state
- * @param[in]	None
- * @return 		None
- *
- */
-void TIMER0_IRQHandler(void)
-{
-	if (TIM_GetIntStatus(LPC_TIM0,TIM_MR0_INT)) {
-
-		// Set/Clear phase A/B pin corresponding to their state
-		switch (PhaseCnt) {
-		case 0:
-			LPC_GPIO0->FIOSET = PHASE_A_PIN;
-			LPC_GPIO0->FIOCLR = PHASE_B_PIN;
-			break;
-		case 1:
-			LPC_GPIO0->FIOSET = PHASE_A_PIN | PHASE_B_PIN;
-			break;
-
-		case 2:
-			LPC_GPIO0->FIOSET = PHASE_B_PIN;
-			LPC_GPIO0->FIOCLR = PHASE_A_PIN;
-			break;
-
-		case 3:
-			LPC_GPIO0->FIOCLR = PHASE_A_PIN | PHASE_B_PIN;
-			break;
-
-		default:
-			break;
-		}
-
-		// update PhaseCnt
-		PhaseCnt = (PhaseCnt + 1) & 0x03;
-
-		// Clear Timer 0 match interrupt pending
-		TIM_ClearIntPending(LPC_TIM0,TIM_MR0_INT);
-	}
-}
-
-/**
- * @brief QEI interrupt handler. This sub-routine will update current
- * 			value of captured velocity in to velocity accumulate.
- * @param[in]	None
- * @return[in]	None
- */
-void QEI_IRQHandler(void)
-{
-	//uint32_t tmp;
-
-	// Check whether if velocity timer overflow
-	if (QEI_GetIntStatus(LPC_QEI, QEI_INTFLAG_TIM_Int) == SET) {
-		if (VeloAccFlag == RESET) {
-
-			// Get current velocity captured and update to accumulate
-			VeloAcc += QEI_GetVelocityCap(LPC_QEI);
-			//tmp = QEI_GetVelocityCap(QEI);
-			//VeloAcc += tmp;
-			//_DBH32(tmp); _DBG_("");
-
-			// Update Velocity capture times
-			VeloAccFlag = ((VeloCapCnt++) >= MAX_CAP_TIMES) ? SET : RESET;
-		}
-		// Reset Interrupt flag pending
-		QEI_IntClear(LPC_QEI, QEI_INTFLAG_TIM_Int);
-	}
-
-	// Check whether if direction change occurred
-	if (QEI_GetIntStatus(LPC_QEI, QEI_INTFLAG_DIR_Int) == SET) {
-		// Print direction status
-		_DBG("Direction has changed: ");
-		_DBG_((QEI_GetStatus(LPC_QEI, QEI_STATUS_DIR) == SET) ? "1" : "0");
-		// Reset Interrupt flag pending
-		QEI_IntClear(LPC_QEI, QEI_INTFLAG_DIR_Int);
-	}
-}
 #endif /* VIRTUAL_QEI_SIGNAL */
 
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief	Main QEI program body
+ * @brief		c_entry: Main QEI program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
+	PINSEL_CFG_Type PinCfg;
 	QEI_CFG_Type QEIConfig;
 	QEI_RELOADCFG_Type ReloadConfig;
 	uint32_t rpm, averageVelo;
 
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
-	/*
-	 * Initialize debug framework
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
 	debug_frmwrk_init();
 	_DBG_("Hello QEI ...");
@@ -311,10 +301,21 @@ int c_entry(void)
 	QEIConfig.SignalMode = QEI_SIGNALMODE_QUAD;
 #endif
 
-	// Set QEI function pin
-	PINSEL_ConfigPin((PINSEL_CFG_Type *)&qei_phaA_pin[0]);
-	PINSEL_ConfigPin((PINSEL_CFG_Type *)&qei_phaB_pin[0]);
-	PINSEL_ConfigPin((PINSEL_CFG_Type *)&qei_idx_pin[0]);
+	/* Set QEI function pin
+	 * P1.20: MCI0
+	 * P1.23: MCI1
+	 * P1.24: MCI2
+	 */
+	PinCfg.Funcnum = 1;
+	PinCfg.OpenDrain = 0;
+	PinCfg.Pinmode = 0;
+	PinCfg.Portnum = 1;
+	PinCfg.Pinnum = 20;
+	PINSEL_ConfigPin(&PinCfg);
+	PinCfg.Pinnum = 23;
+	PINSEL_ConfigPin(&PinCfg);
+	PinCfg.Pinnum = 24;
+	PINSEL_ConfigPin(&PinCfg);
 
 	/* Initialize QEI peripheral with given configuration structure */
 	QEI_Init(LPC_QEI, &QEIConfig);
@@ -364,8 +365,6 @@ int c_entry(void)
 			VeloCapCnt = 0;
 		}
 	}
-    /* Loop forever */
-    while(1);
     return 1;
 }
 
@@ -397,3 +396,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

@@ -1,23 +1,39 @@
-/*****************************************************************************
- *   emactest.c:  main C entry file for NXP LPC23xx/24xx Family Microprocessors
- *
- *   Copyright(C) 2006, NXP Semiconductor
- *   All rights reserved.
- *
- *   History
- *   2005.10.01  ver 1.00    Prelimnary version, first Release
- *
-******************************************************************************/
+/***********************************************************************//**
+ * @file		emactest.c
+ * @purpose		This example used to test EMAC operation on LPC1768
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
+ * Software that is described herein is for illustrative purposes only
+ * which provides customers with programming information regarding the
+ * products. This software is supplied "AS IS" without any warranties.
+ * NXP Semiconductors assumes no responsibility or liability for the
+ * use of the software, conveys no license or title under any patent,
+ * copyright, or mask work right to the product. NXP Semiconductors
+ * reserves the right to make changes in the software without
+ * notification. NXP Semiconductors also make no representation or
+ * warranty that such application will be suitable for the specified
+ * use without further testing or modification.
+ **********************************************************************/
 #include "string.h"
 #include "crc32.h"
 #include "lpc17xx_emac.h"
 #include "lpc17xx_gpio.h"
 #include "lpc17xx_pinsel.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_libcfg.h"
 
+/* For debugging... */
+#include "debug_frmwrk.h"
+#include <stdio.h>
 
-/* Configurable macros ----------------------------------------------- */
+/* Example group ----------------------------------------------------------- */
+/** @defgroup EMAC_EmacRaw	EmacRaw
+ * @ingroup EMAC_Examples
+ * @{
+ */
+
+/* CONFIGURABLE MACROS ----------------------------------------------- */
 /* For the EMAC test, there are two ways to test:
 	- TX_ONLY and BOUNCE_RX flags can be set one at a time, not both.
 	When TX_ONLY is set to 1, it's a TX_ONLY packet from the MCB1700
@@ -73,7 +89,7 @@
 #define LED1_MASK		((1<<28) | (1<<29) | (1<<31))
 
 
-/* Internal macros ----------------------------------------------- */
+/* INTERNAL MACROS ----------------------------------------------- */
 
 #define TX_PACKET_SIZE		114
 
@@ -84,10 +100,10 @@
 #define MYMAC_5 	((EMAC_ADDR56 & 0xFF00) >> 8)
 #define MYMAC_6 	((EMAC_ADDR56 & 0xFF))
 
-/* For debugging... */
-#include "debug_frmwrk.h"
-#include <stdio.h>
 #define DB	_DBG((uint8_t *)db_)
+
+
+/*  PRIVATE VARIABLES ----------------------------------------------- */
 char db_[64];
 
 #ifdef __IAR_SYSTEMS_ICC__
@@ -128,16 +144,181 @@ __IO FlagStatus Pressed = RESET;
 __IO uint32_t WOLCount = 0;
 #endif
 
+/************************** PRIVATE FUNCTON **********************************/
+/* Interrupt service routines */
+void ENET_IRQHandler (void);
+#if TX_ONLY
+#ifdef MCB_LPC_1768
+void EINT0_Init(void);
+void EINT0_IRQHandler(void);
+#elif
+void EINT3_Init(void);
+void EINT3_IRQHandler(void);
+#endif
+#endif
 
-/******************************************************************************
-** Function name:		PacketGen
-**
-** Descriptions:		Create a perfect packet for TX
-**
-** parameters:			None
-** Returned value:		None
-**
-******************************************************************************/
+void PacketGen(uint8_t *txptr);
+void LED_Init (void);
+void LED_Blink(uint32_t pattern);
+void Usr_Init_Emac(void);
+
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
+/*********************************************************************//**
+ * @brief		Ethernet service routine handler
+ * @param[in]	none
+ * @return 		none
+ **********************************************************************/
+void ENET_IRQHandler (void)
+{
+	EMAC_PACKETBUF_Type RxDatbuf;
+	uint32_t RxLen;
+
+	/* EMAC Ethernet Controller Interrupt function. */
+	uint32_t int_stat;
+	// Get EMAC interrupt status
+	while ((int_stat = (LPC_EMAC->IntStatus & LPC_EMAC->IntEnable)) != 0) {
+		// Clear interrupt status
+		LPC_EMAC->IntClear = int_stat;
+		/* scan interrupt status source */
+
+		/* ---------- receive overrun ------------*/
+		if((int_stat & EMAC_INT_RX_OVERRUN))
+		{
+			RXOverrunCount++;
+			_DBG_("Rx overrun");
+		}
+
+		/*-----------  receive error -------------*/
+		/* Note:
+		 * The EMAC doesn't distinguish the frame type and frame length,
+		 * so, e.g. when the IP(0x8000) or ARP(0x0806) packets are received,
+		 * it compares the frame type with the max length and gives the
+		 * "Range" error. In fact, this bit is not an error indication,
+		 * but simply a statement by the chip regarding the status of
+		 * the received frame
+		 */
+		if ((int_stat & EMAC_INT_RX_ERR))
+		{
+			if (EMAC_CheckReceiveDataStatus(EMAC_RINFO_RANGE_ERR) == RESET){
+				RXErrorCount++;
+				_DBG_("Rx error: ");
+			}
+		}
+
+		/* ---------- RX Finished Process Descriptors ----------*/
+		if ((int_stat & EMAC_INT_RX_FIN))
+		{
+			RxFinishedCount++;
+			_DBG_("Rx finish");
+		}
+
+		/* ---------- Receive Done -----------------------------*/
+		/* Note: All packets are greater than (TX_PACKET_SIZE + 4)
+		 * will be ignore!
+		 */
+		if ((int_stat & EMAC_INT_RX_DONE))
+		{
+			/* Packet received, check if packet is valid. */
+			if (EMAC_CheckReceiveIndex()){
+				if (!EMAC_CheckReceiveDataStatus(EMAC_RINFO_LAST_FLAG)){
+					goto rel;
+				}
+				// Get data size, trip out 4-bytes CRC field, note that length in (-1) style format
+				RxLen = EMAC_GetReceiveDataSize() - 3;
+				// Note that packet added 4-bytes CRC created by yourself
+				if ((RxLen > (TX_PACKET_SIZE + 4)) || (EMAC_CheckReceiveDataStatus(EMAC_RINFO_ERR_MASK))) {
+					/* Invalid frame, ignore it and free buffer */
+					goto rel;
+				}
+				ReceiveLength = RxLen;
+				// Valid Frame, just copy it
+				RxDatbuf.pbDataBuf = (uint32_t *)gRxBuf;
+				RxDatbuf.ulDataLen = RxLen;
+				EMAC_ReadPacketBuffer(&RxDatbuf);
+				PacketReceived = TRUE;
+
+		rel:
+				/* Release frame from EMAC buffer */
+				EMAC_UpdateRxConsumeIndex();
+			}
+			_DBG_("Rx done");
+			RxDoneCount++;
+		}
+
+		/*------------------- Transmit Underrun -----------------------*/
+		if ((int_stat & EMAC_INT_TX_UNDERRUN))
+		{
+			TXUnderrunCount++;
+			_DBG_("Tx under-run");
+		}
+
+		/*------------------- Transmit Error --------------------------*/
+		if ((int_stat & EMAC_INT_TX_ERR))
+		{
+			TXErrorCount++;
+			_DBG_("Tx error");
+		}
+
+		/* ----------------- TX Finished Process Descriptors ----------*/
+		if ((int_stat & EMAC_INT_TX_FIN))
+		{
+			TxFinishedCount++;
+			_DBG_("Tx finish");
+		}
+
+		/* ----------------- Transmit Done ----------------------------*/
+		if ((int_stat & EMAC_INT_TX_DONE))
+		{
+			TxDoneCount++;
+			_DBG_("Tx done");
+		}
+#if ENABLE_WOL
+		/* ------------------ Wakeup Event Interrupt ------------------*/
+		/* Never gone here since interrupt in this
+		 * functionality has been disable, even if in wake-up mode
+		 */
+		if ((int_stat & EMAC_INT_WAKEUP))
+		{
+			WOLCount++;
+		}
+#endif
+	}
+}
+
+#if TX_ONLY
+#ifdef MCB_LPC_1768
+/*********************************************************************//**
+ * @brief		External interrupt 0 service routine handler
+ * @param[in]	none
+ * @return 		none
+ **********************************************************************/
+void EINT0_IRQHandler(void)
+{
+	LPC_SC->EXTINT |= 0x1;  //clear the EINT0 flag
+	LED_Blink(KB_LED_PIN);
+	Pressed = SET;
+}
+#elif defined(IAR_LPC_1768)
+/*********************************************************************//**
+ * @brief		External interrupt 3 service routine handler
+ * @param[in]	none
+ * @return 		none
+ **********************************************************************/
+void EINT3_IRQHandler(void)
+{
+	LPC_SC->EXTINT |= (0x1<<3);  //clear the EINT0 flag
+	LED_Blink(KB_LED_PIN);
+	Pressed = SET;
+}
+#endif
+#endif
+
+/*-------------------------PRIVATE FUNCTIONS-----------------------------------*/
+/*********************************************************************//**
+ * @brief		Create a perfect packet for TX
+ * @param[in]	pointer to TX packet
+ * @return 		none
+ **********************************************************************/
 void PacketGen( uint8_t *txptr )
 {
   int i;
@@ -180,9 +361,11 @@ void PacketGen( uint8_t *txptr )
   *(txptr+TX_PACKET_SIZE+3) = 0xff & (crcValue >> 24);
 }
 
-/**
- * @brief Init LEDs
- */
+/*********************************************************************//**
+ * @brief		Init LEDs
+ * @param[in]	none
+ * @return 		none
+ **********************************************************************/
 void LED_Init (void)
 {
 	PINSEL_CFG_Type PinCfg;
@@ -218,16 +401,11 @@ void LED_Init (void)
 	LPC_GPIO2->FIOCLR = LED2_MASK;
 	LPC_GPIO1->FIOCLR = LED1_MASK;
 }
-/*****************************************************************************
-** Function name:		LED_Blink
-**
-** Descriptions:		Based on the pattern, display accordingly.
-**						This is used for WOL test only.
-**
-** parameters:			None
-** Returned value:		None
-**
-*****************************************************************************/
+/*********************************************************************//**
+ * @brief		LED blink. This is used for WOL test only
+ * @param[in]	none
+ * @return 		none
+ **********************************************************************/
 void LED_Blink( uint32_t pattern )
 {
 	uint32_t j;
@@ -238,11 +416,13 @@ void LED_Blink( uint32_t pattern )
 	for ( j = 0; j < 0x100000; j++ );
 }
 
-
 #if TX_ONLY
-/**
- * @brief Initialize External Interrupt 0
- */
+#ifdef MCB_LPC_1768
+/*********************************************************************//**
+ * @brief		External interrupt 0 initialize
+ * @param[in]	none
+ * @return 		none
+ **********************************************************************/
 void EINT0_Init(void)
 {
 	PINSEL_CFG_Type PinCfg;
@@ -271,160 +451,47 @@ void EINT0_Init(void)
 	NVIC_EnableIRQ(EINT0_IRQn);
 }
 
-/**
- * @brief External Interrupt 0 Handler
- */
-void EINT0_IRQHandler(void)
+#elif defined(IAR_LPC_1768) //if using IAR board, using External Interrupt 3
+/*********************************************************************//**
+ * @brief		External interrupt 0 initialize
+ * @param[in]	none
+ * @return 		none
+ **********************************************************************/
+void EINT3_Init(void)
 {
-	SC->EXTINT |= 0x1;  //clear the EINT0 flag
-	LED_Blink(KB_LED_PIN);
-	Pressed = SET;
+	PINSEL_CFG_Type PinCfg;
+
+	/* P2.13 as /EINT3 */
+	PinCfg.Funcnum = 1;
+	PinCfg.OpenDrain = 0;
+	PinCfg.Pinmode = 0;
+	PinCfg.Pinnum = 13;
+	PinCfg.Portnum = 2;
+	PINSEL_ConfigPin(&PinCfg);
+
+	//Initialize EXT registers
+	LPC_SC->EXTINT = 0x0;
+	LPC_SC->EXTMODE = 0x0;
+	LPC_SC->EXTPOLAR = 0x0;
+
+	/* edge sensitive */
+	LPC_SC->EXTMODE = 0xF;
+	/* falling-edge sensitive */
+	LPC_SC->EXTPOLAR = 0x0;
+	/* External Interrupt Flag cleared*/
+	LPC_SC->EXTINT = 0xF;
+
+	NVIC_SetPriority(EINT3_IRQn, 4);
+	NVIC_EnableIRQ(EINT3_IRQn);
 }
 #endif
-
-
-/* Callback functions section --------------------------------------------- */
-
-/**
- * Brief Receive Overrun Interrupt Callback function
- */
-void RxOverrun_UsrCBS(void)
-{
-	RXOverrunCount++;
-	_DBG_("Rx overrun");
-}
-
-
-/**
- * Brief Receive Error Interrupt Callback function
- * Note:
- * The EMAC doesn't distinguish the frame type and frame length,
- * so, e.g. when the IP(0x8000) or ARP(0x0806) packets are received,
- * it compares the frame type with the max length and gives the
- * "Range" error. In fact, this bit is not an error indication,
- * but simply a statement by the chip regarding the status of
- * the received frame
- */
-void RxError_UsrCBS(void)
-{
-	if (EMAC_CheckReceiveDataStatus(EMAC_RINFO_RANGE_ERR) == RESET){
-		RXErrorCount++;
-		_DBG_("Rx error: ");
-	}
-}
-
-/**
- * Brief Receive Finish Interrupt Callback function
- */
-void RxFinish_UsrCBS(void)
-{
-	RxFinishedCount++;
-	_DBG_("Rx finish");
-}
-
-
-/**
- * @brief Receive Data Packet Done Callback function.
- * Called by EMAC Standard Interrupt handler in EMAC driver
- *
- * Note: All packets are greater than (TX_PACKET_SIZE + 4)
- * will be ignore!
- */
-void RxDone_UsrCBS(void)
-{
-	EMAC_PACKETBUF_Type RxDatbuf;
-	uint32_t RxLen;
-
-	/* Packet received, check if packet is valid. */
-	if (EMAC_CheckReceiveIndex()){
-		if (!EMAC_CheckReceiveDataStatus(EMAC_RINFO_LAST_FLAG)){
-			goto rel;
-		}
-		// Get data size, trip out 4-bytes CRC field, note that length in (-1) style format
-		RxLen = EMAC_GetReceiveDataSize() - 3;
-		// Note that packet added 4-bytes CRC created by yourself
-		if ((RxLen > (TX_PACKET_SIZE + 4)) || (EMAC_CheckReceiveDataStatus(EMAC_RINFO_ERR_MASK))) {
-			/* Invalid frame, ignore it and free buffer */
-			goto rel;
-		}
-		ReceiveLength = RxLen;
-		// Valid Frame, just copy it
-		RxDatbuf.pbDataBuf = (uint32_t *)gRxBuf;
-		RxDatbuf.ulDataLen = RxLen;
-		EMAC_ReadPacketBuffer(&RxDatbuf);
-		PacketReceived = TRUE;
-
-rel:
-		/* Release frame from EMAC buffer */
-		EMAC_UpdateRxConsumeIndex();
-	}
-	_DBG_("Rx done");
-	RxDoneCount++;
-}
-
-/**
- * Brief Transmit Under-run Interrupt Callback function
- */
-void TxUnderrun_UsrCBS(void)
-{
-	TXUnderrunCount++;
-	_DBG_("Tx under-run");
-}
-
-/**
- * Brief Transmit Error Interrupt Callback function
- */
-void TxError_UsrCBS(void)
-{
-	TXErrorCount++;
-	_DBG_("Tx error");
-}
-
-/**
- * Brief Transmit Finish Interrupt Callback function
- */
-void TxFinish_UsrCBS(void)
-{
-	TxFinishedCount++;
-	_DBG_("Tx finish");
-}
-
-/**
- * Brief Transmit Done Interrupt Callback function
- */
-void TxDone_UsrCBS(void)
-{
-	TxDoneCount++;
-	_DBG_("Tx done");
-}
-
-/**
- * @brief Wake On Lan Interrupt Callback function
- */
-#if ENABLE_WOL
-void WoL_UsrCBS(void)
-{
-	/* Never gone here since interrupt in this
-	 * functionality has been disable, even if in wake-up mode
-	 */
-	WOLCount++;
-}
 #endif
 
-/* EMAC Interrupt Handler functions section ---------------------------------- */
-
-/**
- * EMAC Interrupt sub-routine
- */
-void ENET_IRQHandler (void)
-{
-	// Call standard EMAC interrupt handler
-	EMAC_StandardIRQHandler();
-}
-
-/**
- * User EMAC initialization
- */
+/*********************************************************************//**
+ * @brief		User EMAC initialize
+ * @param[in]	none
+ * @return 		none
+ **********************************************************************/
 void Usr_Init_Emac(void)
 {
 	/* EMAC configuration type */
@@ -432,8 +499,6 @@ void Usr_Init_Emac(void)
 	/* pin configuration */
 	PINSEL_CFG_Type PinCfg;
 	uint32_t i;
-
-
 	/*
 	 * Enable P1 Ethernet Pins:
 	 * P1.0 - ENET_TXD0
@@ -487,19 +552,6 @@ void Usr_Init_Emac(void)
 		_DBG_("Error during initializing EMAC, restart after a while");
 		for (i = 0x100000; i; i--);
 	}
-	_DBG_("Setup callback functions");
-	// Setup callback functions
-	EMAC_SetupIntCBS(EMAC_INT_RX_OVERRUN, RxOverrun_UsrCBS);
-	EMAC_SetupIntCBS(EMAC_INT_RX_ERR, RxError_UsrCBS);
-	EMAC_SetupIntCBS(EMAC_INT_RX_FIN, RxFinish_UsrCBS);
-	EMAC_SetupIntCBS(EMAC_INT_RX_DONE, RxDone_UsrCBS);
-	EMAC_SetupIntCBS(EMAC_INT_TX_UNDERRUN, TxUnderrun_UsrCBS);
-	EMAC_SetupIntCBS(EMAC_INT_TX_ERR, TxError_UsrCBS);
-	EMAC_SetupIntCBS(EMAC_INT_TX_FIN, TxFinish_UsrCBS);
-	EMAC_SetupIntCBS(EMAC_INT_TX_DONE, TxDone_UsrCBS);
-#if ENABLE_WOL
-	EMAC_SetupIntCBS(EMAC_INT_WAKEUP, WoL_UsrCBS);
-#endif
 	// Enable all interrupt
 	EMAC_IntCmd((EMAC_INT_RX_OVERRUN | EMAC_INT_RX_ERR | EMAC_INT_RX_FIN \
 			| EMAC_INT_RX_DONE | EMAC_INT_TX_UNDERRUN | EMAC_INT_TX_ERR \
@@ -509,12 +561,14 @@ void Usr_Init_Emac(void)
 	_DBG_("Initialize EMAC complete");
 }
 
-/*****************************************************************************
-**   Main Function  main()
-******************************************************************************/
-int main (void)
+/*-------------------------MAIN FUNCTION------------------------------*/
+/*********************************************************************//**
+ * @brief		c_entry: Main EMAC program body
+ * @param[in]	None
+ * @return 		int
+ **********************************************************************/
+int c_entry (void)
 {
-
 	/* Data Packet format */
 	EMAC_PACKETBUF_Type DataPacket;
 
@@ -532,35 +586,29 @@ int main (void)
 #if ENABLE_HASH
 	uint8_t dstAddr[] = {0x01, 0x02, 0x03, 0x04, 0x05, 0x06};
 #endif
-
-	/* Initialize system clock */
-	SystemInit();
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
 	NVIC_SetPriorityGrouping(4);  //sets PRIGROUP to 3:2 (XXX:YY)
 
-	/*
-	 * Init LED
-	 */
+	//Init LED
 	LED_Init();
 
-	/*
-	 * Initialize debug via UART
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
 	debug_frmwrk_init();
 
 	// Init EMAC
 	Usr_Init_Emac();
 
-
 #if TX_ONLY
+#ifdef MCB_LPC_1768
 	EINT0_Init();
+#elif defined(IAR_LPC_1768)
+	EINT3_Init();
+#endif
 	txptr = (uint8_t *)gTxBuf;
 	/* pre-format the transmit packets */
 	PacketGen(txptr);
@@ -646,7 +694,7 @@ while( 1 )
 		EMAC_UpdateTxProduceIndex();
 	}
 }
-#endif										/* endif BOUNCE_RX */
+#endif	/* endif BOUNCE_RX */
 
 #if TX_ONLY
 	/* Transmit packets only */
@@ -665,8 +713,7 @@ while( 1 )
 		EMAC_UpdateTxProduceIndex();
 		for ( j = 0; j < 0x200000; j++ );	/* delay */
 	}
-#endif										/* endif TX_ONLY */
-
+#endif	/* endif TX_ONLY */
   return 0;
 }
 
@@ -677,9 +724,9 @@ while( 1 )
    heap area, and initialize and copy code and data segments. For GNU
    toolsets, the entry point is through __start() in the crt0_gnu.asm
    file, and that startup code will setup stacks and data */
-int c_entry(void)
+int main(void)
 {
-    return main();
+    return c_entry();
 }
 
 
@@ -705,3 +752,6 @@ void check_failed(uint8_t *file, uint32_t line)
 **                            End Of File
 *****************************************************************************/
 
+/*
+ * @}
+ */

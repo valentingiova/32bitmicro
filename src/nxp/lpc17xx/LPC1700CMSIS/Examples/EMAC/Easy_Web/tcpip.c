@@ -19,7 +19,7 @@
 // NXP: Include some header files that diifers from the origin
 #include "lpc17xx_libcfg.h"
 #include "lpc17xx_pinsel.h"
-#include "lpc17xx_nvic.h"
+//#include "lpc17xx_emac.h"
 #include "adc.h"
 
 /* For debugging... */
@@ -28,9 +28,16 @@
 #define DB	_DBG((uint8_t *)db_)
 char db_[64];
 uint16_t _tickVal;
+
+#ifdef MCB_LPC_1768
 #define LED_PIN	(1<<6) // P2.6
 #define LED2_MASK	((1<<2) | (1<<3) | (1<<4) | (1<<5) | (1<<6))
 #define LED1_MASK	((1<<28) | (1<<29) | (1<<31))
+#elif defined(IAR_LPC_1768)
+#define LED_PIN (1<<25)  //P1.25
+#define LED2_MASK ((1<<4))
+#define LED1_MASK ((1<<25))
+#endif
 
 const unsigned char MyMAC[6] =   // "M1-M2-M3-M4-M5-M6"
 {
@@ -50,7 +57,7 @@ void LED_Init (void)
 	PINSEL_CFG_Type PinCfg;
 
 	uint8_t temp;
-
+#ifdef MCB_LPC_1768
 	PinCfg.Funcnum = 0;
 	PinCfg.OpenDrain = 0;
 	PinCfg.Pinmode = 0;
@@ -71,7 +78,6 @@ void LED_Init (void)
 	PinCfg.Pinnum = 31;
 	PINSEL_ConfigPin(&PinCfg);
 
-
 	// Set direction to output
 	LPC_GPIO2->FIODIR |= LED2_MASK;
 	LPC_GPIO1->FIODIR |= LED1_MASK;
@@ -79,24 +85,32 @@ void LED_Init (void)
 	/* Turn off all LEDs */
 	LPC_GPIO2->FIOCLR = LED2_MASK;
 	LPC_GPIO1->FIOCLR = LED1_MASK;
-}
+#elif defined(IAR_LPC_1768)
+	LPC_GPIO0->FIODIR |= LED2_MASK;
+	LPC_GPIO1->FIODIR |= LED1_MASK;
 
+	/* Turn off all LEDs */
+	LPC_GPIO0->FIOSET = LED2_MASK;
+	LPC_GPIO1->FIOSET = LED1_MASK;
+#endif
+}
 // easyWEB-API function
 // initalizes the LAN-controller, reset flags, starts timer-ISR
 
 void TCPLowLevelInit(void)
 {
-	// Initialize system clock
-	SystemInit();
-
 	// ADC initializing
 	ADC_init();
 
 	// Initialize LED for system tick timer
 	LED_Init();
 
-	/*
-	 * Initialize debug frame work
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
 	debug_frmwrk_init();
 	_DBG_("Hello NXP EMAC");
@@ -276,7 +290,7 @@ void DoNetworkStuff(void)
         if (TCPFlags & IP_ADDR_RESOLVED)         // IP resolved?
           if (!(TransmitControl & SEND_FRAME2))  // buffer free?
           {
-            TCPSeqNr = ((unsigned long)ISNGenHigh << 16) | (SysTick->VAL & 0xFFFF);  // NXP: changed from T0TC to SysTick->VAL;
+            TCPSeqNr = ((unsigned long)ISNGenHigh << 16) | (SysTick->CURR & 0xFFFF);  // NXP: changed from T0TC to SysTick->VAL;
                                                                 // set local ISN
             TCPUNASeqNr = TCPSeqNr;
             TCPAckNr = 0;                                       // we don't know what to ACK!
@@ -522,7 +536,7 @@ void ProcessTCPFrame(void)
         else if (TCPCode & TCP_CODE_SYN)
         {
           TCPAckNr = TCPSegSeq + 1;                           // get remote ISN, next byte we expect
-            TCPSeqNr = ((unsigned long)ISNGenHigh << 16) | (SysTick->VAL & 0xFFFF);  // Keil: changed from TAR to T0TC;
+            TCPSeqNr = ((unsigned long)ISNGenHigh << 16) | (SysTick->CURR & 0xFFFF);  // Keil: changed from TAR to T0TC;
                                                               // set local ISN
           TCPUNASeqNr = TCPSeqNr + 1;                         // one byte out -> increase by one
           PrepareTCP_FRAME(TCP_CODE_SYN | TCP_CODE_ACK);
@@ -994,7 +1008,11 @@ void SysTick_Handler (void) {           /* SysTick Interrupt Handler (1ms)    */
 	TCPTimer++;                                    // timer for retransmissions
 	_tickVal = (++_tickVal) & 0x03;
 	if (!_tickVal){
+#ifdef MCB_LPC_1768
 		LPC_GPIO2->FIOPIN ^= LED_PIN;
+#elif defined(IAR_LPC_1768)
+		LPC_GPIO1->FIOPIN ^= LED_PIN;
+#endif
 	}
 }
 

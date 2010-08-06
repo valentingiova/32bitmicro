@@ -1,13 +1,10 @@
-/**
- * @file	: spi_master.c
- * @purpose	: An example of SPI using interrupt mode to test the SPI driver.
-				This example uses SPI in master mode to communicate with SPI slave
-				device.
-				The master and slave transfer together a number of data byte.
- * @version	: 1.0
- * @date	: 3. April. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		spi_master.c
+ * @purpose		This example describes how to use SPI in master mode
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -20,14 +17,18 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_spi.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 #include "debug_frmwrk.h"
 #include "lpc17xx_gpio.h"
 
-/************************** PRIVATE MACROS *************************/
+/* Example group ----------------------------------------------------------- */
+/** @defgroup SPI_Master	Master
+ * @ingroup SPI_Examples
+ * @{
+ */
+
+/************************** PRIVATE DEFINITIONS *********************/
 // PORT number that /CS pin assigned on
 #define CS_PORT_NUM		0
 // PIN number that  /CS pin assigned on
@@ -70,6 +71,7 @@ void Buffer_Init(void);
 void Error_Loop(void);
 void Buffer_Verify(void);
 
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
 /*********************************************************************//**
  * @brief 		Initialize CS pin as GPIO function to drive /CS pin
  * 				due to definition of CS_PORT_NUM and CS_PORT_NUM
@@ -132,7 +134,6 @@ void Error_Loop(void)
 	while (1);
 }
 
-
 /*********************************************************************//**
  * @brief		Verify buffer
  * @param[in]	none
@@ -168,7 +169,6 @@ void Buffer_Verify(void)
 #endif
 }
 
-
 /*********************************************************************//**
  * @brief		Print Welcome menu
  * @param[in]	none
@@ -179,33 +179,17 @@ void print_menu(void)
 	_DBG(menu1);
 }
 
-
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief	Main SPI program body
+ * @brief		c_entry: Main SPI program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
 	PINSEL_CFG_Type PinCfg;
 	SPI_DATA_SETUP_Type xferConfig;
 	uint32_t tmp;
-
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
 
 	/*
 	 * Initialize SPI pin connect
@@ -228,16 +212,18 @@ int c_entry(void)
 	PinCfg.Funcnum = 0;
 	PINSEL_ConfigPin(&PinCfg);
 
-	/*
-	 * Initialize debug via UART
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
 	debug_frmwrk_init();
 
 	// print welcome screen
 	print_menu();
 
-	// initialize SPI configuration structure to default
-//	SPI_ConfigStructInit(&SPI_ConfigStruct);
 	SPI_ConfigStruct.CPHA = SPI_CPHA_SECOND;
 	SPI_ConfigStruct.CPOL = SPI_CPOL_LO;
 	SPI_ConfigStruct.ClockRate = 2000000;
@@ -307,3 +293,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

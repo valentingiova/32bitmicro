@@ -5,15 +5,18 @@
 #include <stdio.h>
 
 
-
-
 /* For debugging... */
 #include "debug_frmwrk.h"
 #include <stdio.h>
+
+/* Example group ----------------------------------------------------------- */
+/** @defgroup EMAC_uIP	uIP
+ * @ingroup EMAC_Examples
+ * @{
+ */
+
 #define DB	_DBG((uint8_t *)db)
 char db[64];
-
-
 
 /* Init the LPC17xx ethernet */
 BOOL_8 tapdev_init(void)
@@ -159,3 +162,7 @@ BOOL_8 tapdev_send(void *pPacket, UNS_32 size)
 
 	return(TRUE);
 }
+
+/*
+ * @}
+ */

@@ -1,12 +1,12 @@
-/**
+/***********************************************************************//**
  * @file	: rtc_alarm_cntincr_int.c
- * @purpose	: A simple RTC example.
- * 			To generate interrupt in Second Counter Increment Interrupt (1s)
- *          and generate alarm interrupt at 10s
- * @version	: 1.0
- * @date	: 23. April. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+ * @purpose	: This example describes how to use RTC to generate interrupt
+ * 			  in Second Counter Increment Interrupt (1s) and generate
+ *            alarm interrupt at 10s
+ * @version	: 2.0
+ * @date	: 21. May. 2010
+ * @author	: NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -19,14 +19,15 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_rtc.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_pinsel.h"
-#include "lpc17xx_nvic.h"
 #include "debug_frmwrk.h"
 
+/* Example group ----------------------------------------------------------- */
+/** @defgroup RTC_AlarmCntIncrInterrupt	AlarmCntIncrInterrupt
+ * @ingroup RTC_Examples
+ * @{
+ */
 
-/************************** PRIVATE TYPES *************************/
 
 /************************** PRIVATE VARIABLES *************************/
 uint8_t menu1[] =
@@ -41,18 +42,17 @@ uint8_t menu1[] =
 " and generate Alarm interrupt at 10s \n\r"
 "********************************************************************************\n\r";
 
-// Toggle flag
-__IO uint32_t toggle = 0;
-
-
 /************************** PRIVATE FUNCTION *************************/
 void RTC_IRQHandler(void);
 
-/******************************************************************//**
- * @brief 		Main RTC interrupt sub-routine handler
+void print_menu(void);
+
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
+/*********************************************************************//**
+ * @brief		RTC interrupt handler sub-routine
  * @param[in]	None
- * @return		None
- *******************************************************************/
+ * @return 		None
+ **********************************************************************/
 void RTC_IRQHandler(void)
 {
 	uint32_t secval;
@@ -60,13 +60,6 @@ void RTC_IRQHandler(void)
 	/* This is increment counter interrupt*/
 	if (RTC_GetIntPending(LPC_RTC, RTC_INT_COUNTER_INCREASE))
 	{
-		if(toggle == 1)
-		{
-			toggle = 0;
-		}else{
-			toggle = 1;
-		}
-
 		secval = RTC_GetTime (LPC_RTC, RTC_TIMETYPE_SECOND);
 
 		/* Send debug information */
@@ -88,35 +81,35 @@ void RTC_IRQHandler(void)
 	}
 }
 
-// Print Menu 1
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
+/*********************************************************************//**
+ * @brief		Print menu
+ * @param[in]	None
+ * @return 		None
+ **********************************************************************/
 void print_menu(void)
 {
 	_DBG(menu1);
 }
 
 
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief	Main RTC program body
+ * @brief		c_entry: Main RTC program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
 	RTC_TIME_Type RTCFullTime;
 
-/* Configure the NVIC Preemption Priority Bits:
- * two (2) bits of preemption priority, six (6) bits of sub-priority.
- * Since the Number of Bits used for Priority Levels is five (5), so the
- * actual bit number of sub-priority is three (3)
- */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
-	/* Initialize debug */
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
+	 */
 	debug_frmwrk_init();
 
 	// print welcome screen
@@ -206,3 +199,6 @@ void check_failed(uint8_t *file, uint32_t line)
 }
 #endif
 
+/*
+ * @}
+ */

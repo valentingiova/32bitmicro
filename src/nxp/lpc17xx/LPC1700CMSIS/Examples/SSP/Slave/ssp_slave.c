@@ -1,13 +1,10 @@
-/**
- * @file	: ssp_slave.c
- * @purpose	: An example of SSP using interrupt mode to test the SSP driver.
-				This example uses SSP in SPI frame as slave to communicate
-				with an SSP master device.
-				The master and slave transfer together a number of data byte.
- * @version	: 1.0
- * @date	: 3. April. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		ssp_slave.c
+ * @purpose		This example describes how to use SPP in slave mode
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -20,24 +17,28 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_ssp.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 #include "debug_frmwrk.h"
 #include "lpc17xx_gpio.h"
 
-/************************** PRIVATE MACROS *************************/
+/* Example group ----------------------------------------------------------- */
+/** @defgroup SSP_Slave	Slave
+ * @ingroup SSP_Examples
+ * @{
+ */
+
+
+/************************** PRIVATE DEFINTIONS *************************/
 /** Max buffer length */
 #define BUFFER_SIZE			0x40
 
 
-/************************** PRIVATE TYPES *************************/
 /************************** PRIVATE VARIABLES *************************/
 uint8_t menu1[] =
 "********************************************************************************\n\r"
 "Hello NXP Semiconductors \n\r"
-"SPI demo \n\r"
+"SSP demo \n\r"
 "\t - MCU: LPC17xx \n\r"
 "\t - Core: ARM Cortex-M3 \n\r"
 "\t - Communicate via: UART0 - 115200bps \n\r"
@@ -49,10 +50,11 @@ uint8_t menu2[] = "Demo terminated! \n\r";
 
 // SSP Configuration structure variable
 SSP_CFG_Type SSP_ConfigStruct;
+//SSP Data setup structure variable
+SSP_DATA_SETUP_Type xferConfig;
 
 // Tx buffer
 uint8_t Tx_Buf[BUFFER_SIZE];
-
 // Rx buffer
 uint8_t Rx_Buf[BUFFER_SIZE];
 
@@ -61,13 +63,13 @@ __IO FlagStatus complete;
 
 /************************** PRIVATE FUNCTIONS *************************/
 void SSP0_IRQHandler(void);
+
 void print_menu(void);
 void Buffer_Init(void);
 void Error_Loop(void);
 void Buffer_Verify(void);
-void SSPCallBack(void);
 
-
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
 /*********************************************************************//**
  * @brief 		SSP0 Interrupt used for reading and writing handler
  * @param		None
@@ -75,11 +77,122 @@ void SSPCallBack(void);
  ***********************************************************************/
 void SSP0_IRQHandler(void)
 {
-    // Call Std int handler
-	SSP0_StdIntHandler();
+	SSP_DATA_SETUP_Type *xf_setup;
+	uint16_t tmp;
+	uint8_t dataword;
+
+	// Disable interrupt
+	SSP_IntConfig(LPC_SSP0, SSP_INTCFG_ROR|SSP_INTCFG_RT|SSP_INTCFG_RX|SSP_INTCFG_TX, DISABLE);
+
+	if(SSP_GetDataSize(LPC_SSP0)>8)
+		dataword = 1;
+	else
+		dataword = 0;
+	xf_setup = &xferConfig;
+	// save status
+	tmp = SSP_GetRawIntStatusReg(LPC_SSP0);
+	xf_setup->status = tmp;
+
+	// Check overrun error
+	if (tmp & SSP_RIS_ROR){
+		// Clear interrupt
+		SSP_ClearIntPending(LPC_SSP0, SSP_INTCLR_ROR);
+		// update status
+		xf_setup->status |= SSP_STAT_ERROR;
+		// Set Complete Flag
+		complete = SET;
+		return;
+	}
+
+	if ((xf_setup->tx_cnt != xf_setup->length) || (xf_setup->rx_cnt != xf_setup->length)){
+		/* check if RX FIFO contains data */
+		while ((SSP_GetStatus(LPC_SSP0, SSP_STAT_RXFIFO_NOTEMPTY)) && (xf_setup->rx_cnt != xf_setup->length)){
+			// Read data from SSP data
+			tmp = SSP_ReceiveData(LPC_SSP0);
+
+			// Store data to destination
+			if (xf_setup->rx_data != NULL)
+			{
+				if (dataword == 0){
+					*(uint8_t *)((uint32_t)xf_setup->rx_data + xf_setup->rx_cnt) = (uint8_t) tmp;
+				} else {
+					*(uint16_t *)((uint32_t)xf_setup->rx_data + xf_setup->rx_cnt) = (uint16_t) tmp;
+				}
+			}
+			// Increase counter
+			if (dataword == 0){
+				xf_setup->rx_cnt++;
+			} else {
+				xf_setup->rx_cnt += 2;
+			}
+		}
+
+		while ((SSP_GetStatus(LPC_SSP0, SSP_STAT_TXFIFO_NOTFULL)) && (xf_setup->tx_cnt != xf_setup->length)){
+			// Write data to buffer
+			if(xf_setup->tx_data == NULL){
+				if (dataword == 0){
+					SSP_SendData(LPC_SSP0, 0xFF);
+					xf_setup->tx_cnt++;
+				} else {
+					SSP_SendData(LPC_SSP0, 0xFFFF);
+					xf_setup->tx_cnt += 2;
+				}
+			} else {
+				if (dataword == 0){
+					SSP_SendData(LPC_SSP0, (*(uint8_t *)((uint32_t)xf_setup->tx_data + xf_setup->tx_cnt)));
+					xf_setup->tx_cnt++;
+				} else {
+					SSP_SendData(LPC_SSP0, (*(uint16_t *)((uint32_t)xf_setup->tx_data + xf_setup->tx_cnt)));
+					xf_setup->tx_cnt += 2;
+				}
+			}
+
+			// Check overrun error
+			if (SSP_GetRawIntStatus(LPC_SSP0, SSP_INTSTAT_RAW_ROR)){
+				// update status
+				xf_setup->status |= SSP_STAT_ERROR;
+				// Set Complete Flag
+				complete = SET;
+				return;
+			}
+
+			// Check for any data available in RX FIFO
+			while ((SSP_GetStatus(LPC_SSP0, SSP_STAT_RXFIFO_NOTEMPTY)) && (xf_setup->rx_cnt != xf_setup->length)){
+				// Read data from SSP data
+				tmp = SSP_ReceiveData(LPC_SSP0);
+
+				// Store data to destination
+				if (xf_setup->rx_data != NULL)
+				{
+					if (dataword == 0){
+						*(uint8_t *)((uint32_t)xf_setup->rx_data + xf_setup->rx_cnt) = (uint8_t) tmp;
+					} else {
+						*(uint16_t *)((uint32_t)xf_setup->rx_data + xf_setup->rx_cnt) = (uint16_t) tmp;
+					}
+				}
+				// Increase counter
+				if (dataword == 0){
+					xf_setup->rx_cnt++;
+				} else {
+					xf_setup->rx_cnt += 2;
+				}
+			}
+		}
+	}
+
+	// If there more data to sent or receive
+	if ((xf_setup->rx_cnt != xf_setup->length) || (xf_setup->tx_cnt != xf_setup->length)){
+		// Enable all interrupt
+		SSP_IntConfig(LPC_SSP0, SSP_INTCFG_ROR|SSP_INTCFG_RT|SSP_INTCFG_RX|SSP_INTCFG_TX, ENABLE);
+	} else {
+		// Save status
+		xf_setup->status = SSP_STAT_DONE;
+		// Set Complete Flag
+		complete = SET;
+	}
 }
 
-
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
 /*********************************************************************//**
  * @brief		Initialize buffer
  * @param[in]	None
@@ -106,7 +219,6 @@ void Error_Loop(void)
 	while (1);
 }
 
-
 /*********************************************************************//**
  * @brief		Verify buffer
  * @param[in]	none
@@ -129,7 +241,6 @@ void Buffer_Verify(void)
 	}
 }
 
-
 /*********************************************************************//**
  * @brief		Print Welcome menu
  * @param[in]	none
@@ -140,45 +251,15 @@ void print_menu(void)
 	_DBG(menu1);
 }
 
-/**
- * @brief 		User SSP callback function
- * @param[in]	None
- * @return 		None
- */
-void SSPCallBack(void)
-{
-	// Set Complete Flag
-	complete = SET;
-}
-
-
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief	Main SPI program body
+ * @brief		c_entry: Main SSP program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
-	//uint32_t tmp;
 	PINSEL_CFG_Type PinCfg;
-	SSP_DATA_SETUP_Type xferConfig;
-	//uint8_t tx, rx;
-
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
 
 	/*
 	 * Initialize SPI pin connect
@@ -200,8 +281,12 @@ int c_entry(void)
 	PinCfg.Pinnum = 16;
 	PINSEL_ConfigPin(&PinCfg);
 
-	/*
-	 * Initialize debug via UART
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
 	debug_frmwrk_init();
 
@@ -231,7 +316,6 @@ int c_entry(void)
 	xferConfig.tx_data = Tx_Buf;
 	xferConfig.rx_data = Rx_Buf;
 	xferConfig.length = BUFFER_SIZE;
-	xferConfig.callback = SSPCallBack;
 	SSP_ReadWrite(LPC_SSP0, &xferConfig, SSP_TRANSFER_INTERRUPT);
 	while(complete == RESET);
 
@@ -272,3 +356,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

@@ -1,10 +1,11 @@
-/**
- * @file	: adc_interrupt_test.c
- * @purpose	: A simple adc driver example
- * @version	: 1.0
- * @date	: 3. April. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		adc_dma_test.c
+ * @purpose		This example describes how to use ADC conversions and
+ * 			  	transfer converted data by using DMA.
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -16,57 +17,64 @@
  * warranty that such application will be suitable for the specified
  * use without further testing or modification.
  **********************************************************************/
-#include "lpc17xx_uart.h"
 #include "lpc17xx_adc.h"
-#include "lpc17xx_timer.h"
 #include "lpc17xx_libcfg.h"
 #include "lpc17xx_pinsel.h"
 #include "lpc17xx_nvic.h"
 #include "lpc17xx_gpdma.h"
 #include "debug_frmwrk.h"
 
-/************************** PRIVATE TYPES *************************/
+/* Example group ----------------------------------------------------------- */
+/** @defgroup ADC_DMA	DMA
+ * @ingroup ADC_Examples
+ * @{
+ */
+/************************** PRIVATE DEFINITIONS *************************/
+#define MCB_LPC_1768
+//#define IAR_LPC_1768
+
+#ifdef MCB_LPC_1768
+#define _ADC_INT		ADC_ADINTEN2
+#define _ADC_CHANNEL	ADC_CHANNEL_2
+#elif defined(IAR_LPC_1768)
+#define _ADC_INT		ADC_ADINTEN5
+#define _ADC_CHANNEL	ADC_CHANNEL_5
+#endif
+
 /** DMA size of transfer */
 #define DMA_SIZE		1
 
-
 /************************** PRIVATE VARIABLES *************************/
-uint8_t menu1[] =
-"********************************************************************************\n\r"
-"Hello NXP Semiconductors \n\r"
-" ADC demo \n\r"
-"\t - MCU: LPC17xx \n\r"
-"\t - Core: ARM CORTEX-M3 \n\r"
-"\t - Communicate via: UART0 - 115200bps \n\r"
-" DMA testing : ADC peripheral to memory\n\r"
-" Use ADC with 12-bit resolution at freq = 1MHz\n\r"
-" Value ADC0 is displayed by UART, this value is taken from destination memory value of DMA function \n\r"
-" Turn the potentiometer to see how ADC value changes\n\r"
-"********************************************************************************\n\r";
-//timer init
-TIM_TIMERCFG_Type TIM_ConfigStruct;
-TIM_MATCHCFG_Type TIM_MatchConfigStruct ;
+uint8_t  menu1[] =
+		"********************************************************************************\n\r"
+		"Hello NXP Semiconductors \n\r"
+		" ADC demo \n\r"
+		"\t - MCU: LPC17xx \n\r"
+		"\t - Core: ARM CORTEX-M3 \n\r"
+		"\t - Communicate via: UART0 - 115200bps \n\r"
+		" DMA testing : ADC peripheral to memory\n\r"
+		" Use ADC with 12-bit resolution rate of 200KHz\n\r"
+		" Value ADC channel is displayed by UART, this value is taken from destination memory value of DMA function \n\r"
+		" Turn the potentiometer to see how ADC value changes\n\r"
+		"********************************************************************************\n\r";
+#ifdef MCB_LPC_1768
+uint8_t menu2[] = "ADC value on channel 2: ";
+#elif defined(IAR_LPC_1768)
+uint8_t menu2[] = "ADC value on channel 5: ";
+#endif
 
-// Terminal Counter flag for Channel 0
+/* Terminal Counter flag for Channel 0 */
 __IO uint32_t Channel0_TC;
 
-// Error Counter flag for Channel 0
+/* Error Counter flag for Channel 0 */
 __IO uint32_t Channel0_Err;
 
 /************************** PRIVATE FUNCTION *************************/
-void print_menu(void);
-void GPDMA_Callback(uint32_t DMA_Status);
 void DMA_IRQHandler (void);
 
-/**
- * @brief Print menu
- */
-void print_menu(void)
-{
-	_DBG(menu1);
-}
+void print_menu(void);
 
-
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
 /*********************************************************************//**
  * @brief		GPDMA interrupt handler sub-routine
  * @param[in]	None
@@ -74,75 +82,57 @@ void print_menu(void)
  **********************************************************************/
 void DMA_IRQHandler (void)
 {
-	// Execute GPDMA_IntHandler() in GPDMA driver
-	GPDMA_IntHandler();
+	// check GPDMA interrupt on channel 0
+	if (GPDMA_IntGetStatus(GPDMA_STAT_INT, 0)){
+		// Check counter terminal status
+		if(GPDMA_IntGetStatus(GPDMA_STAT_INTTC, 0)){
+			// Clear terminate counter Interrupt pending
+			GPDMA_ClearIntPending (GPDMA_STATCLR_INTTC, 0);
+				Channel0_TC++;
+		}
+		// Check error terminal status
+		if (GPDMA_IntGetStatus(GPDMA_STAT_INTERR, 0)){
+			// Clear error counter Interrupt pending
+			GPDMA_ClearIntPending (GPDMA_STATCLR_INTERR, 0);
+			Channel0_Err++;
+		}
+	}
 }
 
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
 /*********************************************************************//**
- * @brief		DMA call-back function
- * @param[in]	DMA_Status	DMA status input, could be
- * 							- GPDMA_STAT_INTTC: Terminate Counter interrupt
- * 							- GPDMA_STAT_INTERR: Error interrupt
- * @return		None
+ * @brief		Print menu
+ * @param[in]	None
+ * @return 		None
  **********************************************************************/
-void GPDMA_Callback(uint32_t DMA_Status)
+void print_menu(void)
 {
-	// Incase  of terminal counter
-	if(DMA_Status & GPDMA_STAT_INTTC) {
-		Channel0_TC++;
-	}
-
-	// incase of error
-	if (DMA_Status & GPDMA_STAT_INTERR) {
-		Channel0_Err++;
-	}
+	_DBG(menu1);
 }
 
-/**
- * @brief Main program body
- */
+/*-------------------------MAIN FUNCTION------------------------------*/
+/*********************************************************************//**
+ * @brief		c_entry: Main ADC program body
+ * @param[in]	None
+ * @return 		int
+ **********************************************************************/
 int c_entry(void)
 {
 	PINSEL_CFG_Type PinCfg;
 	GPDMA_Channel_CFG_Type GPDMACfg;
 	uint32_t adc_value, tmp;
 
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
+	/* Initialize ADC ----------------------------------------------------*/
 
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
+	/* Because the potentiometer on different boards (MCB & IAR) connect
+	 * with different ADC channel, so we have to configure correct ADC channel
+	 * on each board respectively.
+	 * If you want to check other ADC channels, you have to wire this ADC pin directly
+	 * to potentiometer pin (please see schematic doc for more reference)
 	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
-	/*
-	 * Initialize debug via UART
-	 */
-	debug_frmwrk_init();
-
-	// print welcome screen
-	print_menu();
-
-	/* GPDMA block section -------------------------------------------- */
-
-	/* Disable GPDMA interrupt */
-	NVIC_DisableIRQ(DMA_IRQn);
-	/* preemption = 1, sub-priority = 1 */
-	NVIC_SetPriority(DMA_IRQn, ((0x01<<3)|0x01));
-
-	/*
-	 * Init LPC_ADC pin connect
-	 * AD0.2 on P0.25
+#ifdef MCB_LPC_1768
+	/* If using MCB1700 v.1 board
+	 * select P0.25 as AD0.2
 	 */
 	PinCfg.Funcnum = 1;
 	PinCfg.OpenDrain = 0;
@@ -150,14 +140,44 @@ int c_entry(void)
 	PinCfg.Pinnum = 25;
 	PinCfg.Portnum = 0;
 	PINSEL_ConfigPin(&PinCfg);
-
-	/* Configuration for ADC :
-	 * 	Frequency at 1Mhz
-	 *  ADC channel 2, generate interrupt to make a request for DMA source
+#elif defined(IAR_LPC_1768)
+	/* If using IAR LPC1768 KS v.A board:
+	 * select P1.31 as AD0.5
 	 */
-	ADC_Init(LPC_ADC, 1000000);
-	ADC_IntConfig(LPC_ADC,ADC_ADINTEN2,SET);
-	ADC_ChannelCmd(LPC_ADC,ADC_CHANNEL_2,SET);
+	PinCfg.Funcnum = 3;
+	PinCfg.OpenDrain = 0;
+	PinCfg.Pinmode = 0;
+	PinCfg.Pinnum = 31;
+	PinCfg.Portnum = 1;
+	PINSEL_ConfigPin(&PinCfg);
+#endif
+
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
+	 */
+	debug_frmwrk_init();
+
+	// print welcome screen
+	print_menu();
+
+	/*  Configuration for ADC :
+	 *  Select: ADC channel 2 (if using MCB1700 board)
+	 *  	    ADC channel 5 (if using IAR-LPC1768 board)
+	 * 	ADC conversion rate = 200KHz
+	 */
+	ADC_Init(LPC_ADC, 200000);
+	ADC_IntConfig(LPC_ADC,_ADC_INT,SET);
+	ADC_ChannelCmd(LPC_ADC,_ADC_CHANNEL,SET);
+
+	/* GPDMA block section -------------------------------------------- */
+	/* Disable GPDMA interrupt */
+	NVIC_DisableIRQ(DMA_IRQn);
+	/* preemption = 1, sub-priority = 1 */
+	NVIC_SetPriority(DMA_IRQn, ((0x01<<3)|0x01));
 
 	/* Initialize GPDMA controller */
 	GPDMA_Init();
@@ -181,8 +201,7 @@ int c_entry(void)
 	GPDMACfg.DstConn = 0;
 	// Linker List Item - unused
 	GPDMACfg.DMALLI = 0;
-	// Setup channel with given parameter
-	GPDMA_Setup(&GPDMACfg, GPDMA_Callback);
+	GPDMA_Setup(&GPDMACfg);
 
 	/* Reset terminal counter */
 	Channel0_TC = 0;
@@ -205,15 +224,15 @@ int c_entry(void)
 		GPDMA_ChannelCmd(0, DISABLE);
 
 		//Display the result of conversion on the UART0
-		_DBG("ADC value on channel 2: ");
+		_DBG(menu2);
 		_DBD32(ADC_DR_RESULT(adc_value));
 		_DBG_("");
 
 		// Wait for a while
 		for(tmp = 0; tmp < 1000000; tmp++);
 
-		// Re-setup channel
-		GPDMA_Setup(&GPDMACfg, GPDMA_Callback);
+		/* GPDMA Re-setup */
+		GPDMA_Setup(&GPDMACfg);
 
 		/* Reset terminal counter */
 		Channel0_TC = 0;
@@ -229,6 +248,7 @@ int main (void)
 {
 	return c_entry();
 }
+
 #ifdef  DEBUG
 /*******************************************************************************
 * @brief		Reports the name of the source file and the source line number
@@ -247,3 +267,6 @@ void check_failed(uint8_t *file, uint32_t line)
 }
 #endif
 
+/*
+ * @}
+ */

@@ -33,6 +33,10 @@
  * $Id: lc.h,v 1.2 2006/06/12 08:00:30 adam Exp $
  */
 
+/** @addtogroup EMAC_uIP
+ * @{
+ */
+
 /**
  * \addtogroup pt
  * @{
@@ -127,5 +131,6 @@
 
 #endif /* __LC_H__ */
 
+/** @} */
 /** @} */
 /** @} */

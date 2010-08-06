@@ -1,10 +1,10 @@
-/**
- * @file	: mcpwm_simple.c
- * @purpose	: This simple example used to test MCPWM driver
- * @version	: 1.0
- * @date	: 27. May. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		mcpwm_simple.c
+ * @purpose		This example used to test MCPWM driver
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -16,59 +16,29 @@
  * warranty that such application will be suitable for the specified
  * use without further testing or modification.
  **********************************************************************/
-#include "lpc17xx_qei.h"
 #include "lpc17xx_mcpwm.h"
-#include "lpc17xx_timer.h"
 #include "lpc17xx_pinsel.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
-#include "lpc17xx_timer.h"
 #include "lpc17xx_clkpwr.h"
 #include "debug_frmwrk.h"
 
 
+/* Example group ----------------------------------------------------------- */
+/** @defgroup MCPWM_MCPWMSimple	MCPWMSimple
+ * @ingroup MCPWM_Examples
+ * @{
+ */
 
-/************************** PRIVATE MACROS *************************/
+/************************** PRIVATE DEFINITIONS **********************/
 /** MCPWM in 3-phase DC motor mode test */
-#define DC_MODE_TEST			0
-
+#define DC_MODE_TEST			1
 /** MCPWM in 3-phase AC motor mode test */
 #define AC_MODE_TEST			0
-
 /** MCPWM tested with Capture function */
-#define CAPTURE_MODE_TEST 		1
+#define CAPTURE_MODE_TEST 		0
 
-
-/************************** PRIVATE TYPES *************************/
 
 /************************** PRIVATE VARIABLES *************************/
-
-/* Pin configuration data */
-/** Motor Control Channel 0 Output A */
-const PINSEL_CFG_Type mcpwm_mco0a_pin[1] = {{1, 19, 1, 0, 0}};
-/** Motor Control Channel 0 Output B */
-const PINSEL_CFG_Type mcpwm_mco0b_pin[1] = {{1, 22, 1, 0, 0}};
-
-/** Motor Control Channel 1 Output A */
-const PINSEL_CFG_Type mcpwm_mco1a_pin[1] = {{1, 25, 1, 0, 0}};
-/** Motor Control Channel 1 Output B */
-const PINSEL_CFG_Type mcpwm_mco1b_pin[1] = {{1, 26, 1, 0, 0}};
-
-/** Motor Control Channel 2 Output A */
-const PINSEL_CFG_Type mcpwm_mco2a_pin[1] = {{1, 28, 1, 0, 0}};
-/** Motor Control Channel 2 Output B */
-const PINSEL_CFG_Type mcpwm_mco2b_pin[1] = {{1, 29, 1, 0, 0}};
-
-/** Motor Control Feed Back Channel 0 - MCI0 */
-const PINSEL_CFG_Type mcpwm_mcfb0_pin[1] = {{1, 20, 1, 0, 0}};
-/** Motor Control Feed Back Channel 1 - MCI1 */
-const PINSEL_CFG_Type mcpwm_mcfb1_pin[1] = {{1, 23, 1, 0, 0}};
-/** Motor Control Feed Back Channel 2 - MCI2 */
-const PINSEL_CFG_Type mcpwm_mcfb2_pin[1] = {{1, 24, 1, 0, 0}};
-
-/** Motor Control Low-active abort feed back */
-const PINSEL_CFG_Type mcpwm_mcabort_pin[1] = {{ 1, 21, 1, 0, 0}};
-
 #if CAPTURE_MODE_TEST
 /** Capture configuration data */
 MCPWM_CAPTURE_CFG_Type captureCfg;
@@ -77,15 +47,17 @@ __IO FlagStatus CapFlag;
 /** Latest capture value */
 __IO uint32_t CapVal;
 #endif
-
 /************************** PRIVATE FUNCTIONS *************************/
+void MCPWM_IRQHandler(void);
 
-/**
- * @brief MCPWM interrupt handler sub-routine
- */
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
+/*********************************************************************//**
+ * @brief		MCPWM interrupt handler sub-routine
+ * @param[in]	None
+ * @return 		None
+ **********************************************************************/
 void MCPWM_IRQHandler(void)
 {
-
 #if CAPTURE_MODE_TEST
 	// Check whether if capture event interrupt is set
 	if (MCPWM_GetIntStatus(LPC_MCPWM, MCPWM_INTFLAG_CAP0)) {
@@ -104,97 +76,63 @@ void MCPWM_IRQHandler(void)
 }
 
 
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief		Delay millisecond
- * @param[in]	Timer Timer peripheral, should be TIM0..3
- * @param[in]	time delay time value in ms
- * @return 		None
- **********************************************************************/
-void Timer_Wait(LPC_TIM_TypeDef *Timer, uint32_t time)
-{
-	TIM_TIMERCFG_Type TIM_ConfigStruct;
-	TIM_MATCHCFG_Type TIM_MatchConfigStruct;
-
-	// Initialize timer 0, prescale count time of 1ms
-	TIM_ConfigStruct.PrescaleOption = TIM_PRESCALE_USVAL;
-	TIM_ConfigStruct.PrescaleValue	= 1000;
-	// use channel 0, MR0
-	TIM_MatchConfigStruct.MatchChannel = 0;
-	// Enable interrupt when MR0 matches the value in TC register
-	TIM_MatchConfigStruct.IntOnMatch   = TRUE;
-	//Enable reset on MR0: TIMER will not reset if MR0 matches it
-	TIM_MatchConfigStruct.ResetOnMatch = FALSE;
-	//Stop on MR0 if MR0 matches it
-	TIM_MatchConfigStruct.StopOnMatch  = TRUE;
-	//do no thing for external output
-	TIM_MatchConfigStruct.ExtMatchOutputType =TIM_EXTMATCH_NOTHING;
-	// Set Match value, count value is time (timer * 1000uS =timer mS )
-	TIM_MatchConfigStruct.MatchValue   = time;
-
-	// Set configuration for Tim_config and Tim_MatchConfig
-	TIM_Init(Timer, TIM_TIMER_MODE,&TIM_ConfigStruct);
-	TIM_ConfigMatch(Timer,&TIM_MatchConfigStruct);
-	// To start timer 0
-	TIM_Cmd(Timer,ENABLE);
-	while ( !(TIM_GetIntStatus(Timer,0)));
-	TIM_ClearIntPending(Timer,0);
-}
-
-
-
-/*********************************************************************//**
- * @brief	Main MCPWM program body
+ * @brief		c_entry: Main MCPWM program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
 	// MCPWM Channel configuration data
 	MCPWM_CHANNEL_CFG_Type channelsetup[3];
+	uint32_t i;
+	PINSEL_CFG_Type PinCfg;
 
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
-	/*
-	 * Initialize debug framework
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
 	debug_frmwrk_init();
 	_DBG_("Hello MCPWM ...");
 
-	/* Initializes pin corresponding to MCPWM function */
-	PINSEL_ConfigPin((PINSEL_CFG_Type *)&mcpwm_mco0a_pin[0]);
-	PINSEL_ConfigPin((PINSEL_CFG_Type *)&mcpwm_mco0b_pin[0]);
-
-	PINSEL_ConfigPin((PINSEL_CFG_Type *)&mcpwm_mco1a_pin[0]);
-	PINSEL_ConfigPin((PINSEL_CFG_Type *)&mcpwm_mco1b_pin[0]);
-
-	PINSEL_ConfigPin((PINSEL_CFG_Type *)&mcpwm_mco2a_pin[0]);
-	PINSEL_ConfigPin((PINSEL_CFG_Type *)&mcpwm_mco2b_pin[0]);
-
-	PINSEL_ConfigPin((PINSEL_CFG_Type *)&mcpwm_mcfb0_pin[0]);
-	PINSEL_ConfigPin((PINSEL_CFG_Type *)&mcpwm_mcfb1_pin[0]);
-	PINSEL_ConfigPin((PINSEL_CFG_Type *)&mcpwm_mcfb2_pin[0]);
-
-	PINSEL_ConfigPin((PINSEL_CFG_Type *)&mcpwm_mcabort_pin[0]);
+	/* Pin configuration for MCPWM function:
+	 * Assign: 	- P1.19 as MCOA0 - Motor Control Channel 0 Output A
+	 * 			- P1.22 as MCOB0 - Motor Control Channel 0 Output B
+	 * 			- P1.25 as MCOA1 - Motor Control Channel 1 Output A
+	 * 			- P1.26 as MCOB1 - Motor Control Channel 1 Output B
+	 * 			- P1.28 as MCOA2 - Motor Control Channel 2 Output A
+	 * 			- P1.29 as MCOB2 - Motor Control Channel 2 Output B
+	 * 			- P1.20 as MCI0	 - Motor Control Feed Back Channel 0
+	 * Warning: According to Errata.lpc1768-18.March.2010: Input pin (MIC0-2)
+	 * on the Motor Control PWM peripheral are not functional
+	 */
+	PinCfg.Funcnum = 1;
+	PinCfg.OpenDrain = 0;
+	PinCfg.Pinmode = 0;
+	PinCfg.Portnum = 1;
+	PinCfg.Pinnum = 19;
+	PINSEL_ConfigPin(&PinCfg);
+	PinCfg.Pinnum = 22;
+	PINSEL_ConfigPin(&PinCfg);
+	PinCfg.Pinnum = 25;
+	PINSEL_ConfigPin(&PinCfg);
+	PinCfg.Pinnum = 26;
+	PINSEL_ConfigPin(&PinCfg);
+	PinCfg.Pinnum = 28;
+	PINSEL_ConfigPin(&PinCfg);
+	PinCfg.Pinnum = 29;
+	PINSEL_ConfigPin(&PinCfg);
+	PinCfg.Pinnum = 20;
+	PINSEL_ConfigPin(&PinCfg);
 
 	/* Disable interrupt for MCPWM  */
 	NVIC_DisableIRQ(MCPWM_IRQn);
 	/* preemption = 1, sub-priority = 1 */
 	NVIC_SetPriority(MCPWM_IRQn, ((0x01<<3)|0x01));
-
 
 	/* Init MCPWM peripheral */
 	MCPWM_Init(LPC_MCPWM);
@@ -249,7 +187,7 @@ int c_entry(void)
 #if CAPTURE_MODE_TEST
 	/*
 	 * Capture mode in this case is used to detect the falling edge on MCO0B output pin.
-	 * The MCFB0 input pin therefore must be connected to MCO0B.
+	 * The MCFB0 input pin therefore must be connected to MCO0B. (P1.20 - P1.22)
 	 * - Capture Channel 0.
 	 * - Capture falling edge on MCFB0 input pin.
 	 * - Interrupt enabled on capture event.
@@ -275,7 +213,9 @@ int c_entry(void)
 
 	// Main loop
 	while (1) {
-		Timer_Wait(LPC_TIM0, 1000);
+//		Timer_Wait(LPC_TIM0, 1000);
+		//delay
+		for(i=0;i<100000;i++);
 
 		channelsetup[0].channelPulsewidthValue = (channelsetup[0].channelPulsewidthValue >= 300) ?
 												0 : channelsetup[0].channelPulsewidthValue + 20;
@@ -287,7 +227,7 @@ int c_entry(void)
 		MCPWM_WriteToShadow(LPC_MCPWM, 0, &channelsetup[0]);
 		MCPWM_WriteToShadow(LPC_MCPWM, 1, &channelsetup[1]);
 		MCPWM_WriteToShadow(LPC_MCPWM, 2, &channelsetup[2]);
-
+#if CAPTURE_MODE_TEST
 		// Check capture flag is set or not
 		if (CapFlag) {
 			// Print out the value
@@ -303,10 +243,10 @@ int c_entry(void)
 			// Reset flag
 			CapFlag = RESET;
 		}
+#endif
 	}
 
     /* Loop forever */
-    while(1);
     return 1;
 }
 
@@ -338,3 +278,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

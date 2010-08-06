@@ -1,10 +1,10 @@
-/**
- * @file	: can_test_two_kit.c
- * @purpose	: A simple CAN driver example to test CAN operation in two kit
- * @version	: 1.0
- * @date	: 1. June. 2009
- * @author	: NguyenCao
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		can_test_two_kit.c
+ * @purpose		This example used to CAN operation in two board
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -18,11 +18,16 @@
  **********************************************************************/
 #include "lpc17xx_can.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 #include "debug_frmwrk.h"
 
-#define CAN_TRANSMIT				0
+/* Example group ----------------------------------------------------------- */
+/** @defgroup CAN_test_two_kit	CAN_test_two_kit
+ * @ingroup CAN_Examples
+ * @{
+ */
+/************************** PRIVATE MACROS *************************/
+#define CAN_TRANSMIT				1
 #define CAN_RECEIVE					!CAN_TRANSMIT
 #define TX_BUFFER_SIZE				4
 #define RX_BUFFER_SIZE				2
@@ -37,55 +42,6 @@ uint8_t menu[]=
 	"\t - Communicate via: UART0 - 115200 bps \n\r"
 	"Use 2 CAN peripherals on 2 boards to transfer data \n\r"
 	"********************************************************************************\n\r";
-/** CAN function pin selection group 0*/
-#define CAN_PINSEL_RD1_P0_0		{0, 0, 1, \
-								PINSEL_PINMODE_PULLUP, \
-								PINSEL_PINMODE_NORMAL}
-
-#define CAN_PINSEL_TD1_P0_1		{0, 1, 1, \
-								PINSEL_PINMODE_PULLUP, \
-								PINSEL_PINMODE_NORMAL}
-
-#define CAN_PINSEL_RD2_P0_4		{0, 4, 2, \
-								PINSEL_PINMODE_PULLUP, \
-								PINSEL_PINMODE_NORMAL}
-
-#define CAN_PINSEL_TD2_P0_5		{0, 5, 2, \
-								PINSEL_PINMODE_PULLUP, \
-								PINSEL_PINMODE_NORMAL}
-
-/** CAN function pin selection group 1*/
-#define CAN_PINSEL_RD1_P0_21	{0, 21, 3, \
-								PINSEL_PINMODE_PULLUP, \
-								PINSEL_PINMODE_NORMAL}
-
-#define CAN_PINSEL_TD1_P0_22	{0, 22, 3, \
-								PINSEL_PINMODE_PULLUP, \
-								PINSEL_PINMODE_NORMAL}
-
-#define CAN_PINSEL_RD2_P2_7		{2, 7, 1, \
-								PINSEL_PINMODE_PULLUP, \
-								PINSEL_PINMODE_NORMAL}
-
-#define CAN_PINSEL_TD2_P2_8		{2, 8, 1, \
-								PINSEL_PINMODE_PULLUP, \
-								PINSEL_PINMODE_NORMAL}
-
-/* Max number of pin on each pin function */
-#define CAN_MAX_RD1_PIN		(2)
-#define CAN_MAX_TD1_PIN		(2)
-
-#define CAN_MAX_RD2_PIN		(2)
-#define CAN_MAX_TD2_PIN		(2)
-/*Pin configuration*/
-const PINSEL_CFG_Type can_rd1_pin[CAN_MAX_RD1_PIN] = {
-		CAN_PINSEL_RD1_P0_0, CAN_PINSEL_RD1_P0_21 };
-const PINSEL_CFG_Type can_td1_pin[CAN_MAX_TD1_PIN] = {
-		CAN_PINSEL_TD1_P0_1, CAN_PINSEL_TD1_P0_22 };
-const PINSEL_CFG_Type can_rd2_pin[CAN_MAX_RD2_PIN] = {
-		CAN_PINSEL_RD2_P0_4, CAN_PINSEL_RD2_P2_7 };
-const PINSEL_CFG_Type can_td2_pin[CAN_MAX_TD2_PIN] = {
-		CAN_PINSEL_TD2_P0_5, CAN_PINSEL_TD2_P2_8 };
 
 /** CAN variable definition **/
 CAN_MSG_Type TXMsg, RXMsg; // messages for test Bypass mode
@@ -95,8 +51,6 @@ uint32_t CANErrCount = 0;
 
 /************************** PRIVATE FUNCTIONS *************************/
 void CAN_IRQHandler(void);
-void CAN_Callback0(void);
-void CAN_Callback1(void);
 
 void CAN_InitMessage(void);
 Bool CAN_VerifyMessage(CAN_MSG_Type Msg1, CAN_MSG_Type Msg2);
@@ -104,6 +58,8 @@ CAN_ERROR CAN_SetupAFTable(void);
 void CAN_InitAFMessage(void);
 void PrintMessage(CAN_MSG_Type* msg);
 
+
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
 /*********************************************************************//**
  * @brief		CAN_IRQ Handler, control receive message operation
  * param[in]	none
@@ -111,30 +67,22 @@ void PrintMessage(CAN_MSG_Type* msg);
  **********************************************************************/
 void CAN_IRQHandler()
 {
-	CAN_IntHandler(LPC_CAN1);
-}
-/*********************************************************************//**
- * @brief		CAN Callback 0 - handles recieve interrupt
- * param[in]	none
- * @return 		none
- **********************************************************************/
-void CAN_Callback0()
-{
-	//test Acceptance Filter mode
-	CAN_ReceiveMsg(LPC_CAN1, &AFRxMsg[CANRxCount]);
-	PrintMessage(&AFRxMsg[CANRxCount]);_DBG_("");
-	CANRxCount++;
+	uint8_t IntStatus;
+	/* get interrupt status
+	 * Note that: Interrupt register CANICR will be reset after read.
+	 * So function "CAN_IntGetStatus" should be call only one time
+	 */
+	IntStatus = CAN_IntGetStatus(LPC_CAN1);
+	//check receive interrupt
+	if((IntStatus>>0)&0x01)
+	{
+		CAN_ReceiveMsg(LPC_CAN1, &AFRxMsg[CANRxCount]);
+		PrintMessage(&AFRxMsg[CANRxCount]);_DBG_("");
+		CANRxCount++;
+	}
 }
 
-/*********************************************************************//**
- * @brief		CAN Callback 1 - handles data overrun interrupt
- * param[in]	none
- * @return 		none
- **********************************************************************/
-void CAN_Callback1()
-{
-	_DBG_("Data overrun has occurred!");
-}
+/*-------------------------PRIVATE FUNCTIONS----------------------------*/
 /*********************************************************************//**
  * @brief		Print Message via COM1
  * param[in]	msg: point to CAN_MSG_Type object that will be printed
@@ -162,9 +110,9 @@ void PrintMessage(CAN_MSG_Type* CAN_Msg)
 	else
 		_DBG_("EXTENDED ID FRAME FORMAT");
 	_DBG("Message dataA:  ");
-	data = (CAN_Msg->dataA[0])|(CAN_Msg->dataA[1])|(CAN_Msg->dataA[2])|(CAN_Msg->dataA[3]);
+	data = (CAN_Msg->dataA[0])|(CAN_Msg->dataA[1]<<8)|(CAN_Msg->dataA[2]<<16)|(CAN_Msg->dataA[3]<<24);
 	_DBH32(data);_DBG_("");
-	data = (CAN_Msg->dataB[0])|(CAN_Msg->dataB[1])|(CAN_Msg->dataB[2])|(CAN_Msg->dataB[3]);
+	data = (CAN_Msg->dataB[0])|(CAN_Msg->dataB[1]<<8)|(CAN_Msg->dataB[2]<<16)|(CAN_Msg->dataB[3]<<24);
 	_DBG("Message dataB:  ");
 	_DBH32(data);_DBG_("");
 	_DBG_("");
@@ -174,9 +122,9 @@ void PrintMessage(CAN_MSG_Type* CAN_Msg)
  * @brief		Setup Acceptance Filter Table
  * @param[in]	none
  * @return 		none
- * Note: 		not use Group Standard Frame, just use for Explicit Standard and Extended Frame
+ * Note: 		not use Group Standard Frame, just use for Explicit
+ * 				Standard and Extended Frame
  **********************************************************************/
-
 CAN_ERROR CAN_SetupAFTable(void) {
 	uint32_t i = 0;
 	uint8_t result;
@@ -226,7 +174,7 @@ void CAN_InitAFMessage(void) {
 	AFTxMsg[2].dataA[0] = AFTxMsg[2].dataA[1] = AFTxMsg[2].dataA[2]= AFTxMsg[2].dataA[3]= 0x15;
 	AFTxMsg[2].dataB[0] = AFTxMsg[2].dataB[1] = AFTxMsg[2].dataB[2]= AFTxMsg[2].dataB[3]= 0x36;
 
-	/* 3th Message with 29-bit ID which exit in AF Look-up Table */
+	/* 4th Message with 29-bit ID which not exit in AF Look-up Table */
 	AFTxMsg[3].id = (0xA0 << 11);
 	AFTxMsg[3].len = 0x08;
 	AFTxMsg[3].type = DATA_FRAME;
@@ -249,7 +197,6 @@ void CAN_InitAFMessage(void) {
 }
 /*********************************************************************//**
  * @brief		print menu
- * 				operation
  * @param[in]	none
  * @return 		none
  **********************************************************************/
@@ -258,48 +205,43 @@ void print_menu(void)
 	_DBG_(menu);
 }
 
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
-							 THE MAIN CAN BODY
+ * @brief		c_entry: Main CAN program body
+ * @param[in]	none
+ * @return 		int
  **********************************************************************/
 int c_entry(void) { /* Main Program */
 	uint32_t result,i;
-	CAN_PinCFG_Type CAN1PinStruct;
+	PINSEL_CFG_Type PinCfg;
 
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
-	NVIC_SetPriorityGrouping(0x06);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
 	debug_frmwrk_init();
 	print_menu();
 
-	CAN1PinStruct.RD = CAN_RD1_P0_0;
-	CAN1PinStruct.TD = CAN_TD1_P0_1;
-
-	PINSEL_ConfigPin((PINSEL_CFG_Type *) (&can_rd1_pin[CAN1PinStruct.RD]));
-	PINSEL_ConfigPin((PINSEL_CFG_Type *) (&can_td1_pin[CAN1PinStruct.TD]));
+	/* Pin configuration
+	 * CAN1: select P0.0 as RD1. P0.1 as TD1
+	 */
+	PinCfg.Funcnum = 1;
+	PinCfg.OpenDrain = 0;
+	PinCfg.Pinmode = 0;
+	PinCfg.Pinnum = 0;
+	PinCfg.Portnum = 0;
+	PINSEL_ConfigPin(&PinCfg);
+	PinCfg.Pinnum = 1;
+	PINSEL_ConfigPin(&PinCfg);
 
 	//Initialize CAN1
 	CAN_Init(LPC_CAN1, 125000);
 #if CAN_RECEIVE
 	//Enable Interrupt
 	CAN_IRQCmd(LPC_CAN1, CANINT_RIE, ENABLE);
-	CAN_IRQCmd(LPC_CAN1, CANINT_DOIE, ENABLE);
-
-	CAN_SetupCBS(CANINT_RIE, CAN_Callback0);
-	CAN_SetupCBS(CANINT_DOIE, CAN_Callback1);
 
 	//Enable CAN Interrupt
 	NVIC_EnableIRQ(CAN_IRQn);
@@ -328,7 +270,7 @@ int c_entry(void) { /* Main Program */
 	CAN_InitAFMessage(); /* initialize Transmit Message */
 	for (i = 0; i < TX_BUFFER_SIZE; i++)
 	{
-		CAN_SendMsg(CAN1, &AFTxMsg[i]);
+		CAN_SendMsg(LPC_CAN1, &AFTxMsg[i]);
 		PrintMessage(&AFTxMsg[i]);_DBG_("");
 		for(result=0;result<10000;result++);
 		CANTxCount++;
@@ -364,3 +306,7 @@ void check_failed(uint8_t *file, uint32_t line) {
 		;
 }
 #endif
+
+/*
+ * @}
+ */

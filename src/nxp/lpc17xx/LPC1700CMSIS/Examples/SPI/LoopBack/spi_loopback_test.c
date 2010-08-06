@@ -1,11 +1,11 @@
-/**
- * @file	: spi_loopback_test.c
- * @purpose	: An example of SPI using polling mode with loop-back (MISO <-> MOSI)
- * 			connection to test SPI driver
- * @version	: 1.0
- * @date	: 3. April. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		spi_loopback_test.c
+ * @purpose		An example of SPI using polling mode with loop-back
+ * 			  	(MISO <-> MOSI)connection to test SPI driver
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -18,14 +18,19 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_spi.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 #include "debug_frmwrk.h"
 #include "lpc17xx_gpio.h"
 
-/************************** PRIVATE MACROS *************************/
+/* Example group ----------------------------------------------------------- */
+/** @defgroup SPI_LoopBack	LoopBack
+ * @ingroup SPI_Examples
+ * @{
+ */
+
+
+/************************** PRIVATE DEFINITIONS *********************/
 // PORT number that /CS pin assigned on
 #define CS_PORT_NUM		0
 // PIN number that  /CS pin assigned on
@@ -34,10 +39,6 @@
 /** Max buffer length */
 #define BUFFER_SIZE			0x40
 
-
-
-
-/************************** PRIVATE TYPES *************************/
 /************************** PRIVATE VARIABLES *************************/
 uint8_t menu1[] =
 "********************************************************************************\n\r"
@@ -63,43 +64,12 @@ uint16_t Rx_Buf[BUFFER_SIZE];
 #endif
 
 /************************** PRIVATE FUNCTIONS *************************/
-void CS_Init(void);
-void CS_Force(int32_t state);
 void print_menu(void);
 void Buffer_Init(void);
 void Error_Loop(void);
 void Buffer_Verify(void);
 
-/*********************************************************************//**
- * @brief 		Initialize CS pin as GPIO function to drive /CS pin
- * 				due to definition of CS_PORT_NUM and CS_PORT_NUM
- * @param		None
- * @return		None
- ***********************************************************************/
-void CS_Init(void)
-{
-	GPIO_SetDir(CS_PORT_NUM, (1<<CS_PIN_NUM), 1);
-	GPIO_SetValue(CS_PORT_NUM, (1<<CS_PIN_NUM));
-}
-
-
-/*********************************************************************//**
- * @brief 		Drive CS output pin to low/high level to select slave device
- * 				via /CS pin state
- * @param[in]	state State of CS output pin that will be driven:
- * 				- 0: Drive CS pin to low level
- * 				- 1: Drive CS pin to high level
- * @return		None
- ***********************************************************************/
-void CS_Force(int32_t state)
-{
-	if (state){
-		GPIO_SetValue(CS_PORT_NUM, (1<<CS_PIN_NUM));
-	}else{
-		GPIO_ClearValue(CS_PORT_NUM, (1<<CS_PIN_NUM));
-	}
-}
-
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
 /*********************************************************************//**
  * @brief		Initialize buffer
  * @param[in]	None
@@ -131,7 +101,6 @@ void Error_Loop(void)
 	/* Loop forever */
 	while (1);
 }
-
 
 /*********************************************************************//**
  * @brief		Verify buffer
@@ -169,7 +138,6 @@ void Buffer_Verify(void)
 
 }
 
-
 /*********************************************************************//**
  * @brief		Print Welcome menu
  * @param[in]	none
@@ -180,33 +148,16 @@ void print_menu(void)
 	_DBG(menu1);
 }
 
-
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief	Main SPI program body
+ * @brief		c_entry: Main SPI program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
 	PINSEL_CFG_Type PinCfg;
 	SPI_DATA_SETUP_Type xferConfig;
-//	uint32_t tmp;
-
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
 
 	/*
 	 * Initialize SPI pin connect
@@ -229,16 +180,18 @@ int c_entry(void)
 	PinCfg.Funcnum = 0;
 	PINSEL_ConfigPin(&PinCfg);
 
-	/*
-	 * Initialize debug via UART
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
 	debug_frmwrk_init();
 
 	// print welcome screen
 	print_menu();
 
-	// initialize SPI configuration structure to default
-//	SPI_ConfigStructInit(&SPI_ConfigStruct);
 	SPI_ConfigStruct.CPHA = SPI_CPHA_SECOND;
 	SPI_ConfigStruct.CPOL = SPI_CPOL_LO;
 	SPI_ConfigStruct.ClockRate = 2000000;
@@ -295,3 +248,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */

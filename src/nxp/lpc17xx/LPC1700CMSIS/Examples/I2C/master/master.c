@@ -1,16 +1,10 @@
-/**
- * @file	: master.c
- * @purpose	: This example uses I2C as master device to transfer data
- * 				from/to I2C slave device
- *				- First, the master transmit to slave a number of data bytes
-				- Then, the master receive a number of data bytes from slave.
-				- Finally, the master send two bytes to slave, send repeat start
-				immediately and receive from slave a number of data byte.
-				- Using in polling mode.
- * @version	: 1.0
- * @date	: 15. April. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		master.c
+ * @purpose		This example describes how to configure I2C as master device
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -23,13 +17,17 @@
  * use without further testing or modification.
  **********************************************************************/
 #include "lpc17xx_i2c.h"
-#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 #include "debug_frmwrk.h"
 
-/************************** PRIVATE MACROS *************************/
+/* Example group ----------------------------------------------------------- */
+/** @defgroup I2C_master	master
+ * @ingroup I2C_Examples
+ * @{
+ */
+
+/************************** PRIVATE DEFINITIONS *************************/
 /** Used I2C device as slave definition */
 #define USEDI2CDEV_M		0
 /** Own Slave address in Slave I2C device */
@@ -46,8 +44,6 @@
 #error "Master I2C device not defined!"
 #endif
 
-
-/************************** PRIVATE TYPES *************************/
 /************************** PRIVATE VARIABLES *************************/
 uint8_t menu1[] =
 "********************************************************************************\n\r"
@@ -60,15 +56,15 @@ uint8_t menu1[] =
 "\t Test Master mode as alone device \n\r"
 "********************************************************************************\n\r";
 
-/** These global variables below used in interrupt mode - Slave device ---------------------------------*/
+/** These global variables below used in interrupt mode - Slave device ----------------*/
 uint8_t Master_Buf[BUFFER_SIZE];
 uint8_t master_test[2];
 
 /************************** PRIVATE FUNCTIONS *************************/
 void print_menu(void);
-void Error_Loop_M(uint8_t ErrorCode);
+void Buffer_Init(uint8_t type);
 
-
+/*-------------------------PRIVATE FUNCTIONS-----------------------------*/
 /*********************************************************************//**
  * @brief		Print Welcome menu
  * @param[in]	none
@@ -86,7 +82,6 @@ void print_menu(void)
  * 					Fill all member in Slave_Buf with 0
  * 				- 1: Initialize Slave_Buf with increment value from 0
  * 					Fill all member in Master_Buf with 0
- *
  * @return 		None
  **********************************************************************/
 void Buffer_Init(uint8_t type)
@@ -107,23 +102,12 @@ void Buffer_Init(uint8_t type)
 	}
 }
 
-/*********************************************************************//**
- * @brief		A subroutine that will be called if there's any error
- * 				on I2C operation (slave)
- * @param[in]	ErrorCode Error Code Input
- * @return 		None
- **********************************************************************/
-void Error_Loop_S(uint8_t ErrorCode)
-{
-	/*
-	 * Insert your code here...
-	 */
-	while(1);
-}
 
-
+/*-------------------------MAIN FUNCTION------------------------------*/
 /*********************************************************************//**
- * @brief	Main I2C master and slave program body
+ * @brief		c_entry: Main program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
@@ -132,25 +116,13 @@ int c_entry(void)
 	uint32_t tempp;
 	uint8_t *pdat;
 
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
+	/* Initialize debug via UART0
+	 * – 115200bps
+	 * – 8 data bit
+	 * – No parity
+	 * – 1 stop bit
+	 * – No flow control
 	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
-	/* Initialize debug */
 	debug_frmwrk_init();
 
 	print_menu();
@@ -299,3 +271,6 @@ void check_failed(uint8_t *file, uint32_t line)
 }
 #endif
 
+/*
+ * @}
+ */

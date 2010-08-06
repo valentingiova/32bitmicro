@@ -1,3 +1,6 @@
+/** @addtogroup EMAC_uIP
+ * @{
+ */
 /**
  * \addtogroup apps
  * @{
@@ -87,7 +90,7 @@ generate_part_of_file(void *state)
     s->len = s->file.len;
   }
   memcpy(uip_appdata, s->file.data, s->len);
-  
+
   return s->len;
 }
 /*---------------------------------------------------------------------------*/
@@ -95,13 +98,13 @@ static
 PT_THREAD(send_file(struct httpd_state *s))
 {
   PSOCK_BEGIN(&s->sout);
-  
+
   do {
     PSOCK_GENERATOR_SEND(&s->sout, generate_part_of_file, s);
     s->file.len -= s->len;
     s->file.data += s->len;
   } while(s->file.len > 0);
-      
+
   PSOCK_END(&s->sout);
 }
 /*---------------------------------------------------------------------------*/
@@ -111,7 +114,7 @@ PT_THREAD(send_part_of_file(struct httpd_state *s))
   PSOCK_BEGIN(&s->sout);
 
   PSOCK_SEND(&s->sout, s->file.data, s->len);
-  
+
   PSOCK_END(&s->sout);
 }
 /*---------------------------------------------------------------------------*/
@@ -128,7 +131,7 @@ static
 PT_THREAD(handle_script(struct httpd_state *s))
 {
   char *ptr;
-  
+
   PT_BEGIN(&s->scriptpt);
 
 
@@ -147,7 +150,7 @@ PT_THREAD(handle_script(struct httpd_state *s))
 		       httpd_cgi(s->scriptptr)(s, s->scriptptr));
       }
       next_scriptstate(s);
-      
+
       /* The script is over, so we reset the pointers and continue
 	 sending the rest of the file. */
       s->file.data = s->scriptptr;
@@ -177,10 +180,10 @@ PT_THREAD(handle_script(struct httpd_state *s))
       PT_WAIT_THREAD(&s->scriptpt, send_part_of_file(s));
       s->file.data += s->len;
       s->file.len -= s->len;
-      
+
     }
   }
-  
+
   PT_END(&s->scriptpt);
 }
 /*---------------------------------------------------------------------------*/
@@ -217,9 +220,9 @@ static
 PT_THREAD(handle_output(struct httpd_state *s))
 {
   char *ptr;
-  
+
   PT_BEGIN(&s->outputpt);
- 
+
   if(!httpd_fs_open(s->filename, &s->file)) {
     httpd_fs_open(http_404_html, &s->file);
     strcpy(s->filename, http_404_html);
@@ -252,7 +255,7 @@ PT_THREAD(handle_input(struct httpd_state *s))
 
   PSOCK_READTO(&s->sin, ISO_space);
 
-  
+
   if(strncmp(s->inputbuf, http_get, 4) != 0) {
     PSOCK_CLOSE_EXIT(&s->sin);
   }
@@ -270,7 +273,7 @@ PT_THREAD(handle_input(struct httpd_state *s))
   }
 
   /*  httpd_log_file(uip_conn->ripaddr, s->filename);*/
-  
+
   s->state = STATE_OUTPUT;
 
   while(1) {
@@ -281,7 +284,7 @@ PT_THREAD(handle_input(struct httpd_state *s))
       /*      httpd_log(&s->inputbuf[9]);*/
     }
   }
-  
+
   PSOCK_END(&s->sin);
 }
 /*---------------------------------------------------------------------------*/
@@ -335,4 +338,5 @@ httpd_init(void)
   uip_listen(HTONS(80));
 }
 /*---------------------------------------------------------------------------*/
+/** @} */
 /** @} */

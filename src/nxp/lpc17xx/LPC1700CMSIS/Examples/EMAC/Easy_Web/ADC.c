@@ -24,15 +24,30 @@
   initialize ADC Pins
  *----------------------------------------------------------------------------*/
 void ADC_init (void) {
-
+#ifdef MCB_LPC_1768
+	/* Using MCB1700 board :
+	 * ADC channel 2 is available
+	 */
   LPC_PINCON->PINSEL1 &= ~(3<<18);                   /* P0.25 is GPIO */
   LPC_PINCON->PINSEL1 |=  (1<<18);                   /* P0.25 is AD0.2 */
 
   LPC_SC->PCONP       |=  (1<<12);                   /* Enable power to ADC block */
 
   LPC_ADC->ADCR        =  (1<< 2) |                  /* select AD0.2 pin */
-                      (1<< 8) |                  /* ADC clock is 18MHz/2 */
+                      (1<< 8) |
                       (1<<21);                   /* enable ADC */
+#elif defined(IAR_LPC_1768)
+  /* Using IAR LPC1768 KickStart board
+   * ADC channel 5 is available
+   */
+   LPC_PINCON->PINSEL3 |=  (3<<30);                   /* P1.31 is AD0.5 */
+
+   LPC_SC->PCONP       |=  (1<<12);                   /* Enable power to ADC block */
+
+   LPC_ADC->ADCR        =  (1<<5) |               /* select AD0.5 pin */
+                       (1<< 8) |
+                       (1<<21);                   /* enable ADC */
+#endif
 }
 
 

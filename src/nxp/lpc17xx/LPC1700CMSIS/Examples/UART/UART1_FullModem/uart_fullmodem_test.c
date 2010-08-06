@@ -1,10 +1,10 @@
-/**
- * @file	: uart_fullmodem_test.c
- * @purpose	: An example of UART using modem function to test the UART1 driver
- * @version	: 1.0
- * @date	: 18. Mar. 2009
- * @author	: HieuNguyen
- *----------------------------------------------------------------------------
+/***********************************************************************//**
+ * @file		uart_fullmodem_test.c
+ * @purpose		This example describes how to use UART1 full-modem function
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
+ *---------------------------------------------------------------------
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
  * products. This software is supplied "AS IS" without any warranties.
@@ -16,14 +16,21 @@
  * warranty that such application will be suitable for the specified
  * use without further testing or modification.
  **********************************************************************/
-
-#include "lpc17xx_uart.h"		/* Central include file */
+#include "lpc17xx_uart.h"
 #include "lpc17xx_libcfg.h"
-#include "lpc17xx_nvic.h"
 #include "lpc17xx_pinsel.h"
 
+/* Example group ----------------------------------------------------------- */
+/** @defgroup UART_UART1_FullModem	UART1_FullModem
+ * @ingroup UART_Examples
+ * @{
+ */
 
-/************************** PRIVATE MACROS *************************/
+
+/************************** PRIVATE DEFINITIONS *************************/
+#define MCB_LPC_1768
+//#define IAR_LPC_1768
+
 // buffer size definition
 #define UART_RING_BUFSIZE 256
 /* Auto RTS and Auto CTS definition:
@@ -45,6 +52,7 @@
 #define __BUF_INCR(bufidx)	(bufidx=(bufidx+1)&__BUF_MASK)
 
 
+/************************** PRIVATE TYPES *************************/
 /** @brief UART Ring buffer structure */
 typedef struct
 {
@@ -76,84 +84,83 @@ __IO FlagStatus TxIntStat;
 
 
 /************************** PRIVATE FUNCTIONS *************************/
-void print_menu(void);
+/* Interrupt service routines */
 void UART1_IRQHandler(void);
 void UART1_IntTransmit(void);
 void UART1_IntReceive(void);
+void UART1_IntErr(uint8_t bLSErrType);
+
 uint32_t UARTReceive(LPC_UART_TypeDef *UARTPort, uint8_t *rxbuf, uint8_t buflen);
 uint32_t UARTSend(LPC_UART_TypeDef *UARTPort, uint8_t *txbuf, uint8_t buflen);
+void print_menu(void);
 
 
+/*----------------- INTERRUPT SERVICE ROUTINES --------------------------*/
 /*********************************************************************//**
- * @brief	Print Welcome Screen Menu subroutine
- * @param	None
- * @return	None
- **********************************************************************/
-void print_menu(void)
-{
-	uint32_t tmp, tmp2;
-	uint8_t *pDat;
-
-	tmp = sizeof(menu1);
-	tmp2 = 0;
-	pDat = (uint8_t *)&menu1[0];
-	while(tmp) {
-		tmp2 = UARTSend(LPC_UART0, pDat, tmp);
-		pDat += tmp2;
-		tmp -= tmp2;
-	}
-
-	tmp = sizeof(menu2);
-	tmp2 = 0;
-	pDat = (uint8_t *)&menu2[0];
-	while(tmp) {
-		tmp2 = UARTSend(LPC_UART0, pDat, tmp);
-		pDat += tmp2;
-		tmp -= tmp2;
-	}
-}
-
-
-/*********************************************************************//**
- * @brief	UART1 interrupt handler sub-routine reference, just to call the
- * 				standard interrupt handler in uart driver
- * @param	None
- * @return	None
+ * @brief		UART1 interrupt handler sub-routine
+ * @param[in]	None
+ * @return 		None
  **********************************************************************/
 void UART1_IRQHandler(void)
 {
-	// Call Standard UART 1 interrupt handler
-	UART1_StdIntHandler();
-}
+	uint8_t modemsts;
+	uint32_t intsrc, tmp, tmp1;
 
+	/* Determine the interrupt source */
+	intsrc = UART_GetIntId((LPC_UART_TypeDef *)LPC_UART1);
+	tmp = intsrc & UART_IIR_INTID_MASK;
 
-/*********************************************************************//**
- * @brief		Modem Status interrupt callback
- * @param[in]	modemState	modem status value
- * @return		None
- **********************************************************************/
-void UART1_ModemCallBack(uint8_t modemState)
-{
-#if (AUTO_RTS_CTS_USE == 0)
-	// Check CTS status change flag
-	if (modemState & UART1_MODEM_STAT_DELTA_CTS) {
-		// if CTS status is active, continue to send data
-		if (modemState & UART1_MODEM_STAT_CTS) {
-			// Re-Enable Tx
-			UART_TxCmd((LPC_UART_TypeDef *)LPC_UART1, ENABLE);
-		}
-		// Otherwise, Stop current transmission immediately
-		else{
-			// Disable Tx
-			UART_TxCmd((LPC_UART_TypeDef *)LPC_UART1, DISABLE);
+	/*
+	 * In case of using UART1 with full modem,
+	 * interrupt ID = 0 that means modem status interrupt has been detected
+	 */
+
+	if (tmp == 0){
+		// Check Modem status
+		modemsts = UART_FullModemGetStatus(LPC_UART1);
+		#if (AUTO_RTS_CTS_USE == 0)
+			// Check CTS status change flag
+			if (modemsts & UART1_MODEM_STAT_DELTA_CTS) {
+				// if CTS status is active, continue to send data
+				if (modemsts & UART1_MODEM_STAT_CTS) {
+					// Re-Enable Tx
+					UART_TxCmd((LPC_UART_TypeDef *)LPC_UART1, ENABLE);
+				}
+				// Otherwise, Stop current transmission immediately
+				else{
+					// Disable Tx
+					UART_TxCmd((LPC_UART_TypeDef *)LPC_UART1, DISABLE);
+				}
+			}
+		#endif
+	}
+
+	// Receive Line Status
+	if (tmp == UART_IIR_INTID_RLS){
+		// Check line status
+		tmp1 = UART_GetLineStatus((LPC_UART_TypeDef *)LPC_UART1);
+		// Mask out the Receive Ready and Transmit Holding empty status
+		tmp1 &= (UART_LSR_OE | UART_LSR_PE | UART_LSR_FE \
+				| UART_LSR_BI | UART_LSR_RXFE);
+		// If any error exist
+		if (tmp1) {
+			UART1_IntErr(tmp1);
 		}
 	}
-#endif
+
+	// Receive Data Available or Character time-out
+	if ((tmp == UART_IIR_INTID_RDA) || (tmp == UART_IIR_INTID_CTI)){
+		UART1_IntReceive();
+	}
+
+	// Transmit Holding Empty
+	if (tmp == UART_IIR_INTID_THRE){
+		UART1_IntTransmit();
+	}
 }
 
-
 /********************************************************************//**
- * @brief 		UART receive function (ring buffer used)
+ * @brief 		UART1 receive function (ring buffer used)
  * @param[in]	None
  * @return 		None
  *********************************************************************/
@@ -201,7 +208,7 @@ void UART1_IntReceive(void)
 
 
 /********************************************************************//**
- * @brief 		UART transmit function (ring buffer used)
+ * @brief 		UART1 transmit function (ring buffer used)
  * @param[in]	None
  * @return 		None
  *********************************************************************/
@@ -243,7 +250,7 @@ void UART1_IntTransmit(void)
 
 
 /*********************************************************************//**
- * @brief		UART Line Status Error callback
+ * @brief		UART Line Status Error
  * @param[in]	bLSErrType	UART Line Status Error Type
  * @return		None
  **********************************************************************/
@@ -257,6 +264,7 @@ void UART1_IntErr(uint8_t bLSErrType)
 	}
 }
 
+/*-------------------------PRIVATE FUNCTIONS------------------------------*/
 /*********************************************************************//**
  * @brief		UART transmit function for interrupt mode (using ring buffers)
  * @param[in]	UARTPort	Selected UART peripheral used to send data,
@@ -310,7 +318,6 @@ uint32_t UARTSend(LPC_UART_TypeDef *UARTPort, uint8_t *txbuf, uint8_t buflen)
 
     return bytes;
 }
-
 
 /*********************************************************************//**
  * @brief		UART read function for interrupt mode (using ring buffers)
@@ -368,15 +375,40 @@ uint32_t UARTReceive(LPC_UART_TypeDef *UARTPort, uint8_t *rxbuf, uint8_t buflen)
     return bytes;
 }
 
-
-/************************** MAIN SUB-ROUTINE *************************/
-
 /*********************************************************************//**
- * @brief	Main UART testing example sub-routine
- * 			Print welcome screen first, then press any key to have it
- * 			read in from the terminal and returned back to the terminal.
- * 			- Press ESC to exit
- * 			- Press 'r' to print welcome screen menu again
+ * @brief	Print Welcome Screen Menu subroutine
+ * @param	None
+ * @return	None
+ **********************************************************************/
+void print_menu(void)
+{
+	uint32_t tmp, tmp2;
+	uint8_t *pDat;
+
+	tmp = sizeof(menu1);
+	tmp2 = 0;
+	pDat = (uint8_t *)&menu1[0];
+	while(tmp) {
+		tmp2 = UARTSend((LPC_UART_TypeDef *)LPC_UART1, pDat, tmp);
+		pDat += tmp2;
+		tmp -= tmp2;
+	}
+
+	tmp = sizeof(menu2);
+	tmp2 = 0;
+	pDat = (uint8_t *)&menu2[0];
+	while(tmp) {
+		tmp2 = UARTSend((LPC_UART_TypeDef *)LPC_UART1, pDat, tmp);
+		pDat += tmp2;
+		tmp -= tmp2;
+	}
+}
+
+/*-------------------------MAIN FUNCTION------------------------------*/
+/*********************************************************************//**
+ * @brief		c_entry: Main UART-FULLMODEM program body
+ * @param[in]	None
+ * @return 		int
  **********************************************************************/
 int c_entry(void)
 {
@@ -384,33 +416,27 @@ int c_entry(void)
 	UART_CFG_Type UARTConfigStruct;
 	// UART FIFO configuration Struct variable
 	UART_FIFO_CFG_Type UARTFIFOConfigStruct;
-	// Pin configuration for UART0
+	// Pin configuration for UART1
 	PINSEL_CFG_Type PinCfg;
 	uint32_t idx, len;
 	__IO FlagStatus exitflag;
 	uint8_t buffer[10];
 
-	// DeInit NVIC and SCBNVIC
-	NVIC_DeInit();
-	NVIC_SCBDeInit();
-
-	/* Configure the NVIC Preemption Priority Bits:
-	 * two (2) bits of preemption priority, six (6) bits of sub-priority.
-	 * Since the Number of Bits used for Priority Levels is five (5), so the
-	 * actual bit number of sub-priority is three (3)
-	 */
-	NVIC_SetPriorityGrouping(0x05);
-
-	//  Set Vector table offset value
-#if (__RAM_MODE__==1)
-	NVIC_SetVTOR(0x10000000);
-#else
-	NVIC_SetVTOR(0x00000000);
-#endif
-
 	/*
 	 * Initialize UART1 pin connect
+	 * If using MCB1700 eval board, assign pin P2.0 - P2.7
+	 * If using IAR 1768 KS board, assign pin P0.7 - P0.15
 	 */
+#ifdef MCB_LPC_1768
+	PinCfg.Funcnum = 2;
+	PinCfg.OpenDrain = 0;
+	PinCfg.Pinmode = 0;
+	PinCfg.Portnum = 2;
+	for (idx = 0; idx <= 7; idx++){
+		PinCfg.Pinnum = idx;
+		PINSEL_ConfigPin(&PinCfg);
+	}
+#elif defined(IAR_LPC_1768)
 	PinCfg.Funcnum = 1;
 	PinCfg.OpenDrain = 0;
 	PinCfg.Pinmode = 0;
@@ -419,6 +445,7 @@ int c_entry(void)
 		PinCfg.Pinnum = idx;
 		PINSEL_ConfigPin(&PinCfg);
 	}
+#endif
 
 	/* Initialize UART Configuration parameter structure to default state:
 	 * Baudrate = 9600bps
@@ -454,7 +481,7 @@ int c_entry(void)
 	}
 #else
 	// Enable UART Transmit
-	UART_TxCmd((UART_TypeDef *)UART1, ENABLE);
+	UART_TxCmd((LPC_UART_TypeDef *)LPC_UART1, ENABLE);
 #endif
 
 	// Reset ring buf head and tail idx
@@ -464,28 +491,19 @@ int c_entry(void)
 	__BUF_RESET(rb.tx_tail);
 
 #if AUTO_RTS_CTS_USE
-	UART_FullModemConfigMode(UART1, UART1_MODEM_MODE_AUTO_RTS, ENABLE);
-	UART_FullModemConfigMode(UART1, UART1_MODEM_MODE_AUTO_CTS, ENABLE);
+	UART_FullModemConfigMode(LPC_UART1, UART1_MODEM_MODE_AUTO_RTS, ENABLE);
+	UART_FullModemConfigMode(LPC_UART1, UART1_MODEM_MODE_AUTO_CTS, ENABLE);
 #else
 	// Enable Modem status interrupt
 	UART_IntConfig((LPC_UART_TypeDef *)LPC_UART1, UART1_INTCFG_MS, ENABLE);
 	// Enable CTS1 signal transition interrupt
 	UART_IntConfig((LPC_UART_TypeDef *)LPC_UART1, UART1_INTCFG_CTS, ENABLE);
-	// Modem Status interrupt call back
-	UART_SetupCbs((LPC_UART_TypeDef *)LPC_UART1, 4, (void *)UART1_ModemCallBack);
 	// Force RTS pin state to ACTIVE
 	UART_FullModemForcePinState(LPC_UART1, UART1_MODEM_PIN_RTS, ACTIVE);
 	//RESET RTS State flag
 	RTS_State = ACTIVE;
 #endif
 
-	// Setup callback ---------------
-	// Receive callback
-	UART_SetupCbs((LPC_UART_TypeDef *)LPC_UART1, 0, (void *)UART1_IntReceive);
-	// Transmit callback
-	UART_SetupCbs((LPC_UART_TypeDef *)LPC_UART1, 1, (void *)UART1_IntTransmit);
-	// Line Status Error callback
-	UART_SetupCbs((LPC_UART_TypeDef *)LPC_UART1, 3, (void *)UART1_IntErr);
 
     /* Enable UART Rx interrupt */
 	UART_IntConfig((LPC_UART_TypeDef *)LPC_UART1, UART_INTCFG_RBR, ENABLE);
@@ -581,3 +599,7 @@ void check_failed(uint8_t *file, uint32_t line)
 	while(1);
 }
 #endif
+
+/*
+ * @}
+ */
