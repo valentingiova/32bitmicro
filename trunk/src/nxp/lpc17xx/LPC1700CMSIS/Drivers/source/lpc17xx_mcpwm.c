@@ -1,10 +1,10 @@
-/**
- * @file	: lpc17xx_mcpwm.c
- * @brief	: Contains all functions support for Motor Control PWM firmware
+/***********************************************************************//**
+ * @file		lpc17xx_mcpwm.c
+ * @brief		Contains all functions support for Motor Control PWM firmware
  * 				library on LPC17xx
- * @version	: 1.0
- * @date	: 26. May. 2009
- * @author	: HieuNguyen
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -47,7 +47,8 @@
 
 /*********************************************************************//**
  * @brief		Initializes the MCPWM peripheral
- * @param[in]	MCPWMx 		Motor Control PWM peripheral selected, should be MCPWM
+ * @param[in]	MCPWMx 		Motor Control PWM peripheral selected,
+ * 				Should be: LPC_MCPWM
  * @return		None
  **********************************************************************/
 void MCPWM_Init(LPC_MCPWM_TypeDef *MCPWMx)
@@ -72,8 +73,9 @@ void MCPWM_Init(LPC_MCPWM_TypeDef *MCPWMx)
 /*********************************************************************//**
  * @brief		Configures each channel in MCPWM peripheral according to the
  * 				specified parameters in the MCPWM_CHANNEL_CFG_Type.
- * @param[in]	MCPWMx 			Motor Control PWM peripheral selected, should be MCPWM
- * @param[in]	channelNum		Channel number, should be in range from 0 to 2.
+ * @param[in]	MCPWMx 			Motor Control PWM peripheral selected
+ * 								should be: LPC_MCPWM
+ * @param[in]	channelNum		Channel number, should be: 0..2.
  * @param[in]	channelSetup	Pointer to a MCPWM_CHANNEL_CFG_Type structure
 *                    			that contains the configuration information for the
 *                    			specified MCPWM channel.
@@ -131,8 +133,9 @@ void MCPWM_ConfigChannel(LPC_MCPWM_TypeDef *MCPWMx, uint32_t channelNum,
 /*********************************************************************//**
  * @brief		Write to MCPWM shadow registers - Update the value for period
  * 				and pulse width in MCPWM peripheral.
- * @param[in]	MCPWMx 			Motor Control PWM peripheral selected, should be MCPWM
- * @param[in]	channelNum		Channel Number, should be in range from 0 to 2.
+ * @param[in]	MCPWMx 			Motor Control PWM peripheral selected
+ * 								Should be: LPC_MCPWM
+ * @param[in]	channelNum		Channel Number, should be: 0..2.
  * @param[in]	channelSetup	Pointer to a MCPWM_CHANNEL_CFG_Type structure
 *                    			that contains the configuration information for the
 *                    			specified MCPWM channel.
@@ -157,8 +160,10 @@ void MCPWM_WriteToShadow(LPC_MCPWM_TypeDef *MCPWMx, uint32_t channelNum,
 
 /*********************************************************************//**
  * @brief		Configures capture function in MCPWM peripheral
- * @param[in]	MCPWMx 			Motor Control PWM peripheral selected, should be MCPWM
- * @param[in]	channelNum		MCI (Motor Control Input pin) number, should be in range from 0 to 2.
+ * @param[in]	MCPWMx 			Motor Control PWM peripheral selected
+ * 								Should be: LPC_MCPWM
+ * @param[in]	channelNum		MCI (Motor Control Input pin) number
+ * 								Should be: 0..2
  * @param[in]	captureConfig	Pointer to a MCPWM_CAPTURE_CFG_Type structure
 *                    			that contains the configuration information for the
 *                    			specified MCPWM capture.
@@ -198,8 +203,9 @@ void MCPWM_ConfigCapture(LPC_MCPWM_TypeDef *MCPWMx, uint32_t channelNum,
 
 /*********************************************************************//**
  * @brief		Clears current captured value in specified capture channel
- * @param[in]	MCPWMx 		Motor Control PWM peripheral selected, should be MCPWM
- * @param[in]	captureChannel	Capture channel number, should be in range from 0 to 2
+ * @param[in]	MCPWMx 		Motor Control PWM peripheral selected
+ * 							Should be: LPC_MCPWM
+ * @param[in]	captureChannel	Capture channel number, should be: 0..2
  * @return		None
  **********************************************************************/
 void MCPWM_ClearCapture(LPC_MCPWM_TypeDef *MCPWMx, uint32_t captureChannel)
@@ -209,8 +215,9 @@ void MCPWM_ClearCapture(LPC_MCPWM_TypeDef *MCPWMx, uint32_t captureChannel)
 
 /*********************************************************************//**
  * @brief		Get current captured value in specified capture channel
- * @param[in]	MCPWMx 		Motor Control PWM peripheral selected, should be MCPWM
- * @param[in]	captureChannel	Capture channel number, should be in range from 0 to 2
+ * @param[in]	MCPWMx 		Motor Control PWM peripheral selected,
+ * 							Should be: LPC_MCPWM
+ * @param[in]	captureChannel	Capture channel number, should be: 0..2
  * @return		None
  **********************************************************************/
 uint32_t MCPWM_GetCapture(LPC_MCPWM_TypeDef *MCPWMx, uint32_t captureChannel)
@@ -228,8 +235,9 @@ uint32_t MCPWM_GetCapture(LPC_MCPWM_TypeDef *MCPWMx, uint32_t captureChannel)
 
 /*********************************************************************//**
  * @brief		Configures Count control in MCPWM peripheral
- * @param[in]	MCPWMx 		Motor Control PWM peripheral selected, should be MCPWM
- * @param[in]	channelNum	Channel number, should be in range from 0 to 2
+ * @param[in]	MCPWMx 		Motor Control PWM peripheral selected
+ * 							Should be: LPC_MCPWM
+ * @param[in]	channelNum	Channel number, should be: 0..2
  * @param[in]	countMode	Count mode, should be:
  * 							- ENABLE: Enables count mode.
  * 							- DISABLE: Disable count mode, the channel is in timer mode.
@@ -263,7 +271,8 @@ void MCPWM_CountConfig(LPC_MCPWM_TypeDef *MCPWMx, uint32_t channelNum,
 
 /*********************************************************************//**
  * @brief		Start MCPWM activity for each MCPWM channel
- * @param[in]	MCPWMx 		Motor Control PWM peripheral selected, should be MCPWM
+ * @param[in]	MCPWMx 		Motor Control PWM peripheral selected
+ * 							Should be: LPC_MCPWM
  * @param[in]	channel0	State of this command on channel 0:
  * 							- ENABLE: 'Start' command will effect on channel 0
  * 							- DISABLE: 'Start' command will not effect on channel 0
@@ -287,7 +296,8 @@ void MCPWM_Start(LPC_MCPWM_TypeDef *MCPWMx, uint32_t channel0,
 
 /*********************************************************************//**
  * @brief		Stop MCPWM activity for each MCPWM channel
- * @param[in]	MCPWMx 		Motor Control PWM peripheral selected, should be MCPWM
+ * @param[in]	MCPWMx 		Motor Control PWM peripheral selected
+ * 							Should be: LPC_MCPWM
  * @param[in]	channel0	State of this command on channel 0:
  * 							- ENABLE: 'Stop' command will effect on channel 0
  * 							- DISABLE: 'Stop' command will not effect on channel 0
@@ -311,7 +321,8 @@ void MCPWM_Stop(LPC_MCPWM_TypeDef *MCPWMx, uint32_t channel0,
 
 /*********************************************************************//**
  * @brief		Enables/Disables 3-phase AC motor mode on MCPWM peripheral
- * @param[in]	MCPWMx 		Motor Control PWM peripheral selected, should be MCPWM
+ * @param[in]	MCPWMx 		Motor Control PWM peripheral selected
+ * 							Should be: LPC_MCPWM
  * @param[in]	acMode		State of this command, should be:
  * 							- ENABLE.
  * 							- DISABLE.
@@ -329,7 +340,8 @@ void MCPWM_ACMode(LPC_MCPWM_TypeDef *MCPWMx, uint32_t acMode)
 
 /*********************************************************************//**
  * @brief		Enables/Disables 3-phase DC motor mode on MCPWM peripheral
- * @param[in]	MCPWMx 			Motor Control PWM peripheral selected, should be MCPWM
+ * @param[in]	MCPWMx 			Motor Control PWM peripheral selected
+ * 								Should be: LPC_MCPWM
  * @param[in]	dcMode			State of this command, should be:
  * 								- ENABLE.
  * 								- DISABLE.
@@ -372,7 +384,8 @@ void MCPWM_DCMode(LPC_MCPWM_TypeDef *MCPWMx, uint32_t dcMode,
 
 /*********************************************************************//**
  * @brief		Configures the specified interrupt in MCPWM peripheral
- * @param[in]	MCPWMx 		Motor Control PWM peripheral selected, should be MCPWM
+ * @param[in]	MCPWMx 		Motor Control PWM peripheral selected
+ * 							Should be: LPC_MCPWM
  * @param[in]	ulIntType	Interrupt type, should be:
  * 							- MCPWM_INTFLAG_LIM0: Limit interrupt for channel (0)
  * 							- MCPWM_INTFLAG_MAT0: Match interrupt for channel (0)
@@ -403,7 +416,8 @@ void MCPWM_IntConfig(LPC_MCPWM_TypeDef *MCPWMx, uint32_t ulIntType, FunctionalSt
 
 /*********************************************************************//**
  * @brief		Sets/Forces the specified interrupt for MCPWM peripheral
- * @param[in]	MCPWMx 		Motor Control PWM peripheral selected, should be MCPWM
+ * @param[in]	MCPWMx 		Motor Control PWM peripheral selected
+ * 							Should be LPC_MCPWM
  * @param[in]	ulIntType	Interrupt type, should be:
  * 							- MCPWM_INTFLAG_LIM0: Limit interrupt for channel (0)
  * 							- MCPWM_INTFLAG_MAT0: Match interrupt for channel (0)
@@ -426,7 +440,8 @@ void MCPWM_IntSet(LPC_MCPWM_TypeDef *MCPWMx, uint32_t ulIntType)
 
 /*********************************************************************//**
  * @brief		Clear the specified interrupt pending for MCPWM peripheral
- * @param[in]	MCPWMx 		Motor Control PWM peripheral selected, should be MCPWM
+ * @param[in]	MCPWMx 		Motor Control PWM peripheral selected,
+ * 							should be: LPC_MCPWM
  * @param[in]	ulIntType	Interrupt type, should be:
  * 							- MCPWM_INTFLAG_LIM0: Limit interrupt for channel (0)
  * 							- MCPWM_INTFLAG_MAT0: Match interrupt for channel (0)
@@ -449,7 +464,8 @@ void MCPWM_IntClear(LPC_MCPWM_TypeDef *MCPWMx, uint32_t ulIntType)
 
 /*********************************************************************//**
  * @brief		Check whether if the specified interrupt in MCPWM is set or not
- * @param[in]	MCPWMx 		Motor Control PWM peripheral selected, should be MCPWM
+ * @param[in]	MCPWMx 		Motor Control PWM peripheral selected,
+ * 							should be: LPC_MCPWM
  * @param[in]	ulIntType	Interrupt type, should be:
  * 							- MCPWM_INTFLAG_LIM0: Limit interrupt for channel (0)
  * 							- MCPWM_INTFLAG_MAT0: Match interrupt for channel (0)

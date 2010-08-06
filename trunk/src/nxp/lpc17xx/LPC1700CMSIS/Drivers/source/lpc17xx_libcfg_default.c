@@ -1,10 +1,10 @@
 /***********************************************************************//**
- * @file	: lpc17xx_libcfg_default.c
- * @brief	: Library configuration source file (default),
+ * @file		lpc17xx_libcfg_default.c
+ * @brief		Library configuration source file (default),
  * 				used to build library without examples.
- * @version	: 1.0
- * @date	: 26. Mar. 2009
- * @author	: HieuNguyen
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the

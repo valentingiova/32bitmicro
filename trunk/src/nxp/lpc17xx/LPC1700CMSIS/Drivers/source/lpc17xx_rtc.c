@@ -1,9 +1,9 @@
-/**
- * @file	: lpc17xx_rtc.c
- * @brief	: Contains all functions support for RTC firmware library on LPC17xx
- * @version	: 1.0
- * @date	: 23. Apr. 2009
- * @author	: HieuNguyen
+/***********************************************************************//**
+ * @file		lpc17xx_rtc.c
+ * @brief		Contains all functions support for RTC firmware library on LPC17xx
+ * @version		3.0
+ * @date		18. June. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -48,7 +48,7 @@
 
 /********************************************************************//**
  * @brief		Initializes the RTC peripheral.
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @return 		None
  *********************************************************************/
 void RTC_Init (LPC_RTC_TypeDef *RTCx)
@@ -70,7 +70,7 @@ void RTC_Init (LPC_RTC_TypeDef *RTCx)
 /*********************************************************************//**
  * @brief		De-initializes the RTC peripheral registers to their
 *                  default reset values.
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @return 		None
  **********************************************************************/
 void RTC_DeInit(LPC_RTC_TypeDef *RTCx)
@@ -84,7 +84,7 @@ void RTC_DeInit(LPC_RTC_TypeDef *RTCx)
 
 /*********************************************************************//**
  * @brief 		Reset clock tick counter in RTC peripheral
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @return 		None
  **********************************************************************/
 void RTC_ResetClockTickCounter(LPC_RTC_TypeDef *RTCx)
@@ -97,7 +97,7 @@ void RTC_ResetClockTickCounter(LPC_RTC_TypeDef *RTCx)
 
 /*********************************************************************//**
  * @brief 		Start/Stop RTC peripheral
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @param[in]	NewState New State of this function, should be:
  * 				- ENABLE: The time counters are enabled
  * 				- DISABLE: The time counters are disabled
@@ -122,7 +122,7 @@ void RTC_Cmd (LPC_RTC_TypeDef *RTCx, FunctionalState NewState)
 /*********************************************************************//**
  * @brief 		Enable/Disable Counter increment interrupt for each time type
  * 				in RTC peripheral
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @param[in]	CntIncrIntType: Counter Increment Interrupt type,
  * 				an increment of this type value below will generates
  * 				an interrupt, should be:
@@ -214,7 +214,7 @@ void RTC_CntIncrIntConfig (LPC_RTC_TypeDef *RTCx, uint32_t CntIncrIntType, \
 /*********************************************************************//**
  * @brief 		Enable/Disable Alarm interrupt for each time type
  * 				in RTC peripheral
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @param[in]	AlarmTimeType: Alarm Time Interrupt type,
  * 				an matching of this type value below with current time
  * 				in RTC will generates an interrupt, should be:
@@ -305,7 +305,7 @@ void RTC_AlarmIntConfig (LPC_RTC_TypeDef *RTCx, uint32_t AlarmTimeType, \
 
 /*********************************************************************//**
  * @brief 		Set current time value for each time type in RTC peripheral
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @param[in]	Timetype: Time Type, should be:
  * 				- RTC_TIMETYPE_SECOND
  * 				- RTC_TIMETYPE_MINUTE
@@ -380,7 +380,7 @@ void RTC_SetTime (LPC_RTC_TypeDef *RTCx, uint32_t Timetype, uint32_t TimeValue)
 
 /*********************************************************************//**
  * @brief 		Get current time value for each type time type
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @param[in]	Timetype: Time Type, should be:
  * 				- RTC_TIMETYPE_SECOND
  * 				- RTC_TIMETYPE_MINUTE
@@ -401,38 +401,29 @@ uint32_t RTC_GetTime(LPC_RTC_TypeDef *RTCx, uint32_t Timetype)
 	{
 	case RTC_TIMETYPE_SECOND:
 		return (RTCx->SEC & RTC_SEC_MASK);
-		break;
 	case RTC_TIMETYPE_MINUTE:
 		return (RTCx->MIN & RTC_MIN_MASK);
-		break;
 	case RTC_TIMETYPE_HOUR:
 		return (RTCx->HOUR & RTC_HOUR_MASK);
-		break;
 	case RTC_TIMETYPE_DAYOFWEEK:
 		return (RTCx->DOW & RTC_DOW_MASK);
-		break;
 	case RTC_TIMETYPE_DAYOFMONTH:
 		return (RTCx->DOM & RTC_DOM_MASK);
-		break;
 	case RTC_TIMETYPE_DAYOFYEAR:
 		return (RTCx->DOY & RTC_DOY_MASK);
-		break;
 	case RTC_TIMETYPE_MONTH:
 		return (RTCx->MONTH & RTC_MONTH_MASK);
-		break;
 	case RTC_TIMETYPE_YEAR:
 		return (RTCx->YEAR & RTC_YEAR_MASK);
-		break;
 	default:
 		return (0);
-		break;
 	}
 }
 
 
 /*********************************************************************//**
  * @brief 		Set full of time in RTC peripheral
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @param[in]	pFullTime Pointer to a RTC_TIME_Type structure that
  * 				contains time value in full.
  * @return 		None
@@ -454,7 +445,7 @@ void RTC_SetFullTime (LPC_RTC_TypeDef *RTCx, RTC_TIME_Type *pFullTime)
 
 /*********************************************************************//**
  * @brief 		Get full of time in RTC peripheral
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @param[in]	pFullTime Pointer to a RTC_TIME_Type structure that
  * 				will be stored time in full.
  * @return 		None
@@ -476,7 +467,7 @@ void RTC_GetFullTime (LPC_RTC_TypeDef *RTCx, RTC_TIME_Type *pFullTime)
 
 /*********************************************************************//**
  * @brief 		Set alarm time value for each time type
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @param[in]	Timetype: Time Type, should be:
  * 				- RTC_TIMETYPE_SECOND
  * 				- RTC_TIMETYPE_MINUTE
@@ -552,7 +543,7 @@ void RTC_SetAlarmTime (LPC_RTC_TypeDef *RTCx, uint32_t Timetype, uint32_t ALValu
 
 /*********************************************************************//**
  * @brief 		Get alarm time value for each time type
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @param[in]	Timetype: Time Type, should be:
  * 				- RTC_TIMETYPE_SECOND
  * 				- RTC_TIMETYPE_MINUTE
@@ -570,38 +561,29 @@ uint32_t RTC_GetAlarmTime (LPC_RTC_TypeDef *RTCx, uint32_t Timetype)
 	{
 	case RTC_TIMETYPE_SECOND:
 		return (RTCx->ALSEC & RTC_SEC_MASK);
-		break;
 	case RTC_TIMETYPE_MINUTE:
 		return (RTCx->ALMIN & RTC_MIN_MASK);
-		break;
 	case RTC_TIMETYPE_HOUR:
 		return (RTCx->ALHOUR & RTC_HOUR_MASK);
-		break;
 	case RTC_TIMETYPE_DAYOFWEEK:
 		return (RTCx->ALDOW & RTC_DOW_MASK);
-		break;
 	case RTC_TIMETYPE_DAYOFMONTH:
 		return (RTCx->ALDOM & RTC_DOM_MASK);
-		break;
 	case RTC_TIMETYPE_DAYOFYEAR:
 		return (RTCx->ALDOY & RTC_DOY_MASK);
-		break;
 	case RTC_TIMETYPE_MONTH:
 		return (RTCx->ALMON & RTC_MONTH_MASK);
-		break;
 	case RTC_TIMETYPE_YEAR:
 		return (RTCx->ALYEAR & RTC_YEAR_MASK);
-		break;
 	default:
 		return (0);
-		break;
 	}
 }
 
 
 /*********************************************************************//**
  * @brief 		Set full of alarm time in RTC peripheral
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @param[in]	pFullTime Pointer to a RTC_TIME_Type structure that
  * 				contains alarm time value in full.
  * @return 		None
@@ -623,7 +605,7 @@ void RTC_SetFullAlarmTime (LPC_RTC_TypeDef *RTCx, RTC_TIME_Type *pFullTime)
 
 /*********************************************************************//**
  * @brief 		Get full of alarm time in RTC peripheral
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @param[in]	pFullTime Pointer to a RTC_TIME_Type structure that
  * 				will be stored alarm time in full.
  * @return 		None
@@ -646,7 +628,7 @@ void RTC_GetFullAlarmTime (LPC_RTC_TypeDef *RTCx, RTC_TIME_Type *pFullTime)
 /*********************************************************************//**
  * @brief 		Check whether if specified Location interrupt in
  * 				RTC peripheral is set or not
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @param[in]	IntType Interrupt location type, should be:
  * 						- RTC_INT_COUNTER_INCREASE: Counter Increment Interrupt
  * 							block generated an interrupt.
@@ -667,7 +649,7 @@ IntStatus RTC_GetIntPending (LPC_RTC_TypeDef *RTCx, uint32_t IntType)
 /*********************************************************************//**
  * @brief 		Clear specified Location interrupt pending in
  * 				RTC peripheral
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @param[in]	IntType Interrupt location type, should be:
  * 						- RTC_INT_COUNTER_INCREASE: Clear Counter Increment
  * 						Interrupt pending.
@@ -679,12 +661,12 @@ void RTC_ClearIntPending (LPC_RTC_TypeDef *RTCx, uint32_t IntType)
 	CHECK_PARAM(PARAM_RTCx(RTCx));
 	CHECK_PARAM(PARAM_RTC_INT(IntType));
 
-	RTCx->ILR = IntType;
+	RTCx->ILR |= IntType;
 }
 
 /*********************************************************************//**
  * @brief 		Enable/Disable calibration counter in RTC peripheral
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @param[in]	NewState New State of this function, should be:
  * 				- ENABLE: The calibration counter is enabled and counting
  * 				- DISABLE: The calibration counter is disabled and reset to zero
@@ -708,7 +690,7 @@ void RTC_CalibCounterCmd(LPC_RTC_TypeDef *RTCx, FunctionalState NewState)
 
 /*********************************************************************//**
  * @brief 		Configures Calibration in RTC peripheral
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @param[in]	CalibValue Calibration value, should be in range from
  * 					0 to 131,072
  * @param[in]	CalibDir Calibration Direction, should be:
@@ -720,7 +702,7 @@ void RTC_CalibConfig(LPC_RTC_TypeDef *RTCx, uint32_t CalibValue, uint8_t CalibDi
 {
 	CHECK_PARAM(PARAM_RTCx(RTCx));
 	CHECK_PARAM(PARAM_RTC_CALIB_DIR(CalibDir));
-	CHECK_PARAM(CalibValue > RTC_CALIBRATION_MAX);
+	CHECK_PARAM(CalibValue < RTC_CALIBRATION_MAX);
 
 	RTCx->CALIBRATION = ((CalibValue - 1) & RTC_CALIBRATION_CALVAL_MASK) \
 			| ((CalibDir == RTC_CALIB_DIR_BACKWARD) ? RTC_CALIBRATION_LIBDIR : 0);
@@ -729,7 +711,7 @@ void RTC_CalibConfig(LPC_RTC_TypeDef *RTCx, uint32_t CalibValue, uint8_t CalibDi
 
 /*********************************************************************//**
  * @brief 		Write value to General purpose registers
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @param[in]	Channel General purpose registers Channel number,
  * 				should be in range from 0 to 4.
  * @param[in]	Value Value to write
@@ -753,7 +735,7 @@ void RTC_WriteGPREG (LPC_RTC_TypeDef *RTCx, uint8_t Channel, uint32_t Value)
 
 /*********************************************************************//**
  * @brief 		Read value from General purpose registers
- * @param[in]	RTCx	RTC peripheral selected, should be RTC
+ * @param[in]	RTCx	RTC peripheral selected, should be LPC_RTC
  * @param[in]	Channel General purpose registers Channel number,
  * 				should be in range from 0 to 4.
  * @return 		Read Value

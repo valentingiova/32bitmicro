@@ -1,10 +1,10 @@
 /***********************************************************************//**
- * @file	: lpc17xx_pwm.h
- * @brief	: Contains all macro definitions and function prototypes
+ * @file		lpc17xx_pwm.h
+ * @brief		Contains all macro definitions and function prototypes
  * 				support for PWM firmware library on LPC17xx
- * @version	: 1.0
- * @date	: 22. Apr. 2009
- * @author	: HieuNguyen
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -19,7 +19,7 @@
  **************************************************************************/
 
 /* Peripheral group ----------------------------------------------------------- */
-/** @defgroup PWM
+/** @defgroup PWM PWM
  * @ingroup LPC1700CMSIS_FwLib_Drivers
  * @{
  */
@@ -39,14 +39,11 @@ extern "C"
 
 
 /* Private Macros ------------------------------------------------------------- */
-/** @defgroup PWM_Private_Macros
+/** @defgroup PWM_Private_Macros PWM Private Macros
  * @{
  */
 
-/** @defgroup PWM_REGISTER_BIT_DEFINITIONS
- * @{
- */
-
+/* --------------------- BIT DEFINITIONS -------------------------------------- */
 /**********************************************************************
 * IR register definitions
 **********************************************************************/
@@ -57,7 +54,6 @@ extern "C"
 /**  IR register mask */
 #define PWM_IR_BITMASK			((uint32_t)(0x0000073F))
 
-
 /**********************************************************************
 * TCR register definitions
 **********************************************************************/
@@ -66,7 +62,6 @@ extern "C"
 #define PWM_TCR_COUNTER_ENABLE      ((uint32_t)(1<<0)) /*!< PWM Counter Enable */
 #define PWM_TCR_COUNTER_RESET       ((uint32_t)(1<<1)) /*!< PWM Counter Reset */
 #define PWM_TCR_PWM_ENABLE          ((uint32_t)(1<<3)) /*!< PWM Enable */
-
 
 /**********************************************************************
 * CTCR register definitions
@@ -77,7 +72,6 @@ extern "C"
 #define PWM_CTCR_MODE(n)        	((uint32_t)(n&0x03))
 /** PWM Capture input select */
 #define PWM_CTCR_SELECT_INPUT(n)	((uint32_t)((n&0x03)<<2))
-
 
 /**********************************************************************
 * MCR register definitions
@@ -91,7 +85,6 @@ extern "C"
 /** stop the PWM when a MATCHn occurs */
 #define PWM_MCR_STOP_ON_MATCH(n)    ((uint32_t)(1<<(((n&0x7)<<1)+(n&0x07)+2)))
 
-
 /**********************************************************************
 * CCR register definitions
 **********************************************************************/
@@ -104,7 +97,6 @@ extern "C"
 /** PWM interrupt is generated on a PCAP event */
 #define PWM_CCR_INT_ON_CAP(n)  		((uint32_t)(1<<(((n&0x2)<<1)+(n&0x1)+2)))
 
-
 /**********************************************************************
 * PCR register definitions
 **********************************************************************/
@@ -115,7 +107,6 @@ extern "C"
 /** enable PWM output n */
 #define PWM_PCR_PWMENAn(n)   	((uint32_t)(((n&0x7)<1) ? 0 : (1<<(n+8))))
 
-
 /**********************************************************************
 * LER register definitions
 **********************************************************************/
@@ -124,17 +115,33 @@ extern "C"
 /** PWM MATCHn register update control */
 #define PWM_LER_EN_MATCHn_LATCH(n)   ((uint32_t)((n<7) ? (1<<n) : 0))
 
-/**
- * @}
- */
+/* ---------------- CHECK PARAMETER DEFINITIONS ---------------------------- */
+/** Macro to determine if it is valid PWM peripheral or not */
+#define PARAM_PWMx(n)	(((uint32_t *)n)==((uint32_t *)LPC_PWM1))
 
+/** Macro check PWM1 match channel value */
+#define PARAM_PWM1_MATCH_CHANNEL(n)		((n>=0) && (n<=6))
+
+/** Macro check PWM1 channel value */
+#define PARAM_PWM1_CHANNEL(n)			((n>=1) && (n<=6))
+
+/** Macro check PWM1 edge channel mode */
+#define PARAM_PWM1_EDGE_MODE_CHANNEL(n)			((n>=2) && (n<=6))
+
+/** Macro check PWM1 capture channel mode */
+#define PARAM_PWM1_CAPTURE_CHANNEL(n)	((n==0) || (n==1))
+
+/** Macro check PWM1 interrupt status type */
+#define PARAM_PWM_INTSTAT(n)	((n==PWM_INTSTAT_MR0) || (n==PWM_INTSTAT_MR1) || (n==PWM_INTSTAT_MR2) \
+|| (n==PWM_INTSTAT_MR3) || (n==PWM_INTSTAT_MR4) || (n==PWM_INTSTAT_MR5) \
+|| (n==PWM_INTSTAT_MR6) || (n==PWM_INTSTAT_CAP0) || (n==PWM_INTSTAT_CAP1))
 /**
  * @}
  */
 
 
 /* Public Types --------------------------------------------------------------- */
-/** @defgroup PWM_Public_Types
+/** @defgroup PWM_Public_Types PWM Public Types
  * @{
  */
 
@@ -202,16 +209,6 @@ typedef struct {
 							- DISABLE: Disable this function.
 							*/
 } PWM_CAPTURECFG_Type;
-
-
-/** Macro to determine if it is valid PWM peripheral */
-#define PARAM_PWMx(n)	(((uint32_t *)n)==((uint32_t *)LPC_PWM1))
-
-#define PARAM_PWM1_MATCH_CHANNEL(n)		((n>=0) && (n<=6))
-#define PARAM_PWM1_CHANNEL(n)			((n>=1) && (n<=6))
-#define PARAM_PWM1_EDGE_MODE_CHANNEL(n)			((n>=2) && (n<=6))
-#define PARAM_PWM1_CAPTURE_CHANNEL(n)	((n==0) || (n==1))
-
 
 /* Timer/Counter in PWM configuration type definition -----------------------------------*/
 
@@ -288,9 +285,6 @@ typedef enum
 	PWM_INTSTAT_MR5 = PWM_IR_PWMMRn(6),		/**< Interrupt flag for PWM match channel 6 */
 }PWM_INTSTAT_TYPE;
 
-#define PARAM_PWM_INTSTAT(n)	((n==PWM_INTSTAT_MR0) || (n==PWM_INTSTAT_MR1) || (n==PWM_INTSTAT_MR2) \
-|| (n==PWM_INTSTAT_MR3) || (n==PWM_INTSTAT_MR4) || (n==PWM_INTSTAT_MR5) \
-|| (n==PWM_INTSTAT_MR6) || (n==PWM_INTSTAT_CAP0) || (n==PWM_INTSTAT_CAP1))
 
 /**
  * @}
@@ -298,7 +292,7 @@ typedef enum
 
 
 /* Public Functions ----------------------------------------------------------- */
-/** @defgroup PWM_Public_Functions
+/** @defgroup PWM_Public_Functions PWM Public Functions
  * @{
  */
 

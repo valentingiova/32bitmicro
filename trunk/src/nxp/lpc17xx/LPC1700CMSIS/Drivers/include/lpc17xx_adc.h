@@ -1,10 +1,10 @@
 /***********************************************************************//**
- * @file	: lpc17xx_adc.h
- * @brief	: Contains all macro definitions and function prototypes
+ * @file		lpc17xx_adc.h
+ * @brief		Contains all macro definitions and function prototypes
  * 				support for ADC firmware library on LPC17xx
- * @version	: 1.0
- * @date	: 3. April. 2009
- * @author	: NgaDinh
+ * @version		3.0
+ * @date		18. June. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -19,7 +19,7 @@
  **************************************************************************/
 
 /* Peripheral group ----------------------------------------------------------- */
-/** @defgroup ADC
+/** @defgroup ADC ADC
  * @ingroup LPC1700CMSIS_FwLib_Drivers
  * @{
  */
@@ -37,17 +37,12 @@ extern "C"
 {
 #endif
 
-
-/* Private Macros ------------------------------------------------------------- */
-/** @defgroup ADC_Private_Macros ADC_Private_Macros
+/* Private macros ------------------------------------------------------------- */
+/** @defgroup ADC_Private_Macros ADC Private Macros
  * @{
  */
 
-
-/** @defgroup group3 ADC_REGISTER_BIT_DEFINITIONS
- * @{
- */
-
+/* -------------------------- BIT DEFINITIONS ----------------------------------- */
 /*********************************************************************//**
  * Macro defines for ADC  control register
  **********************************************************************/
@@ -137,9 +132,37 @@ extern "C"
 /** Written to boot code*/
 #define ADC_TRIM(n)		    (((n&0xF)<<8))
 
-/**
- * @}
- */
+/* ------------------- CHECK PARAM DEFINITIONS ------------------------- */
+/** Check ADC parameter */
+#define PARAM_ADCx(n)    (((uint32_t *)n)==((uint32_t *)LPC_ADC))
+
+/** Check ADC state parameter */
+#define PARAM_ADC_START_ON_EDGE_OPT(OPT)    ((OPT == ADC_START_ON_RISING)||(OPT == ADC_START_ON_FALLING))
+
+/** Check ADC state parameter */
+#define PARAM_ADC_DATA_STATUS(OPT)    ((OPT== ADC_DATA_BURST)||(OPT== ADC_DATA_DONE))
+
+/** Check ADC rate parameter */
+#define PARAM_ADC_RATE(rate)	((rate>0)&&(rate<=200000))
+
+/** Check ADC channel selection parameter */
+#define PARAM_ADC_CHANNEL_SELECTION(SEL)	((SEL == ADC_CHANNEL_0)||(ADC_CHANNEL_1)\
+||(SEL == ADC_CHANNEL_2)|(ADC_CHANNEL_3)\
+||(SEL == ADC_CHANNEL_4)||(ADC_CHANNEL_5)\
+||(SEL == ADC_CHANNEL_6)||(ADC_CHANNEL_7))
+
+/** Check ADC start option parameter */
+#define PARAM_ADC_START_OPT(OPT)    ((OPT == ADC_START_CONTINUOUS)||(OPT == ADC_START_NOW)\
+||(OPT == ADC_START_ON_EINT0)||(OPT == ADC_START_ON_CAP01)\
+||(OPT == ADC_START_ON_MAT01)||(OPT == ADC_START_ON_MAT03)\
+||(OPT == ADC_START_ON_MAT10)||(OPT == ADC_START_ON_MAT11))
+
+/** Check ADC interrupt type parameter */
+#define PARAM_ADC_TYPE_INT_OPT(OPT)    ((OPT == ADC_ADINTEN0)||(OPT == ADC_ADINTEN1)\
+||(OPT == ADC_ADINTEN2)||(OPT == ADC_ADINTEN3)\
+||(OPT == ADC_ADINTEN4)||(OPT == ADC_ADINTEN5)\
+||(OPT == ADC_ADINTEN6)||(OPT == ADC_ADINTEN7)\
+||(OPT == ADC_ADGINTEN))
 
 /**
  * @}
@@ -147,7 +170,7 @@ extern "C"
 
 
 /* Public Types --------------------------------------------------------------- */
-/** @defgroup ADC_Public_Types
+/** @defgroup ADC_Public_Types ADC Public Types
  * @{
  */
 
@@ -167,12 +190,7 @@ typedef enum
 	ADC_CHANNEL_7		/*!<  Channel 7 */
 }ADC_CHANNEL_SELECTION;
 
-
-
 /** @brief Type of start option */
-
-/** @brief Type of start option */
-
 typedef enum
 {
 	ADC_START_CONTINUOUS =0,	/*!< Continuous mode */
@@ -193,7 +211,6 @@ typedef enum
 
 
 /** @brief Type of edge when start conversion on the selected CAP/MAT signal */
-
 typedef enum
 {
 	ADC_START_ON_RISING = 0,	/*!< Start conversion on a rising edge
@@ -216,14 +233,6 @@ typedef enum
 	ADC_ADGINTEN			/*!< Individual channel/global flag done generate an interrupt */
 }ADC_TYPE_INT_OPT;
 
-/** Macro to determine if it is valid interrupt type */
-#define PARAM_ADC_TYPE_INT_OPT(OPT) ((OPT == ADC_ADINTEN0)||(OPT == ADC_ADINTEN1)\
-||(OPT == ADC_ADINTEN2)||(OPT == ADC_ADINTEN3)\
-||(OPT == ADC_ADINTEN4)||(OPT == ADC_ADINTEN5)\
-||(OPT == ADC_ADINTEN6)||(OPT == ADC_ADINTEN7)\
-||(OPT == ADC_ADGINTEN))
-
-
 /** @brief ADC Data  status */
 typedef enum
 {
@@ -231,53 +240,33 @@ typedef enum
 	ADC_DATA_DONE		 /*Done bit*/
 }ADC_DATA_STATUS;
 
-
-#define PARAM_ADC_START_ON_EDGE_OPT(OPT)	((OPT == ADC_START_ON_RISING)||(OPT == ADC_START_ON_FALLING))
-
-#define PARAM_ADC_DATA_STATUS(OPT)	((OPT== ADC_DATA_BURST)||(OPT== ADC_DATA_DONE))
-
-#define PARAM_ADC_FREQUENCY(FRE) (FRE <= 13000000 )
-
-#define PARAM_ADC_CHANNEL_SELECTION(SEL)     ((SEL == ADC_CHANNEL_0)||(ADC_CHANNEL_1)\
-||(SEL == ADC_CHANNEL_2)|(ADC_CHANNEL_3)\
-||(SEL == ADC_CHANNEL_4)||(ADC_CHANNEL_5)\
-||(SEL == ADC_CHANNEL_6)||(ADC_CHANNEL_7))
-
-#define PARAM_ADC_START_OPT(OPT)	((OPT == ADC_START_CONTINUOUS)||(OPT == ADC_START_NOW)\
-||(OPT == ADC_START_ON_EINT0)||(OPT == ADC_START_ON_CAP01)\
-||(OPT == ADC_START_ON_MAT01)||(OPT == ADC_START_ON_MAT03)\
-||(OPT == ADC_START_ON_MAT10)||(OPT == ADC_START_ON_MAT11))
-
-#define PARAM_ADC_TYPE_INT_OPT(OPT) ((OPT == ADC_ADINTEN0)||(OPT == ADC_ADINTEN1)\
-||(OPT == ADC_ADINTEN2)||(OPT == ADC_ADINTEN3)\
-||(OPT == ADC_ADINTEN4)||(OPT == ADC_ADINTEN5)\
-||(OPT == ADC_ADINTEN6)||(OPT == ADC_ADINTEN7)\
-||(OPT == ADC_ADGINTEN))
-
-#define PARAM_ADCx(n)	(((uint32_t *)n)==((uint32_t *)LPC_ADC))
-
 /**
  * @}
  */
 
 
-
 /* Public Functions ----------------------------------------------------------- */
-/** @defgroup ADC_Public_Functions
+/** @defgroup ADC_Public_Functions ADC Public Functions
  * @{
  */
-
-void ADC_Init(LPC_ADC_TypeDef *ADCx, uint32_t ConvFreq);
+/* Init/DeInit ADC peripheral ----------------*/
+void ADC_Init(LPC_ADC_TypeDef *ADCx, uint32_t rate);
 void ADC_DeInit(LPC_ADC_TypeDef *ADCx);
+
+/* Enable/Disable ADC functions --------------*/
 void ADC_BurstCmd(LPC_ADC_TypeDef *ADCx, FunctionalState NewState);
 void ADC_PowerdownCmd(LPC_ADC_TypeDef *ADCx, FunctionalState NewState);
 void ADC_StartCmd(LPC_ADC_TypeDef *ADCx, uint8_t start_mode);
+void ADC_ChannelCmd (LPC_ADC_TypeDef *ADCx, uint8_t Channel, FunctionalState NewState);
+
+/* Configure ADC functions -------------------*/
 void ADC_EdgeStartConfig(LPC_ADC_TypeDef *ADCx, uint8_t EdgeOption);
 void ADC_IntConfig (LPC_ADC_TypeDef *ADCx, ADC_TYPE_INT_OPT IntType, FunctionalState NewState);
-void ADC_ChannelCmd (LPC_ADC_TypeDef *ADCx, uint8_t Channel, FunctionalState NewState);
+
+/* Get ADC information functions -------------------*/
 uint16_t ADC_ChannelGetData(LPC_ADC_TypeDef *ADCx, uint8_t channel);
 FlagStatus ADC_ChannelGetStatus(LPC_ADC_TypeDef *ADCx, uint8_t channel, uint32_t StatusType);
-uint16_t ADC_GlobalGetData(LPC_ADC_TypeDef *ADCx, uint8_t channel);
+uint32_t ADC_GlobalGetData(LPC_ADC_TypeDef *ADCx);
 FlagStatus	ADC_GlobalGetStatus(LPC_ADC_TypeDef *ADCx, uint32_t StatusType);
 
 /**

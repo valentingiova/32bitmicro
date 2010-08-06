@@ -1,10 +1,10 @@
-/**
- * @file	: lpc17xx_pinsel.c
- * @brief	: Contains all functions support for Pin connect block firmware
+/***********************************************************************//**
+ * @file		lpc17xx_pinsel.c
+ * @brief		Contains all functions support for Pin connect block firmware
  * 				library on LPC17xx
- * @version	: 1.0
- * @date	: 25. Feb. 2009
- * @author	: HoanTran
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -26,11 +26,11 @@
 /* Includes ------------------------------------------------------------------- */
 #include "lpc17xx_pinsel.h"
 
-
 /* Public Functions ----------------------------------------------------------- */
-/** @addtogroup PINSEL_Public_Functions
- * @{
- */
+
+static void set_PinFunc ( uint8_t portnum, uint8_t pinnum, uint8_t funcnum);
+static void set_ResistorMode ( uint8_t portnum, uint8_t pinnum, uint8_t modenum);
+static void set_OpenDrainMode( uint8_t portnum, uint8_t pinnum, uint8_t modenum);
 
 /*********************************************************************//**
  * @brief 		Setup the pin selection function
@@ -85,7 +85,7 @@
  *
  * @return 		None
  **********************************************************************/
-void PINSEL_SetPinFunc ( uint8_t portnum, uint8_t pinnum, uint8_t funcnum)
+static void set_PinFunc ( uint8_t portnum, uint8_t pinnum, uint8_t funcnum)
 {
 	uint32_t pinnum_t = pinnum;
 	uint32_t pinselreg_idx = 2 * portnum;
@@ -98,28 +98,6 @@ void PINSEL_SetPinFunc ( uint8_t portnum, uint8_t pinnum, uint8_t funcnum)
 	*(uint32_t *)(pPinCon + pinselreg_idx) &= ~(0x03UL << (pinnum_t * 2));
 	*(uint32_t *)(pPinCon + pinselreg_idx) |= ((uint32_t)funcnum) << (pinnum_t * 2);
 }
-
-
-
-/*********************************************************************//**
- * @brief 		Configure trace function
- * @param[in] 	NewState State of the Trace function configuration,
- * 				should be one of the following:
- * 				- ENABLE : Enable Trace Function
- * 				- DISABLE : Disable Trace Function
- *
- * @return 		None
- **********************************************************************/
-void PINSEL_ConfigTraceFunc(FunctionalState NewState)
-{
-	if (NewState == ENABLE) {
-		LPC_PINCON->PINSEL10 |= (0x01UL << 3);
-	} else if (NewState == DISABLE) {
-		LPC_PINCON->PINSEL10 &= ~(0x01UL << 3);
-	}
-}
-
-
 
 /*********************************************************************//**
  * @brief 		Setup resistor mode for each pin
@@ -172,7 +150,7 @@ void PINSEL_ConfigTraceFunc(FunctionalState NewState)
 
  * @return 		None
  **********************************************************************/
-void PINSEL_SetResistorMode ( uint8_t portnum, uint8_t pinnum, uint8_t modenum)
+void set_ResistorMode ( uint8_t portnum, uint8_t pinnum, uint8_t modenum)
 {
 	uint32_t pinnum_t = pinnum;
 	uint32_t pinmodereg_idx = 2 * portnum;
@@ -186,8 +164,6 @@ void PINSEL_SetResistorMode ( uint8_t portnum, uint8_t pinnum, uint8_t modenum)
 	*(uint32_t *)(pPinCon + pinmodereg_idx) &= ~(0x03UL << (pinnum_t * 2));
 	*(uint32_t *)(pPinCon + pinmodereg_idx) |= ((uint32_t)modenum) << (pinnum_t * 2);
 }
-
-
 
 /*********************************************************************//**
  * @brief 		Setup Open drain mode for each pin
@@ -240,7 +216,7 @@ void PINSEL_SetResistorMode ( uint8_t portnum, uint8_t pinnum, uint8_t modenum)
  *
  * @return 		None
  **********************************************************************/
-void PINSEL_SetOpenDrainMode( uint8_t portnum, uint8_t pinnum, uint8_t modenum)
+void set_OpenDrainMode( uint8_t portnum, uint8_t pinnum, uint8_t modenum)
 {
 	uint32_t *pPinCon = (uint32_t *)&LPC_PINCON->PINMODE_OD0;
 
@@ -251,7 +227,29 @@ void PINSEL_SetOpenDrainMode( uint8_t portnum, uint8_t pinnum, uint8_t modenum)
 	}
 }
 
+/* End of Public Functions ---------------------------------------------------- */
 
+/* Public Functions ----------------------------------------------------------- */
+/** @addtogroup PINSEL_Public_Functions
+ * @{
+ */
+/*********************************************************************//**
+ * @brief 		Configure trace function
+ * @param[in] 	NewState State of the Trace function configuration,
+ * 				should be one of the following:
+ * 				- ENABLE : Enable Trace Function
+ * 				- DISABLE : Disable Trace Function
+ *
+ * @return 		None
+ **********************************************************************/
+void PINSEL_ConfigTraceFunc(FunctionalState NewState)
+{
+	if (NewState == ENABLE) {
+		LPC_PINCON->PINSEL10 |= (0x01UL << 3);
+	} else if (NewState == DISABLE) {
+		LPC_PINCON->PINSEL10 &= ~(0x01UL << 3);
+	}
+}
 
 /*********************************************************************//**
  * @brief 		Setup I2C0 pins
@@ -291,9 +289,9 @@ void PINSEL_SetI2C0Pins(uint8_t i2cPinMode, FunctionalState filterSlewRateEnable
  **********************************************************************/
 void PINSEL_ConfigPin(PINSEL_CFG_Type *PinCfg)
 {
-	PINSEL_SetPinFunc(PinCfg->Portnum, PinCfg->Pinnum, PinCfg->Funcnum);
-	PINSEL_SetResistorMode(PinCfg->Portnum, PinCfg->Pinnum, PinCfg->Pinmode);
-	PINSEL_SetOpenDrainMode(PinCfg->Portnum, PinCfg->Pinnum, PinCfg->OpenDrain);
+	set_PinFunc(PinCfg->Portnum, PinCfg->Pinnum, PinCfg->Funcnum);
+	set_ResistorMode(PinCfg->Portnum, PinCfg->Pinnum, PinCfg->Pinmode);
+	set_OpenDrainMode(PinCfg->Portnum, PinCfg->Pinnum, PinCfg->OpenDrain);
 }
 
 

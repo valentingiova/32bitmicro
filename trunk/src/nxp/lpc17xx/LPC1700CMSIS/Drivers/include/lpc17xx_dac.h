@@ -1,10 +1,10 @@
 /***********************************************************************//**
- * @file	: lpc17xx_dac.h
- * @brief	: Contains all macro definitions and function prototypes
+ * @file		lpc17xx_dac.h
+ * @brief		Contains all macro definitions and function prototypes
  * 				support for DAC firmware library on LPC17xx
- * @version	: 1.0
- * @date	: 3. April. 2009
- * @author	: HieuNguyen
+ * @version		3.0
+ * @date		18. June. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -19,7 +19,7 @@
  **************************************************************************/
 
 /* Peripheral group ----------------------------------------------------------- */
-/** @defgroup DAC
+/** @defgroup DAC DAC
  * @ingroup LPC1700CMSIS_FwLib_Drivers
  * @{
  */
@@ -37,14 +37,48 @@ extern "C"
 {
 #endif
 
+/* Public Macros -------------------------------------------------------------- */
+/** @defgroup DAC_Private_Macros DAC Private Macros
+ * @{
+ */
 
+/** After the selected settling time after this field is written with a
+new VALUE, the voltage on the AOUT pin (with respect to VSSA)
+is VALUE/1024 × VREF */
+#define DAC_VALUE(n) 		((uint32_t)((n&0x3FF)<<6))
+/** If this bit = 0: The settling time of the DAC is 1 microsecond max,
+ * and the maximum current is 700 microAmpere
+ * If this bit = 1: The settling time of the DAC is 2.5 microsecond
+ * and the maximum current is 350 microAmpere */
+#define DAC_BIAS_EN			((uint32_t)(1<<16))
+/** Value to reload interrupt DMA counter */
+#define DAC_CCNT_VALUE(n)  ((uint32_t)(n&0xffff))
+
+/** DCAR double buffering */
+#define DAC_DBLBUF_ENA		((uint32_t)(1<<1))
+/** DCAR Time out count enable */
+#define DAC_CNT_ENA			((uint32_t)(1<<2))
+/** DCAR DMA access */
+#define DAC_DMA_ENA			((uint32_t)(1<<3))
+/** DCAR DACCTRL mask bit */
+#define DAC_DACCTRL_MASK	((uint32_t)(0x0F))
+
+/** Macro to determine if it is valid DAC peripheral */
+#define PARAM_DACx(n)	(((uint32_t *)n)==((uint32_t *)LPC_DAC))
+
+/** Macro to check DAC current optional parameter */
+#define	PARAM_DAC_CURRENT_OPT(OPTION) ((OPTION == DAC_MAX_CURRENT_700uA)\
+||(OPTION == DAC_MAX_CURRENT_350uA))
+/**
+ * @}
+ */
 /* Public Types --------------------------------------------------------------- */
-/** @defgroup DAC_Public_Types
+/** @defgroup DAC_Public_Types DAC Public Types
  * @{
  */
 
 /**
- * @brief Current option in ADC confuration option */
+ * @brief Current option in DAC configuration option */
 typedef enum
 {
 	DAC_MAX_CURRENT_700uA = 0, 	/*!< The settling time of the DAC is 1 us max,
@@ -52,11 +86,9 @@ typedef enum
 	DAC_MAX_CURRENT_350uA		/*!< The settling time of the DAC is 2.5 us
 								and the maximum current is 350 uA */
 } DAC_CURRENT_OPT;
-#define	PARAM_DAC_CURRENT_OPT(OPTION) ((OPTION == DAC_MAX_CURRENT_700uA)\
-||(OPTION == DAC_MAX_CURRENT_350uA))
 
 /**
- * @brief Configuration for DA converter control register */
+ * @brief Configuration for DAC converter control register */
 typedef struct
 {
 
@@ -80,42 +112,8 @@ typedef struct
  * @}
  */
 
-
-/* Public Macros -------------------------------------------------------------- */
-/** @defgroup DAC_Public_Macros
- * @{
- */
-
-/** After the selected settling time after this field is written with a
-new VALUE, the voltage on the AOUT pin (with respect to VSSA)
-is VALUE/1024 × VREF */
-#define DAC_VALUE(n) 		((uint32_t)((n&0x3FF)<<6))
-/** If this bit = 0: The settling time of the DAC is 1 microsecond max,
- * and the maximum current is 700 microAmpere
- * If this bit = 1: The settling time of the DAC is 2.5 microsecond
- * and the maximum current is 350 microAmpere */
-#define DAC_BIAS_EN			((uint32_t)(1<<16))
-/** Value to reload interrupt DMA counter */
-#define DAC_CCNT_VALUE(n)  ((uint32_t)(n&0xff))
-
-/** DCAR double buffering */
-#define DAC_DBLBUF_ENA		((uint32_t)(1<<1))
-/** DCAR Time out count enable */
-#define DAC_CNT_ENA			((uint32_t)(1<<2))
-/** DCAR DMA access */
-#define DAC_DMA_ENA			((uint32_t)(1<<3))
-/** DCAR DACCTRL mask bit */
-#define DAC_DACCTRL_MASK	((uint32_t)(0x0F))
-
-/** Macro to determine if it is valid DAC peripheral */
-#define PARAM_DACx(n)	(((uint32_t *)n)==((uint32_t *)LPC_DAC))
-
-/**
- * @}
- */
-
 /* Public Functions ----------------------------------------------------------- */
-/** @defgroup DAC_Public_Functions
+/** @defgroup DAC_Public_Functions DAC Public Functions
  * @{
  */
 

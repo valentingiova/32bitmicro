@@ -1,9 +1,9 @@
-/**
- * @file	: lpc17xx_wdt.c
- * @brief	: Contains all functions support for WDT firmware library on LPC17xx
- * @version	: 1.0
- * @date	: 9. April. 2009
- * @author	: HieuNguyen
+/***********************************************************************//**
+ * @file		lpc17xx_wdt.c
+ * @brief		Contains all functions support for WDT firmware library on LPC17xx
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -42,9 +42,8 @@
 #ifdef _WDT
 
 /* Private Functions ---------------------------------------------------------- */
-/** @defgroup WDT_Private_Functions
- * @{
- */
+
+static uint8_t WDT_SetTimeOut (uint8_t clk_source, uint32_t timeout);
 
 /********************************************************************//**
  * @brief 		Set WDT time out value and WDT mode
@@ -52,7 +51,7 @@
  * @param[in]	timeout value of time-out for WDT (us)
  * @return		None
  *********************************************************************/
-uint8_t WDT_SetTimeOut (uint8_t clk_source, uint32_t timeout)
+static uint8_t WDT_SetTimeOut (uint8_t clk_source, uint32_t timeout)
 {
 
 	uint32_t pclk_wdt = 0;
@@ -134,9 +133,7 @@ uint8_t WDT_SetTimeOut (uint8_t clk_source, uint32_t timeout)
 	return ERROR;
 }
 
-/**
- * @}
- */
+/* End of Private Functions --------------------------------------------------- */
 
 
 /* Public Functions ----------------------------------------------------------- */
@@ -148,18 +145,16 @@ uint8_t WDT_SetTimeOut (uint8_t clk_source, uint32_t timeout)
 /*********************************************************************//**
 * @brief 		Initial for Watchdog function
 * 					Clock source = RTC ,
-*
-* @param[in]	ClkSrc  Select clock source
-* 				-	0:Clock source from Internal RC oscillator
-* 				-	1: Selects the APB peripheral clock (PCLK)
-* 				-	2:Selects the RTC oscillator
-*
-* @param[in]	WDTMode WDT mode
-* 				-	0: Use WDT to generate interrupt only
-* 				-	1:WDT_MODE_RESET
+* @param[in]	ClkSrc  Select clock source, should be:
+* 				- WDT_CLKSRC_IRC: Clock source from Internal RC oscillator
+* 				- WDT_CLKSRC_PCLK: Selects the APB peripheral clock (PCLK)
+* 				- WDT_CLKSRC_RTC: Selects the RTC oscillator
+* @param[in]	WDTMode WDT mode, should be:
+* 				- WDT_MODE_INT_ONLY: Use WDT to generate interrupt only
+* 				- WDT_MODE_RESET: Use WDT to generate interrupt and reset MCU
 * @return 		None
  **********************************************************************/
-void WDT_Init (uint32_t ClkSrc, uint32_t WDTMode)
+void WDT_Init (WDT_CLK_OPT ClkSrc, WDT_MODE_OPT WDTMode)
 {
 	CHECK_PARAM(PARAM_WDT_CLK_OPT(ClkSrc));
 	CHECK_PARAM(PARAM_WDT_MODE_OPT(WDTMode));
@@ -198,7 +193,7 @@ void WDT_Start(uint32_t TimeOut)
  *********************************************************************/
 FlagStatus WDT_ReadTimeOutFlag (void)
 {
-	return ((LPC_WDT->WDMOD & WDT_WDMOD_WDTOF) >>2);
+	return ((FlagStatus)((LPC_WDT->WDMOD & WDT_WDMOD_WDTOF) >>2));
 }
 
 /********************************************************************//**

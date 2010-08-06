@@ -1,9 +1,9 @@
-/**
- * @file	: lpc17xx_gpdma.c
- * @brief	: Contains all functions support for GPDMA firmware library on LPC17xx
- * @version	: 1.0
- * @date	: 20. Apr. 2009
- * @author	: HieuNguyen
+/***********************************************************************//**
+ * @file		lpc17xx_gpdma.c
+ * @brief		Contains all functions support for GPDMA firmware library on LPC17xx
+ * @version		2.0
+ * @date		21. May. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -40,7 +40,7 @@
 
 
 /* Private Variables ---------------------------------------------------------- */
-/** @defgroup GPDMA_Private_Variables
+/** @defgroup GPDMA_Private_Variables GPDMA Private Variables
  * @{
  */
 
@@ -176,18 +176,6 @@ const uint8_t GPDMA_LUTPerWid[] = {
 		GPDMA_WIDTH_WORD,				// MAT3.1
 };
 
-/** Interrupt Call-back function pointer data for each GPDMA channel */
-static fnGPDMACbs_Type *_apfnGPDMACbs[8] = {
-		NULL, 	// GPDMA Call-back function pointer for Channel 0
-		NULL, 	// GPDMA Call-back function pointer for Channel 1
-		NULL, 	// GPDMA Call-back function pointer for Channel 2
-		NULL, 	// GPDMA Call-back function pointer for Channel 3
-		NULL, 	// GPDMA Call-back function pointer for Channel 4
-		NULL, 	// GPDMA Call-back function pointer for Channel 5
-		NULL, 	// GPDMA Call-back function pointer for Channel 6
-		NULL, 	// GPDMA Call-back function pointer for Channel 7
-};
-
 /**
  * @}
  */
@@ -228,11 +216,10 @@ void GPDMA_Init(void)
  * @param[in]	GPDMAChannelConfig Pointer to a GPDMA_CH_CFG_Type
  * 									structure that contains the configuration
  * 									information for the specified GPDMA channel peripheral.
- * @param[in]	pfnGPDMACbs			Pointer to a GPDMA interrupt call-back function
  * @return		ERROR if selected channel is enabled before
  * 				or SUCCESS if channel is configured successfully
  *********************************************************************/
-Status GPDMA_Setup(GPDMA_Channel_CFG_Type *GPDMAChannelConfig, fnGPDMACbs_Type *pfnGPDMACbs)
+Status GPDMA_Setup(GPDMA_Channel_CFG_Type *GPDMAChannelConfig)
 {
 	LPC_GPDMACH_TypeDef *pDMAch;
 	uint32_t tmp1, tmp2;
@@ -244,9 +231,6 @@ Status GPDMA_Setup(GPDMA_Channel_CFG_Type *GPDMAChannelConfig, fnGPDMACbs_Type *
 
 	// Get Channel pointer
 	pDMAch = (LPC_GPDMACH_TypeDef *) pGPDMACh[GPDMAChannelConfig->ChannelNum];
-
-	// Setup call back function for this channel
-	_apfnGPDMACbs[GPDMAChannelConfig->ChannelNum] = pfnGPDMACbs;
 
 	// Reset the Interrupt status
 	LPC_GPDMA->DMACIntTCClear = GPDMA_DMACIntTCClear_Ch(GPDMAChannelConfig->ChannelNum);
@@ -324,7 +308,6 @@ Status GPDMA_Setup(GPDMA_Channel_CFG_Type *GPDMAChannelConfig, fnGPDMACbs_Type *
 	// Do not support any more transfer type, return ERROR
 	default:
 		return ERROR;
-		break;
 	}
 
 	/* Re-Configure DMA Request Select for source peripheral */
@@ -384,42 +367,74 @@ void GPDMA_ChannelCmd(uint8_t channelNum, FunctionalState NewState)
 		pDMAch->DMACCConfig &= ~GPDMA_DMACCxConfig_E;
 	}
 }
-
 /*********************************************************************//**
- * @brief		Standard GPDMA interrupt handler, this function will check
- * 				all interrupt status of GPDMA channels, then execute the call
- * 				back function id they're already installed
- * @param[in]	None
- * @return		None
+ * @brief		Check if corresponding channel does have an active interrupt
+ * 				request or not
+ * @param[in]	type		type of status, should be:
+ * 					- GPDMA_STAT_INT: 		GPDMA Interrupt Status
+ * 					- GPDMA_STAT_INTTC: 	GPDMA Interrupt Terminal Count Request Status
+ * 					- GPDMA_STAT_INTERR:	GPDMA Interrupt Error Status
+ * 					- GPDMA_STAT_RAWINTTC:	GPDMA Raw Interrupt Terminal Count Status
+ * 					- GPDMA_STAT_RAWINTERR:	GPDMA Raw Error Interrupt Status
+ * 					- GPDMA_STAT_ENABLED_CH:GPDMA Enabled Channel Status
+ * @param[in]	channel		GPDMA channel, should be in range from 0 to 7
+ * @return		IntStatus	status of DMA channel interrupt after masking
+ * 				Should be:
+ * 					- SET: the corresponding channel has no active interrupt request
+ * 					- RESET: the corresponding channel does have an active interrupt request
  **********************************************************************/
-void GPDMA_IntHandler(void)
+IntStatus GPDMA_IntGetStatus(GPDMA_Status_Type type, uint8_t channel)
 {
-	uint32_t tmp;
-	// Scan interrupt pending
-	for (tmp = 0; tmp <= 7; tmp++) {
-		if (LPC_GPDMA->DMACIntStat & GPDMA_DMACIntStat_Ch(tmp)) {
-			// Check counter terminal status
-			if (LPC_GPDMA->DMACIntTCStat & GPDMA_DMACIntTCStat_Ch(tmp)) {
-				// Clear terminate counter Interrupt pending
-				LPC_GPDMA->DMACIntTCClear = GPDMA_DMACIntTCClear_Ch(tmp);
-				// Execute call-back function if it is already installed
-				if(_apfnGPDMACbs[tmp] != NULL) {
-					_apfnGPDMACbs[tmp](GPDMA_STAT_INTTC);
-				}
-			}
-			// Check error terminal status
-			if (LPC_GPDMA->DMACIntErrStat & GPDMA_DMACIntErrStat_Ch(tmp)) {
-				// Clear error counter Interrupt pending
-				LPC_GPDMA->DMACIntErrClr = GPDMA_DMACIntErrClr_Ch(tmp);
-				// Execute call-back function if it is already installed
-				if(_apfnGPDMACbs[tmp] != NULL) {
-					_apfnGPDMACbs[tmp](GPDMA_STAT_INTERR);
-				}
-			}
-		}
+	CHECK_PARAM(PARAM_GPDMA_STAT(type));
+	CHECK_PARAM(PARAM_GPDMA_CHANNEL(channel));
+
+	switch (type)
+	{
+	case GPDMA_STAT_INT: //check status of DMA channel interrupts
+		if (LPC_GPDMA->DMACIntStat & (GPDMA_DMACIntStat_Ch(channel)))
+			return SET;
+		return RESET;
+	case GPDMA_STAT_INTTC: // check terminal count interrupt request status for DMA
+		if (LPC_GPDMA->DMACIntTCStat & GPDMA_DMACIntTCStat_Ch(channel))
+			return SET;
+		return RESET;
+	case GPDMA_STAT_INTERR: //check interrupt status for DMA channels
+		if (LPC_GPDMA->DMACIntErrStat & GPDMA_DMACIntTCClear_Ch(channel))
+			return SET;
+		return RESET;
+	case GPDMA_STAT_RAWINTTC: //check status of the terminal count interrupt for DMA channels
+		if (LPC_GPDMA->DMACRawIntErrStat & GPDMA_DMACRawIntTCStat_Ch(channel))
+			return SET;
+		return RESET;
+	case GPDMA_STAT_RAWINTERR: //check status of the error interrupt for DMA channels
+		if (LPC_GPDMA->DMACRawIntTCStat & GPDMA_DMACRawIntErrStat_Ch(channel))
+			return SET;
+		return RESET;
+	default: //check enable status for DMA channels
+		if (LPC_GPDMA->DMACEnbldChns & GPDMA_DMACEnbldChns_Ch(channel))
+			return SET;
+		return RESET;
 	}
 }
 
+/*********************************************************************//**
+ * @brief		Clear one or more interrupt requests on DMA channels
+ * @param[in]	type		type of interrupt request, should be:
+ * 					- GPDMA_STATCLR_INTTC: 	GPDMA Interrupt Terminal Count Request Clear
+ * 					- GPDMA_STATCLR_INTERR: GPDMA Interrupt Error Clear
+ * @param[in]	channel		GPDMA channel, should be in range from 0 to 7
+ * @return		None
+ **********************************************************************/
+void GPDMA_ClearIntPending(GPDMA_StateClear_Type type, uint8_t channel)
+{
+	CHECK_PARAM(PARAM_GPDMA_STATCLR(type));
+	CHECK_PARAM(PARAM_GPDMA_CHANNEL(channel));
+
+	if (type == GPDMA_STATCLR_INTTC) // clears the terminal count interrupt request on DMA channel
+		LPC_GPDMA->DMACIntTCClear = GPDMA_DMACIntTCClear_Ch(channel);
+	else // clear the error interrupt request
+		LPC_GPDMA->DMACIntErrClr = GPDMA_DMACIntErrClr_Ch(channel);
+}
 
 /**
  * @}

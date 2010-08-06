@@ -1,9 +1,9 @@
-/**
- * @file	: lpc17xx_can.c
- * @brief	: Contains all functions support for CAN firmware library on LPC17xx
- * @version	: 1.0
- * @date	: 1.June.2009
- * @author	: NguyenCao
+/***********************************************************************//**
+ * @file		lpc17xx_can.c
+ * @brief		Contains all functions support for CAN firmware library on LPC17xx
+ * @version		3.0
+ * @date		18. June. 2010
+ * @author		NXP MCU SW Application Team
  **************************************************************************
  * Software that is described herein is for illustrative purposes only
  * which provides customers with programming information regarding the
@@ -40,40 +40,12 @@
 #ifdef _CAN
 
 /* Private Variables ---------------------------------------------------------- */
-/** @defgroup CAN_Private_Variables
+/** @defgroup CAN_Private_Variables CAN Private Variables
  * @{
  */
 
 FunctionalState FULLCAN_ENABLE;
 
-//use for debugging
-LPC_CAN_TypeDef *CAN1x = LPC_CAN1;
-LPC_CAN_TypeDef *CAN2x = LPC_CAN2;
-LPC_CANAF_RAM_TypeDef *CANAFRAMx = LPC_CANAF_RAM;
-LPC_CANAF_TypeDef *CANAFx = LPC_CANAF;
-
-/* Values of bit time register for different baudrates
-   NT = Nominal bit time = TSEG1 + TSEG2 + 3
-   SP = Sample point     = ((TSEG2 +1) / (TSEG1 + TSEG2 + 3)) * 100%
-                                            SAM,  SJW, TSEG1, TSEG2, NT,  SP */
-const uint32_t CAN_BIT_TIME[] ={0, /*             not used             */
-0, /*             not used             */
-0, /*             not used             */
-0, /*             not used             */
-0x0001C000, /* 0+1,  3+1,   1+1,   0+1,  4, 75% */
-0, /*             not used             */
-0x0012C000, /* 0+1,  3+1,   2+1,   1+1,  6, 67% */
-0, /*             not used             */
-0x0023C000, /* 0+1,  3+1,   3+1,   2+1,  8, 63% */
-0, /*             not used             */
-0x0025C000, /* 0+1,  3+1,   5+1,   2+1, 10, 70% */
-0, /*             not used             */
-0x0036C000, /* 0+1,  3+1,   6+1,   3+1, 12, 67% */
-0, /*             not used             */
-0, /*             not used             */
-0x0048C000, /* 0+1,  3+1,   8+1,   4+1, 15, 67% */
-0x0049C000, /* 0+1,  3+1,   9+1,   4+1, 16, 69% */
-};
 
 /* Counts number of filters (CAN message objects) used */
 uint16_t CANAF_FullCAN_cnt = 0;
@@ -82,46 +54,28 @@ uint16_t CANAF_gstd_cnt = 0;
 uint16_t CANAF_ext_cnt = 0;
 uint16_t CANAF_gext_cnt = 0;
 
-static fnCANCbs_Type* _apfnCANCbs[12]={
-		NULL, 	//CAN Recieve  Call-back funtion pointer
-		NULL,	//CAN Transmit1 Call-back funtion pointer
-		NULL,	//CAN Error Warning Call-back function pointer
-		NULL,	//CAN Data Overrun Call-back function pointer
-		NULL,	//CAN Wake-up Call-back funtion pointer
-		NULL,	//CAN Error Passive Call-back function pointer
-		NULL,	//CAN Arbitration Lost Call-back function pointer
-		NULL,	//CAN Bus Error Call-back function pointer
-		NULL,	//CAN ID Ready Call-back function pointer
-		NULL,	//CAN Transmit2 Call-back function pointer
-		NULL,	//CAN Transmit3 Call-back function pointer
-		NULL	//FullCAN Receive Call-back function pointer
-};
-
+/* End of Private Variables ----------------------------------------------------*/
 /**
  * @}
  */
 
-
-/* Public Functions ----------------------------------------------------------- */
-/** @addtogroup CAN_Public_Functions
- * @{
- */
-
+/* Private Variables ---------------------------------------------------------- */
+static void can_SetBaudrate (LPC_CAN_TypeDef *CANx, uint32_t baudrate);
 
 /*********************************************************************//**
  * @brief 		Setting CAN baud rate (bps)
  * @param[in] 	CANx point to LPC_CAN_TypeDef object, should be:
- * 				- CAN1
- * 				- CAN2
- * @param[in]	baudrate is the baud rate value will be set
+ * 				- LPC_CAN1: CAN1 peripheral
+ * 				- LPC_CAN2: CAN2 peripheral
+ * @param[in]	baudrate: is the baud rate value will be set
  * @return 		None
  ***********************************************************************/
-void CAN_SetBaudRate (LPC_CAN_TypeDef *CANx, uint32_t baudrate)
+static void can_SetBaudrate (LPC_CAN_TypeDef *CANx, uint32_t baudrate)
 {
-	uint32_t nominal_time;
 	uint32_t result = 0;
+	uint8_t NT, TSEG1, TSEG2;
 	uint32_t CANPclk = 0;
-
+	uint32_t BRP;
 	CHECK_PARAM(PARAM_CANx(CANx));
 
 	if (CANx == LPC_CAN1)
@@ -132,45 +86,48 @@ void CAN_SetBaudRate (LPC_CAN_TypeDef *CANx, uint32_t baudrate)
 	{
 		CANPclk = CLKPWR_GetPCLK (CLKPWR_PCONP_PCAN2);
 	}
-	/* Determine which nominal time to use for PCLK and baudrate */
-	if (baudrate <= 500000)
+	result = CANPclk / baudrate;
+	/* Calculate suitable nominal time value
+	 * NT (nominal time) = (TSEG1 + TSEG2 + 3)
+	 * NT <= 24
+	 * TSEG1 >= 2*TSEG2
+	 */
+	for(NT=24;NT>0;NT=NT-2)
 	{
-		nominal_time = 12;
+		if ((result%NT)==0)
+		{
+			BRP = result / NT - 1;
+			NT--;
+			TSEG2 = (NT/3) - 1;
+			TSEG1 = NT -(NT/3) - 1;
+			break;
+		}
 	}
-	else if (((CANPclk / 1000000) % 15) == 0)
-	{
-		nominal_time = 15;
-	}
-	else if (((CANPclk / 1000000) % 16) == 0)
-	{
-		nominal_time = 16;
-	}
-	else
-	{
-		nominal_time = 10;
-	}
-
-	/* Prepare value appropriate for bit time register                         */
-	result  = (CANPclk / nominal_time) / baudrate - 1;
-	result &= 0x000003FF;
-	result |= CAN_BIT_TIME[nominal_time];
-
 	/* Enter reset mode */
 	CANx->MOD = 0x01;
-	/* Set bit timing */
-	CANx->BTR  = result;
-
+	/* Set bit timing
+	 * Default: SAM = 0x00;
+	 *          SJW = 0x03;
+	 */
+	CANx->BTR  = (TSEG2<<20)|(TSEG1<<16)|(3<<14)|BRP;
 	/* Return to normal operating */
 	CANx->MOD = 0;
 }
+/* End of Private Functions ----------------------------------------------------*/
+
+
+/* Public Functions ----------------------------------------------------------- */
+/** @addtogroup CAN_Public_Functions
+ * @{
+ */
 
 /********************************************************************//**
  * @brief		Initialize CAN peripheral with given baudrate
  * @param[in]	CANx pointer to LPC_CAN_TypeDef, should be:
- * 				- CAN1: CAN 1
- * 				- CAN2: CAN 2
+ * 				- LPC_CAN1: CAN1 peripheral
+ * 				- LPC_CAN2: CAN2 peripheral
  * @param[in]	baudrate: the value of CAN baudrate will be set (bps)
- * @return 		void
+ * @return 		None
  *********************************************************************/
 void CAN_Init(LPC_CAN_TypeDef *CANx, uint32_t baudrate)
 {
@@ -219,14 +176,15 @@ void CAN_Init(LPC_CAN_TypeDef *CANx, uint32_t baudrate)
 
 	LPC_CANAF->AFMR = 0x00;
 	/* Set baudrate */
-	CAN_SetBaudRate (CANx, baudrate);
+	can_SetBaudrate (CANx, baudrate);
 }
+
 /********************************************************************//**
  * @brief		CAN deInit
  * @param[in]	CANx pointer to LPC_CAN_TypeDef, should be:
- * 				- CAN1: CAN 1
- * 				- CAN2: CAN 2
- * @return 		void
+ * 				- LPC_CAN1: CAN1 peripheral
+ * 				- LPC_CAN2: CAN2 peripheral
+ * @return 		None
  *********************************************************************/
 void CAN_DeInit(LPC_CAN_TypeDef *CANx)
 {
@@ -243,10 +201,12 @@ void CAN_DeInit(LPC_CAN_TypeDef *CANx)
 		CLKPWR_ConfigPPWR(CLKPWR_PCONP_PCAN2, DISABLE);
 	}
 }
+
 /********************************************************************//**
  * @brief		Setup Acceptance Filter Look-Up Table
- * @param[in]	CANAFx	pointer to LPC_CANAF_TypeDef, should be: CANAF
- * @param[in]	AFSection	the pointer to AF_SectionDef struct
+ * @param[in]	CANAFx	pointer to LPC_CANAF_TypeDef
+ * 				Should be: LPC_CANAF
+ * @param[in]	AFSection	the pointer to AF_SectionDef structure
  * 				It contain information about 5 sections will be install in AFLUT
  * @return 		CAN Error	could be:
  * 				- CAN_OBJECTS_FULL_ERROR: No more rx or tx objects available
@@ -509,8 +469,8 @@ CAN_ERROR CAN_SetupAFLUT(LPC_CANAF_TypeDef* CANAFx, AF_SectionDef* AFSection)
 /********************************************************************//**
  * @brief		Add Explicit ID into AF Look-Up Table dynamically.
  * @param[in]	CANx pointer to LPC_CAN_TypeDef, should be:
- * 				- CAN1: CAN 1
- * 				- CAN2: CAN 2
+ * 				- LPC_CAN1: CAN1 peripheral
+ * 				- LPC_CAN2: CAN2 peripheral
  * @param[in]	id: The ID of entry will be added
  * @param[in]	format: is the type of ID Frame Format, should be:
  * 				- STD_ID_FORMAT: 11-bit ID value
@@ -721,8 +681,8 @@ CAN_ERROR CAN_LoadExplicitEntry(LPC_CAN_TypeDef* CANx, uint32_t id, CAN_ID_FORMA
 /********************************************************************//**
  * @brief		Load FullCAN entry into AFLUT
  * @param[in]	CANx: CAN peripheral selected, should be:
- * 				- CAN1: CAN 1
- * 				- CAN2: CAN 2
+ * 				- LPC_CAN1: CAN1 peripheral
+ * 				- LPC_CAN2: CAN2 peripheral
  * @param[in]	id: identifier of entry that will be added
  * @return 		CAN_ERROR, could be:
  * 				- CAN_OK: loading is successful
@@ -904,8 +864,8 @@ CAN_ERROR CAN_LoadFullCANEntry (LPC_CAN_TypeDef* CANx, uint16_t id)
 /********************************************************************//**
  * @brief		Load Group entry into AFLUT
  * @param[in]	CANx: CAN peripheral selected, should be:
- * 				- CAN1: CAN 1
- * 				- CAN2: CAN 2
+ * 				- LPC_CAN1: CAN1 peripheral
+ * 				- LPC_CAN2: CAN2 peripheral
  * @param[in]	lowerID, upperID: lower and upper identifier of entry
  * @param[in]	format: type of ID format, should be:
  * 				- STD_ID_FORMAT: Standard ID format (11-bit value)
@@ -1327,8 +1287,8 @@ CAN_ERROR CAN_RemoveEntry(AFLUT_ENTRY_Type EntryType, uint16_t position)
 /********************************************************************//**
  * @brief		Send message data
  * @param[in]	CANx pointer to LPC_CAN_TypeDef, should be:
- * 				- CAN1: CAN 1
- * 				- CAN2: CAN 2
+ * 				- LPC_CAN1: CAN1 peripheral
+ * 				- LPC_CAN2: CAN2 peripheral
  * @param[in]	CAN_Msg point to the CAN_MSG_Type Structure, it contains message
  * 				information such as: ID, DLC, RTR, ID Format
  * @return 		Status:
@@ -1357,7 +1317,7 @@ Status CAN_SendMsg (LPC_CAN_TypeDef *CANx, CAN_MSG_Type *CAN_Msg)
 		/* Transmit Channel 1 is available */
 		/* Write frame informations and frame data into its CANxTFI1,
 		 * CANxTID1, CANxTDA1, CANxTDB1 register */
-		CANx->TFI1 &= ~0x000F000;
+		CANx->TFI1 &= ~0x000F0000;
 		CANx->TFI1 |= (CAN_Msg->len)<<16;
 		if(CAN_Msg->type == REMOTE_FRAME)
 		{
@@ -1381,12 +1341,10 @@ Status CAN_SendMsg (LPC_CAN_TypeDef *CANx, CAN_MSG_Type *CAN_Msg)
 
 		/*Write first 4 data bytes*/
 		data = (CAN_Msg->dataA[0])|(((CAN_Msg->dataA[1]))<<8)|((CAN_Msg->dataA[2])<<16)|((CAN_Msg->dataA[3])<<24);
-//		CANx->TDA1 = *((uint32_t *) &(CAN_Msg->dataA));
 		CANx->TDA1 = data;
 
 		/*Write second 4 data bytes*/
 		data = (CAN_Msg->dataB[0])|(((CAN_Msg->dataB[1]))<<8)|((CAN_Msg->dataB[2])<<16)|((CAN_Msg->dataB[3])<<24);
-//		CANx->TDB1 = *((uint32_t *) &(CAN_Msg->dataB));
 		CANx->TDB1 = data;
 
 		 /*Write transmission request*/
@@ -1399,7 +1357,7 @@ Status CAN_SendMsg (LPC_CAN_TypeDef *CANx, CAN_MSG_Type *CAN_Msg)
 		/* Transmit Channel 2 is available */
 		/* Write frame informations and frame data into its CANxTFI2,
 		 * CANxTID2, CANxTDA2, CANxTDB2 register */
-		CANx->TFI2 &= ~0x000F000;
+		CANx->TFI2 &= ~0x000F0000;
 		CANx->TFI2 |= (CAN_Msg->len)<<16;
 		if(CAN_Msg->type == REMOTE_FRAME)
 		{
@@ -1423,12 +1381,10 @@ Status CAN_SendMsg (LPC_CAN_TypeDef *CANx, CAN_MSG_Type *CAN_Msg)
 
 		/*Write first 4 data bytes*/
 		data = (CAN_Msg->dataA[0])|(((CAN_Msg->dataA[1]))<<8)|((CAN_Msg->dataA[2])<<16)|((CAN_Msg->dataA[3])<<24);
-//		CANx->TDA2 = *((uint32_t *) &(CAN_Msg->dataA));
 		CANx->TDA2 = data;
 
 		/*Write second 4 data bytes*/
 		data = (CAN_Msg->dataB[0])|(((CAN_Msg->dataB[1]))<<8)|((CAN_Msg->dataB[2])<<16)|((CAN_Msg->dataB[3])<<24);
-//		CANx->TDB2 = *((uint32_t *) &(CAN_Msg->dataB));
 		CANx->TDB2 = data;
 
 		/*Write transmission request*/
@@ -1441,7 +1397,7 @@ Status CAN_SendMsg (LPC_CAN_TypeDef *CANx, CAN_MSG_Type *CAN_Msg)
 		/* Transmit Channel 3 is available */
 		/* Write frame informations and frame data into its CANxTFI3,
 		 * CANxTID3, CANxTDA3, CANxTDB3 register */
-		CANx->TFI3 &= ~0x000F000;
+		CANx->TFI3 &= ~0x000F0000;
 		CANx->TFI3 |= (CAN_Msg->len)<<16;
 		if(CAN_Msg->type == REMOTE_FRAME)
 		{
@@ -1465,12 +1421,10 @@ Status CAN_SendMsg (LPC_CAN_TypeDef *CANx, CAN_MSG_Type *CAN_Msg)
 
 		/*Write first 4 data bytes*/
 		data = (CAN_Msg->dataA[0])|(((CAN_Msg->dataA[1]))<<8)|((CAN_Msg->dataA[2])<<16)|((CAN_Msg->dataA[3])<<24);
-//		CANx->TDA3 = *((uint32_t *) &(CAN_Msg->dataA));
 		CANx->TDA3 = data;
 
 		/*Write second 4 data bytes*/
 		data = (CAN_Msg->dataB[0])|(((CAN_Msg->dataB[1]))<<8)|((CAN_Msg->dataB[2])<<16)|((CAN_Msg->dataB[3])<<24);
-//		CANx->TDB3 = *((uint32_t *) &(CAN_Msg->dataB));
 		CANx->TDB3 = data;
 
 		/*Write transmission request*/
@@ -1486,8 +1440,8 @@ Status CAN_SendMsg (LPC_CAN_TypeDef *CANx, CAN_MSG_Type *CAN_Msg)
 /********************************************************************//**
  * @brief		Receive message data
  * @param[in]	CANx pointer to LPC_CAN_TypeDef, should be:
- * 				- CAN1: CAN 1
- * 				- CAN2: CAN 2
+ * 				- LPC_CAN1: CAN1 peripheral
+ * 				- LPC_CAN2: CAN2 peripheral
  * @param[in]	CAN_Msg point to the CAN_MSG_Type Struct, it will contain received
  *  			message information such as: ID, DLC, RTR, ID Format
  * @return 		Status:
@@ -1517,7 +1471,6 @@ Status CAN_ReceiveMsg (LPC_CAN_TypeDef *CANx, CAN_MSG_Type *CAN_Msg)
 		if (CAN_Msg->type == DATA_FRAME)
 		{
 			/* Read first 4 data bytes */
-//			*((uint32_t *) &CAN_Msg->dataA) = CANx->RDA;
 			data = CANx->RDA;
 			*((uint8_t *) &CAN_Msg->dataA[0])= data & 0x000000FF;
 			*((uint8_t *) &CAN_Msg->dataA[1])= (data & 0x0000FF00)>>8;;
@@ -1525,7 +1478,6 @@ Status CAN_ReceiveMsg (LPC_CAN_TypeDef *CANx, CAN_MSG_Type *CAN_Msg)
 			*((uint8_t *) &CAN_Msg->dataA[3])= (data & 0xFF000000)>>24;
 
 			/* Read second 4 data bytes */
-//			*((uint32_t *) &CAN_Msg->dataB) = CANx->RDB;
 			data = CANx->RDB;
 			*((uint8_t *) &CAN_Msg->dataB[0])= data & 0x000000FF;
 			*((uint8_t *) &CAN_Msg->dataB[1])= (data & 0x0000FF00)>>8;
@@ -1552,7 +1504,7 @@ Status CAN_ReceiveMsg (LPC_CAN_TypeDef *CANx, CAN_MSG_Type *CAN_Msg)
 
 /********************************************************************//**
  * @brief		Receive FullCAN Object
- * @param[in]	CANAFx: CAN Acceptance Filter register, should be LPC_CANAF
+ * @param[in]	CANAFx: CAN Acceptance Filter register, should be: LPC_CANAF
  * @param[in]	CAN_Msg point to the CAN_MSG_Type Struct, it will contain received
  *  			message information such as: ID, DLC, RTR, ID Format
  * @return 		CAN_ERROR, could be:
@@ -1604,7 +1556,6 @@ CAN_ERROR FCAN_ReadObj (LPC_CANAF_TypeDef* CANAFx, CAN_MSG_Type *CAN_Msg)
 	    	 		/*Set to DatA*/
 	    	 		pSrc++;
 	    	 		/* Copy to dest buf */
-//	    	 		*((uint32_t *) &CAN_Msg->dataA) = *pSrc;
 	    	 		data = *pSrc;
 	    			*((uint8_t *) &CAN_Msg->dataA[0])= data & 0x000000FF;
 	    			*((uint8_t *) &CAN_Msg->dataA[1])= (data & 0x0000FF00)>>8;
@@ -1614,7 +1565,6 @@ CAN_ERROR FCAN_ReadObj (LPC_CANAF_TypeDef* CANAFx, CAN_MSG_Type *CAN_Msg)
 	    	 		/*Set to DatB*/
 	    	 		pSrc++;
 	    	 		/* Copy to dest buf */
-//	    	 		*((uint32_t *) &CAN_Msg->dataB) = *pSrc;
 	    	 		data = *pSrc;
 	    			*((uint8_t *) &CAN_Msg->dataB[0])= data & 0x000000FF;
 	    			*((uint8_t *) &CAN_Msg->dataB[1])= (data & 0x0000FF00)>>8;
@@ -1641,8 +1591,8 @@ CAN_ERROR FCAN_ReadObj (LPC_CANAF_TypeDef* CANAFx, CAN_MSG_Type *CAN_Msg)
 /********************************************************************//**
  * @brief		Get CAN Control Status
  * @param[in]	CANx pointer to LPC_CAN_TypeDef, should be:
- * 				- CAN1: CAN 1
- * 				- CAN2: CAN 2
+ * 				- LPC_CAN1: CAN1 peripheral
+ * 				- LPC_CAN2: CAN2 peripheral
  * @param[in]	arg: type of CAN status to get from CAN status register
  * 				Should be:
  * 				- CANCTRL_GLOBAL_STS: CAN Global Status
@@ -1673,7 +1623,7 @@ uint32_t CAN_GetCTRLStatus (LPC_CAN_TypeDef* CANx, CAN_CTRL_STS_Type arg)
 }
 /********************************************************************//**
  * @brief		Get CAN Central Status
- * @param[in]	CANCRx point to LPC_CANCR_TypeDef
+ * @param[in]	CANCRx point to LPC_CANCR_TypeDef, should be: LPC_CANCR
  * @param[in]	arg: type of CAN status to get from CAN Central status register
  * 				Should be:
  * 				- CANCR_TX_STS: Central CAN Tx Status
@@ -1701,8 +1651,8 @@ uint32_t CAN_GetCRStatus (LPC_CANCR_TypeDef* CANCRx, CAN_CR_STS_Type arg)
 /********************************************************************//**
  * @brief		Enable/Disable CAN Interrupt
  * @param[in]	CANx pointer to LPC_CAN_TypeDef, should be:
- * 				- CAN1: CAN 1
- * 				- CAN2: CAN 2
+ * 				- LPC_CAN1: CAN1 peripheral
+ * 				- LPC_CAN2: CAN2 peripheral
  * @param[in]	arg: type of CAN interrupt that you want to enable/disable
  * 				Should be:
  * 				- CANINT_RIE: CAN Receiver Interrupt Enable
@@ -1750,32 +1700,10 @@ void CAN_IRQCmd (LPC_CAN_TypeDef* CANx, CAN_INT_EN_Type arg, FunctionalState New
 			CANx->IER &= ~(1 << arg);
 	}
 }
-/*********************************************************************//**
- * @brief		Install interrupt call-back function
- * @param[in]	arg: CAN interrupt type, should be:
- * 	  			- CANINT_RIE: CAN Receiver Interrupt Enable
- * 				- CANINT_TIE1: CAN Transmit Interrupt Enable
- * 				- CANINT_EIE: CAN Error Warning Interrupt Enable
- * 				- CANINT_DOIE: CAN Data Overrun Interrupt Enable
- * 				- CANINT_WUIE: CAN Wake-Up Interrupt Enable
- * 				- CANINT_EPIE: CAN Error Passive Interrupt Enable
- * 				- CANINT_ALIE: CAN Arbitration Lost Interrupt Enable
- * 				- CANINT_BEIE: CAN Bus Error Interrupt Enable
- * 				- CANINT_IDIE: CAN ID Ready Interrupt Enable
- * 				- CANINT_TIE2: CAN Transmit Interrupt Enable for Buffer2
- * 				- CANINT_TIE3: CAN Transmit Interrupt Enable for Buffer3
- * 				- CANINT_FCE: FullCAN Interrupt Enable
- * @param[in]	pnCANCbs: pointer point to call-back function
- * @return		None
- **********************************************************************/
-void CAN_SetupCBS(CAN_INT_EN_Type arg,fnCANCbs_Type* pnCANCbs)
-{
-	CHECK_PARAM(PARAM_INT_EN_TYPE(arg));
-	_apfnCANCbs[arg] = pnCANCbs;
-}
+
 /********************************************************************//**
  * @brief		Setting Acceptance Filter mode
- * @param[in]	CANAFx point to LPC_CANAF_TypeDef object, should be: CANAF
+ * @param[in]	CANAFx point to LPC_CANAF_TypeDef object, should be: LPC_CANAF
  * @param[in]	AFMode: type of AF mode that you want to set, should be:
  * 				- CAN_Normal: Normal mode
  * 				- CAN_AccOff: Acceptance Filter Off Mode
@@ -1808,8 +1736,8 @@ void CAN_SetAFMode (LPC_CANAF_TypeDef* CANAFx, CAN_AFMODE_Type AFMode)
 /********************************************************************//**
  * @brief		Enable/Disable CAN Mode
  * @param[in]	CANx pointer to LPC_CAN_TypeDef, should be:
- * 				- CAN1: CAN 1
- * 				- CAN2: CAN 2
+ * 				- LPC_CAN1: CAN1 peripheral
+ * 				- LPC_CAN2: CAN2 peripheral
  * @param[in]	mode: type of CAN mode that you want to enable/disable, should be:
  * 				- CAN_OPERATING_MODE: Normal Operating Mode
  * 				- CAN_RESET_MODE: Reset Mode
@@ -1842,18 +1770,20 @@ void CAN_ModeConfig(LPC_CAN_TypeDef* CANx, CAN_MODE_Type mode, FunctionalState N
 			CANx->MOD &= ~CAN_MOD_RM;
 		break;
 	case CAN_LISTENONLY_MODE:
-		CANx->MOD |=CAN_MOD_RM;
+		CANx->MOD |=CAN_MOD_RM;//Enter Reset mode
 		if(NewState == ENABLE)
 			CANx->MOD |=CAN_MOD_LOM;
 		else
 			CANx->MOD &=~CAN_MOD_LOM;
+		CANx->MOD &=~CAN_MOD_RM;//Release Reset mode
 		break;
 	case CAN_SELFTEST_MODE:
-		CANx->MOD |=CAN_MOD_RM;
+		CANx->MOD |=CAN_MOD_RM;//Enter Reset mode
 		if(NewState == ENABLE)
 			CANx->MOD |=CAN_MOD_STM;
 		else
 			CANx->MOD &=~CAN_MOD_STM;
+		CANx->MOD &=~CAN_MOD_RM;//Release Reset mode
 		break;
 	case CAN_TXPRIORITY_MODE:
 		if(NewState == ENABLE)
@@ -1882,30 +1812,72 @@ void CAN_ModeConfig(LPC_CAN_TypeDef* CANx, CAN_MODE_Type mode, FunctionalState N
 	}
 }
 /*********************************************************************//**
- * @brief		Standard CAN interrupt handler, this function will check
- * 				all interrupt status of CAN channels, then execute the call
- * 				back function if they're already installed
- * @param[in]	CANx point to CAN peripheral selected, should be: CAN1 or CAN2
- * @return		None
+ * @brief		Set CAN command request
+ * @param[in]	CANx point to CAN peripheral selected, should be:
+ * 				- LPC_CAN1: CAN1 peripheral
+ * 				- LPC_CAN2: CAN2 peripheral
+ * @param[in]	CMRType	command request type, should be:
+ * 				- CAN_CMR_TR: Transmission request
+ * 				- CAN_CMR_AT: Abort Transmission request
+ * 				- CAN_CMR_RRB: Release Receive Buffer request
+ * 				- CAN_CMR_CDO: Clear Data Overrun request
+ * 				- CAN_CMR_SRR: Self Reception request
+ * 				- CAN_CMR_STB1: Select Tx Buffer 1 request
+ * 				- CAN_CMR_STB2: Select Tx Buffer 2 request
+ * 				- CAN_CMR_STB3: Select Tx Buffer 3 request
+ * @return		CANICR (CAN interrupt and Capture register) value
  **********************************************************************/
-void CAN_IntHandler(LPC_CAN_TypeDef* CANx)
+void CAN_SetCommand(LPC_CAN_TypeDef* CANx, uint32_t CMRType)
 {
-	uint8_t t;
-	//scan interrupt pending
-	if(LPC_CANAF->FCANIE)
-	{
-		_apfnCANCbs[11]();
-	}
-	//scan interrupt channels
-	for(t=0;t<11;t++)
-	{
-		if(((CANx->ICR)>>t)&0x01)
-		{
-			_apfnCANCbs[t]();
-		}
-	}
+	CHECK_PARAM(PARAM_CANx(CANx));
+	CANx->CMR |= CMRType;
 }
 
+/*********************************************************************//**
+ * @brief		Get CAN interrupt status
+ * @param[in]	CANx point to CAN peripheral selected, should be:
+ * 				- LPC_CAN1: CAN1 peripheral
+ * 				- LPC_CAN2: CAN2 peripheral
+ * @return		CANICR (CAN interrupt and Capture register) value
+ **********************************************************************/
+uint32_t CAN_IntGetStatus(LPC_CAN_TypeDef* CANx)
+{
+	CHECK_PARAM(PARAM_CANx(CANx));
+	return CANx->ICR;
+}
+
+/*********************************************************************//**
+ * @brief		Check if FullCAN interrupt enable or not
+ * @param[in]	CANAFx point to LPC_CANAF_TypeDef object, should be: LPC_CANAF
+ * @return		IntStatus, could be:
+ * 				- SET: if FullCAN interrupt is enable
+ * 				- RESET: if FullCAN interrupt is disable
+ **********************************************************************/
+IntStatus CAN_FullCANIntGetStatus (LPC_CANAF_TypeDef* CANAFx)
+{
+	CHECK_PARAM( PARAM_CANAFx(CANAFx));
+	if (CANAFx->FCANIE)
+		return SET;
+	return RESET;
+}
+
+/*********************************************************************//**
+ * @brief		Get value of FullCAN interrupt and capture register
+ * @param[in]	CANAFx point to LPC_CANAF_TypeDef object, should be: LPC_CANAF
+ * @param[in]	type: FullCAN IC type, should be:
+ * 				- FULLCAN_IC0: FullCAN Interrupt Capture 0
+ * 				- FULLCAN_IC1: FullCAN Interrupt Capture 1
+ * @return		FCANIC0 or FCANIC1 (FullCAN interrupt and Capture register) value
+ **********************************************************************/
+uint32_t CAN_FullCANPendGetStatus(LPC_CANAF_TypeDef* CANAFx, FullCAN_IC_Type type)
+{
+	CHECK_PARAM(PARAM_CANAFx(CANAFx));
+	CHECK_PARAM( PARAM_FULLCAN_IC(type));
+	if (type == FULLCAN_IC0)
+		return CANAFx->FCANIC0;
+	return CANAFx->FCANIC1;
+}
+/* End of Public Variables ---------------------------------------------------------- */
 /**
  * @}
  */
