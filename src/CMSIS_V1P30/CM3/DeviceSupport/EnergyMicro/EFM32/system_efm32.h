@@ -1,13 +1,12 @@
-/**************************************************************************//**
+/***************************************************************************//**
  * @file
- * @brief CMSIS Cortex-M3 Peripheral Access Layer for EFM32 devices
- *
+ * @brief CMSIS Cortex-M3 Peripheral Access Layer for EFM32 devices.
  * @author Energy Micro AS
- * @version 1.0.0
- ******************************************************************************
+ * @version 1.2.1
+ *******************************************************************************
  * @section License
- * <b>(C) Copyright 2009 Energy Micro AS, http://www.energymicro.com</b>
- ******************************************************************************
+ * <b>(C) Copyright 2010 Energy Micro AS, http://www.energymicro.com</b>
+ *******************************************************************************
  *
  * This source code is the property of Energy Micro AS. The source and compiled
  * code may only be used on Energy Micro "EFM32" microcontrollers.
@@ -25,7 +24,7 @@
  * special damages, or any other relief, or for any claim by any third party,
  * arising from your use of this Software.
  *
- *****************************************************************************/
+ ******************************************************************************/
 
 #ifndef __SYSTEM_EFM32_H
 #define __SYSTEM_EFM32_H
@@ -36,34 +35,51 @@ extern "C" {
 
 #include <stdint.h>
 
+/*******************************************************************************
+ **************************   GLOBAL VARIABLES   *******************************
+ ******************************************************************************/
+
 extern uint32_t SystemCoreClock;    /**< System Clock Frequency (Core Clock) */
 
-/**************************************************************************//**
- * @brief Initialize the system
- *
- * @param  none
- * @return none
- *
- * @brief  Setup the microcontroller system.
- *         Initialize the System and update the SystemCoreClock variable.
- *****************************************************************************/
-extern void SystemInit(void);
+/*******************************************************************************
+ *****************************   PROTOTYPES   **********************************
+ ******************************************************************************/
+
+uint32_t SystemCoreClockGet(void);
 
 /**************************************************************************//**
- * @brief Update SystemCoreClock variable
+ * @brief
+ *   Update CMSIS SystemCoreClock variable.
  *
- * @param  none
- * @return none
+ * @details
+ *   CMSIS defines a global variable SystemCoreClock that shall hold the
+ *   core frequency in Hz. If the core frequency is dynamically changed, the
+ *   variable must be kept updated in order to be CMSIS compliant.
  *
- * @brief  Updates the SystemCoreClock with current core Clock
- *         retrieved from cpu registers.
+ *   Notice that if only changing core clock frequency through the EFM32 CMU
+ *   API, this variable will be kept updated. This function is only provided
+ *   for CMSIS compliance and if a user modifies the the core clock outside
+ *   the CMU API.
  *****************************************************************************/
-extern void SystemCoreClockUpdate(void);
+static __INLINE void SystemCoreClockUpdate(void)
+{
+  SystemCoreClockGet();
+}
 
+uint32_t SystemHFClockGet(void);
+
+uint32_t SystemHFXOClockGet(void);
+void SystemHFXOClockSet(uint32_t freq);
+
+void SystemInit(void);
+
+uint32_t SystemLFRCOClockGet(void);
+
+uint32_t SystemLFXOClockGet(void);
+void SystemLFXOClockSet(uint32_t freq);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif
-
+#endif /* __SYSTEM_EFM32_H */

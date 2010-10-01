@@ -6,13 +6,13 @@
  * build command line, instead of specifying the part specific header file.
  * @verbatim
  * Example: Add "-DEFM32G890F128" to your build options, to define part
- *          Add "#include "EFM32G.h" to your source files
+ *          Add "#include "efm32.h" to your source files
  * @endverbatim
  * @author Energy Micro AS
- * @version 1.0.0
+ * @version 1.2.1
  ******************************************************************************
  * @section License
- * <b>(C) Copyright 2009 Energy Micro AS, http://www.energymicro.com</b>
+ * <b>(C) Copyright 2010 Energy Micro AS, http://www.energymicro.com</b>
  ******************************************************************************
  *
  * This source code is the property of Energy Micro AS. The source and compiled
@@ -107,3 +107,4 @@
 #endif
 
 #endif
+
