@@ -2,7 +2,7 @@
 ; * @file:    startup_efm32.s
 ; * @purpose: CMSIS Cortex-M3 Core Device Startup File 
 ; *           for the Energy Micro 'EFM32G' Device Series 
-; * @version: 1.0.0
+; * @version 1.2.1
 ; * @date:    10. September 2009
 ; *----------------------------------------------------------------------------
 ; *
@@ -36,7 +36,6 @@
 ;
 ; Cortex-M version
 ;
-
         MODULE  ?cstartup
 
         ;; Forward declaration of sections.
@@ -75,7 +74,7 @@ __vector_table_0x1c
         DCD     SysTick_Handler
 
         ; External Interrupts
-        DCD UDMA_IRQHandler  ; 0: UDMA Interrupt 
+        DCD DMA_IRQHandler  ; 0: DMA Interrupt 
         DCD GPIO_EVEN_IRQHandler  ; 1: GPIO_EVEN Interrupt 
         DCD TIMER0_IRQHandler  ; 2: TIMER0 Interrupt 
         DCD USART0_RX_IRQHandler  ; 3: USART0_RX Interrupt 
@@ -103,7 +102,7 @@ __vector_table_0x1c
         DCD CMU_IRQHandler  ; 25: CMU Interrupt 
         DCD VCMP_IRQHandler  ; 26: VCMP Interrupt 
         DCD LCD_IRQHandler  ; 27: LCD Interrupt 
-        DCD IMEM_IRQHandler  ; 28: IMEM Interrupt 
+        DCD MSC_IRQHandler  ; 28: MSC Interrupt 
         DCD AES_IRQHandler  ; 29: AES Interrupt 
 
 __Vectors_End
@@ -171,10 +170,10 @@ SysTick_Handler
         B SysTick_Handler
         ; EFM32G specific interrupt handlers
 
-        PUBWEAK UDMA_IRQHandler
+        PUBWEAK DMA_IRQHandler
         SECTION .text:CODE:REORDER(1)
-UDMA_IRQHandler
-        B UDMA_IRQHandler
+DMA_IRQHandler
+        B DMA_IRQHandler
  
         PUBWEAK GPIO_EVEN_IRQHandler
         SECTION .text:CODE:REORDER(1)
@@ -311,10 +310,10 @@ VCMP_IRQHandler
 LCD_IRQHandler
         B LCD_IRQHandler
  
-        PUBWEAK IMEM_IRQHandler
+        PUBWEAK MSC_IRQHandler
         SECTION .text:CODE:REORDER(1)
-IMEM_IRQHandler
-        B IMEM_IRQHandler
+MSC_IRQHandler
+        B MSC_IRQHandler
  
         PUBWEAK AES_IRQHandler
         SECTION .text:CODE:REORDER(1)

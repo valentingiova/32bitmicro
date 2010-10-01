@@ -2,7 +2,7 @@
 ; * @file:    startup_efm32.s
 ; * @purpose: CMSIS Cortex-M3 Core Device Startup File 
 ; *           for the Energy Micro EFM32 device series
-; * @version: 1.0.0
+; * @version 1.2.1
 ; * @date:    1. October 2009
 ; *------- <<< Use Configuration Wizard in Context Menu >>> ------------------
 ; *
@@ -18,7 +18,6 @@
 ; * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
 ; *
 ; *****************************************************************************/
-
 
 ; <h> Stack Configuration
 ;   <o> Stack Size (in Bytes) <0x0-0xFFFFFFFF:8>
@@ -69,7 +68,7 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     SysTick_Handler           ; SysTick Handler
 
                 ; External Interrupts
-                DCD     UDMA_IRQHandler        ; 0: UDMA Interrupt
+                DCD     DMA_IRQHandler        ; 0: DMA Interrupt
                 DCD     GPIO_EVEN_IRQHandler        ; 1: GPIO_EVEN Interrupt
                 DCD     TIMER0_IRQHandler        ; 2: TIMER0 Interrupt
                 DCD     USART0_RX_IRQHandler        ; 3: USART0_RX Interrupt
@@ -97,7 +96,7 @@ __Vectors       DCD     __initial_sp              ; Top of Stack
                 DCD     CMU_IRQHandler        ; 25: CMU Interrupt
                 DCD     VCMP_IRQHandler        ; 26: VCMP Interrupt
                 DCD     LCD_IRQHandler        ; 27: LCD Interrupt
-                DCD     IMEM_IRQHandler        ; 28: IMEM Interrupt
+                DCD     MSC_IRQHandler        ; 28: MSC Interrupt
                 DCD     AES_IRQHandler        ; 29: AES Interrupt
 
                 AREA    |.text|, CODE, READONLY
@@ -160,7 +159,7 @@ SysTick_Handler PROC
 Default_Handler PROC
 
 
-                EXPORT  UDMA_IRQHandler        [WEAK]
+                EXPORT  DMA_IRQHandler        [WEAK]
                 EXPORT  GPIO_EVEN_IRQHandler        [WEAK]
                 EXPORT  TIMER0_IRQHandler        [WEAK]
                 EXPORT  USART0_RX_IRQHandler        [WEAK]
@@ -188,11 +187,11 @@ Default_Handler PROC
                 EXPORT  CMU_IRQHandler        [WEAK]
                 EXPORT  VCMP_IRQHandler        [WEAK]
                 EXPORT  LCD_IRQHandler        [WEAK]
-                EXPORT  IMEM_IRQHandler        [WEAK]
+                EXPORT  MSC_IRQHandler        [WEAK]
                 EXPORT  AES_IRQHandler        [WEAK]
 
 
-UDMA_IRQHandler
+DMA_IRQHandler
 GPIO_EVEN_IRQHandler
 TIMER0_IRQHandler
 USART0_RX_IRQHandler
@@ -220,7 +219,7 @@ RTC_IRQHandler
 CMU_IRQHandler
 VCMP_IRQHandler
 LCD_IRQHandler
-IMEM_IRQHandler
+MSC_IRQHandler
 AES_IRQHandler
 
                 B       .
