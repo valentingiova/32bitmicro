@@ -1,9 +1,10 @@
-/******************************************************************************
- * @file:    system_TMPM330.h
- * @purpose: CMSIS Cortex-M3 Device Peripheral Access Layer Header File for the
- *           TOSHIBA 'TMPM330' Device Series 
- * @version: V2.0.0
- * @date:    2009/10/14
+/**
+ *******************************************************************************
+ * @file    system_TMPM330.h
+ * @brief   CMSIS Cortex-M3 Device Peripheral Access Layer Header File for the
+ *          TOSHIBA 'TMPM330' Device Series 
+ * @version V2.1.0
+ * @date    2010/07/20
  * 
  * THE SOURCE CODE AND ITS RELATED DOCUMENTATION IS PROVIDED "AS IS". TOSHIBA
  * CORPORATION MAKES NO OTHER WARRANTY OF ANY KIND, WHETHER EXPRESS, IMPLIED OR,
@@ -24,8 +25,9 @@
  * PROBABILITY OF SUCH DAMAGES AND WHETHER A CLAIM FOR SUCH DAMAGE IS BASED UPON
  * WARRANTY, CONTRACT, TORT, NEGLIGENCE OR OTHERWISE.
  * 
- * (C)Copyright TOSHIBA CORPORATION 2009 All rights reserved
- ******************************************************************************/
+ * (C)Copyright TOSHIBA CORPORATION 2010 All rights reserved
+ *******************************************************************************
+ */
 
 #ifndef __SYSTEM_TMPM330_H
 #define __SYSTEM_TMPM330_H
@@ -35,7 +37,6 @@ extern "C" {
 #endif 
 
 extern uint32_t SystemCoreClock;     /*!< System Clock Frequency (Core Clock)  */
-
 
 /**
  * Initialize the system

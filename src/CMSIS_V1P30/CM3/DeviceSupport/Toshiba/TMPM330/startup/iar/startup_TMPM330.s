@@ -1,9 +1,10 @@
-;/*****************************************************************************
-; * @file:    startup_TMPM330.s
-; * @purpose: CMSIS Cortex-M3 Core Device Startup File for the
-; *           TOSHIBA 'TMPM330' Device Series 
-; * @version: V2.0.0
-; * @date:    2009/10/14
+;/**
+; ******************************************************************************
+; * @file    startup_TMPM330.s
+; * @brief   CMSIS Cortex-M3 Core Device Startup File for the
+; *          TOSHIBA 'TMPM330' Device Series 
+; * @version V2.1.0
+; * @date    2010/07/20
 ; * 
 ; * THE SOURCE CODE AND ITS RELATED DOCUMENTATION IS PROVIDED "AS IS". TOSHIBA
 ; * CORPORATION MAKES NO OTHER WARRANTY OF ANY KIND, WHETHER EXPRESS, IMPLIED OR,
@@ -24,8 +25,9 @@
 ; * PROBABILITY OF SUCH DAMAGES AND WHETHER A CLAIM FOR SUCH DAMAGE IS BASED UPON
 ; * WARRANTY, CONTRACT, TORT, NEGLIGENCE OR OTHERWISE.
 ; * 
-; * (C)Copyright TOSHIBA CORPORATION 2009 All rights reserved
-; ******************************************************************************/
+; * (C)Copyright TOSHIBA CORPORATION 2010 All rights reserved
+; *******************************************************************************
+; */
 ;
 ; The modules in this file are included in the libraries, and may be replaced
 ; by any user-defined modules that define the PUBLIC symbol _program_start or
@@ -49,7 +51,7 @@
 
                 DATA
 __vector_table  DCD     sfe(CSTACK)
-        DCD     Reset_Handler
+                DCD     Reset_Handler
 
                 DCD     NMI_Handler               ; NMI Handler
                 DCD     HardFault_Handler         ; Hard Fault Handler
@@ -67,12 +69,12 @@ __vector_table  DCD     sfe(CSTACK)
                 DCD     SysTick_Handler           ; SysTick Handler
 
                 ; External Interrupts
-                DCD     INT0_IRQHandler           ; 0:  Interrupt pin (PJ0/70 pin)
-                DCD     INT1_IRQHandler           ; 1:  Interrupt pin (PJ1/49 pin)
-                DCD     INT2_IRQHandler           ; 2:  Interrupt pin (PJ2/86 pin)
-                DCD     INT3_IRQHandler           ; 3:  Interrupt pin (PJ3/87 pin)
-                DCD     INT4_IRQHandler           ; 4:  Interrupt pin (PG3/6  pin)
-                DCD     INT5_IRQHandler           ; 5:  Interrupt pin (PF7/19 pin)
+                DCD     INT0_IRQHandler           ; 0:  Interrupt pin (PJ0/70pin)
+                DCD     INT1_IRQHandler           ; 1:  Interrupt pin (PJ1/49pin)
+                DCD     INT2_IRQHandler           ; 2:  Interrupt pin (PJ2/86pin)
+                DCD     INT3_IRQHandler           ; 3:  Interrupt pin (PJ3/87pin)
+                DCD     INT4_IRQHandler           ; 4:  Interrupt pin (PG3/6pin)
+                DCD     INT5_IRQHandler           ; 5:  Interrupt pin (PF7/19pin)
                 DCD     INTRX0_IRQHandler         ; 6:  Serial reception (channel.0)
                 DCD     INTTX0_IRQHandler         ; 7:  Serial transmission (channel.0)
                 DCD     INTRX1_IRQHandler         ; 8:  Serial reception (channel.1)
@@ -85,37 +87,37 @@ __vector_table  DCD     sfe(CSTACK)
                 DCD     INTADHP_IRQHandler        ; 15: Highest priority AD conversion complete interrupt
                 DCD     INTADM0_IRQHandler        ; 16: AD conversion monitoring function interrupt 0
                 DCD     INTADM1_IRQHandler        ; 17: AD conversion monitoring function interrupt 1
-                DCD     INTTB0_IRQHandler         ; 18: 16bit TMRB match detection 0
-                DCD     INTTB1_IRQHandler         ; 19: 16bit TMRB match detection 1
-                DCD     INTTB2_IRQHandler         ; 20: 16bit TMRB match detection 2
-                DCD     INTTB3_IRQHandler         ; 21: 16bit TMRB match detection 3
-                DCD     INTTB4_IRQHandler         ; 22: 16bit TMRB match detection 4
-                DCD     INTTB5_IRQHandler         ; 23: 16bit TMRB match detection 5
-                DCD     INTTB6_IRQHandler         ; 24: 16bit TMRB match detection 6
+                DCD     INTTB0_IRQHandler         ; 18: 16-bit TMRB match detection 0
+                DCD     INTTB1_IRQHandler         ; 19: 16-bit TMRB match detection 1
+                DCD     INTTB2_IRQHandler         ; 20: 16-bit TMRB match detection 2
+                DCD     INTTB3_IRQHandler         ; 21: 16-bit TMRB match detection 3
+                DCD     INTTB4_IRQHandler         ; 22: 16-bit TMRB match detection 4
+                DCD     INTTB5_IRQHandler         ; 23: 16-bit TMRB match detection 5
+                DCD     INTTB6_IRQHandler         ; 24: 16-bit TMRB match detection 6
                 DCD     INTRTC_IRQHandler         ; 25: Real time clock timer
-                DCD     INTCAP00_IRQHandler       ; 26: 16bit TMRB input capture 00
-                DCD     INTCAP01_IRQHandler       ; 27: 16bit TMRB input capture 01
-                DCD     INTCAP10_IRQHandler       ; 28: 16bit TMRB input capture 10
-                DCD     INTCAP11_IRQHandler       ; 29: 16bit TMRB input capture 11
-                DCD     INTCAP50_IRQHandler       ; 30: 16bit TMRB input capture 50
-                DCD     INTCAP51_IRQHandler       ; 31: 16bit TMRB input capture 51
-                DCD     INTCAP60_IRQHandler       ; 32: 16bit TMRB input capture 60
-                DCD     INTCAP61_IRQHandler       ; 33: 16bit TMRB input capture 61
+                DCD     INTCAP00_IRQHandler       ; 26: 16-bit TMRB input capture 00
+                DCD     INTCAP01_IRQHandler       ; 27: 16-bit TMRB input capture 01
+                DCD     INTCAP10_IRQHandler       ; 28: 16-bit TMRB input capture 10
+                DCD     INTCAP11_IRQHandler       ; 29: 16-bit TMRB input capture 11
+                DCD     INTCAP50_IRQHandler       ; 30: 16-bit TMRB input capture 50
+                DCD     INTCAP51_IRQHandler       ; 31: 16-bit TMRB input capture 51
+                DCD     INTCAP60_IRQHandler       ; 32: 16-bit TMRB input capture 60
+                DCD     INTCAP61_IRQHandler       ; 33: 16-bit TMRB input capture 61
                 DCD     INT6_IRQHandler           ; 34: Interrupt pin (PJ6/39 pin)
                 DCD     INT7_IRQHandler           ; 35: Interrupt pin (PJ7/58 pin)
                 DCD     INTRX2_IRQHandler         ; 36: Serial reception (channel.2)
                 DCD     INTTX2_IRQHandler         ; 37: Serial transmission (channel.2)
                 DCD     INTSBI2_IRQHandler        ; 38: Serial bus interface 2
                 DCD     INTRMCRX1_IRQHandler      ; 39: Remote control signal reception (channel.1)
-                DCD     INTTB7_IRQHandler         ; 40: 16bit TMRB match detection 7
-                DCD     INTTB8_IRQHandler         ; 41: 16bit TMRB match detection 8
-                DCD     INTTB9_IRQHandler         ; 42: 16bit TMRB match detection 9
-                DCD     INTCAP20_IRQHandler       ; 43: 16bit TMRB input capture 20
-                DCD     INTCAP21_IRQHandler       ; 44: 16bit TMRB input capture 21
-                DCD     INTCAP30_IRQHandler       ; 45: 16bit TMRB input capture 30
-                DCD     INTCAP31_IRQHandler       ; 46: 16bit TMRB input capture 31
-                DCD     INTCAP40_IRQHandler       ; 47: 16bit TMRB input capture 40
-                DCD     INTCAP41_IRQHandler       ; 48: 16bit TMRB input capture 41
+                DCD     INTTB7_IRQHandler         ; 40: 16-bit TMRB match detection 7
+                DCD     INTTB8_IRQHandler         ; 41: 16-bit TMRB match detection 8
+                DCD     INTTB9_IRQHandler         ; 42: 16-bit TMRB match detection 9
+                DCD     INTCAP20_IRQHandler       ; 43: 16-bit TMRB input capture 20
+                DCD     INTCAP21_IRQHandler       ; 44: 16-bit TMRB input capture 21
+                DCD     INTCAP30_IRQHandler       ; 45: 16-bit TMRB input capture 30
+                DCD     INTCAP31_IRQHandler       ; 46: 16-bit TMRB input capture 31
+                DCD     INTCAP40_IRQHandler       ; 47: 16-bit TMRB input capture 40
+                DCD     INTCAP41_IRQHandler       ; 48: 16-bit TMRB input capture 41
                 DCD     INTAD_IRQHandler          ; 49: A/D conversion completion
 
                 THUMB
