@@ -45,8 +45,24 @@ TARGET_SDK_CC_INCLUDE_PATH=${TARGET_SDK_ROOT}/lib/gcc/${GCC_PREFIX}/${GCC_VERSIO
 TARGET_SDK_CC_LINK_PATH=${TARGET_SDK_ROOT}/lib/gcc/${GCC_PREFIX}/${GCC_VERSION}
 TARGET_SDK_LIBC_INCLUDE_PATH=${TARGET_SDK_ROOT}/${GCC_PREFIX}/include
 TARGET_SDK_LIBC_LINK_PATH=${TARGET_SDK_ROOT}/${GCC_PREFIX}/lib
-TARGET_SDK_STARTUP_PATH=../lib/gcc/${GCC_PREFIX}/${GCC_VERSION}
-#TARGET_SDK_STARTUP_PATH=${TARGET_SDK_ROOT}/lib/gcc/${GCC_PREFIX}/${GCC_VERSION}
+
+
+#TARGET_SDK_STARTUP_PATH=../lib/gcc/${GCC_PREFIX}/${GCC_VERSION}
+TARGET_SDK_STARTUP_PATH=${TARGET_SDK_ROOT}/lib/gcc/${GCC_PREFIX}/${GCC_VERSION}
+
+# ARM specific
+ifeq ($(TARGET_CODE_MODE),ARM)
+TARGET_SDK_STARTUP_PATH=${TARGET_SDK_ROOT}/lib/gcc/${GCC_PREFIX}/${GCC_VERSION}
+endif
+
+ifeq ($(TARGET_CODE_MODE),THUMB)
+TARGET_SDK_STARTUP_PATH=${TARGET_SDK_ROOT}/lib/gcc/${GCC_PREFIX}/${GCC_VERSION}/thumb
+endif
+
+ifeq ($(TARGET_CODE_MODE),THUMB2)
+TARGET_SDK_STARTUP_PATH=${TARGET_SDK_ROOT}/lib/gcc/${GCC_PREFIX}/${GCC_VERSION}/thumb2
+endif
+
 
 # Tools
 # 
@@ -69,22 +85,34 @@ CXX=${GXX}
 GDB=${TARGET_SDK_PREFIX}gdb${EXE}
 
 # Binary outout
-GEN_BIN_CMD=$(OBJCOPY) -O binary ${PROJECT}.${OUT}   ${PROJECT}.${OUT}.bin
+GEN_BIN_CMD=$(OBJCOPY) -O binary ${PROJECT_OUT}   ${PROJECT_OUT}.bin
 
 # HEX output
-GEN_HEX_CMD=$(OBJCOPY) -O ihex   ${PROJECT}.${OUT}   ${PROJECT}.${OUT}.hex
+GEN_HEX_CMD=$(OBJCOPY) -O ihex   ${PROJECT_OUT}   ${PROJECT_OUT}.hex
 
 # Symbols
-GEN_SYM_CMD=$(OBJDUMP)  -t       ${PROJECT}.${OUT}  > ${PROJECT}.${OUT}.sym
+GEN_SYM_CMD=$(OBJDUMP)  -t       ${PROJECT_OUT}  > ${PROJECT_OUT}.sym
 
 # Listing
-GEN_LST_CMD=$(OBJDUMP)  -S -D    ${PROJECT}.${OUT}  > ${PROJECT}.${OUT}.lst
+GEN_LST_CMD=$(OBJDUMP)  -S -D    ${PROJECT_OUT}  > ${PROJECT_OUT}.lst
 
 
 # Flags
+ifeq ($(TARGET_CORE),LLVM)
+TARGET_SDK_AFLAGS  =-mthumb
+TARGET_SDK_CFLAGS  =-mthumb 
+TARGET_SDK_LDFLAGS =
+endif
+
 ifeq ($(TARGET_CORE),ARM7)
 TARGET_SDK_AFLAGS  =-mcpu=arm7tdmi
 TARGET_SDK_CFLAGS  =-mcpu=arm7tdmi
+TARGET_SDK_LDFLAGS =
+endif
+
+ifeq ($(TARGET_CORE),ARM11)
+TARGET_SDK_AFLAGS  =-march=armv5te -mtune=xscale
+TARGET_SDK_CFLAGS  =-march=armv5te -mtune=xscale
 TARGET_SDK_LDFLAGS =
 endif
 
@@ -97,6 +125,14 @@ endif
 ifeq ($(TARGET_CORE),CM3)
 TARGET_SDK_AFLAGS  =-mcpu=cortex-m3
 TARGET_SDK_CFLAGS  =-mcpu=cortex-m3
+TARGET_SDK_LDFLAGS =
+endif
+
+ifeq ($(TARGET_CORE),PXA)
+TARGET_SDK_AFLAGS  =-march=armv5te -mtune=xscale
+#TARGET_SDK_AFLAGS  =-mcpu=xscale
+TARGET_SDK_CFLAGS  =-march=armv5te -mtune=xscale
+#TARGET_SDK_CFLAGS  =-mcpu=xscale
 TARGET_SDK_LDFLAGS =
 endif
 
@@ -115,16 +151,29 @@ endif
 ifndef TARGET_SDK_CFLAGS
 ${error TARGET_SDK_CFLAGS is not defined}
 endif
+
 # compiler includes
+ifndef TARGET_SDK_NO_STDINCLUDE
 TARGET_SDK_CFLAGS+=-I$(TARGET_SDK_CC_INCLUDE_PATH)
+endif
 
 #ifndef TARGET_SDK_LDFLAGS
 #${error TARGET_SDK_LDFLAGS is not defined}
 #endif
 
+
+ifndef TARGET_SDK_NO_STDLIB
+TARGET_SDK_LDFLAGS+=-L$(TARGET_SDK_CC_LINK_PATH)
+endif
+
 # 32bitmicro flash link 
 ifndef TARGET_SDK_USE_DEFAULT_LDSCRIPT
 TARGET_SDK_LDSCRIPT +=-L$(32BITMICRO)/src/make -T$(32BITMICRO)/src/make/${TARGET_MCU}-gcc-flash.ld
+endif
+
+# custom startup
+ifneq ($(TARGET_STARTUP),default)
+TARGET_SDK_LDFLAGS+=${TARGET_STARTUP}
 endif
 
 # Target specific libries
@@ -203,20 +252,19 @@ else
 -include $(32BITMICRO)/src/make/Makefile.$(TARGET_LIBC)
 endif
 
-LIBGCC:=-L$(TARGET_SDK_CC_LINK_PATH)
 
 # add libc flags to sdk flags
 TARGET_SDK_AFLAGS  +=$(TARGET_LIBC_AFLAGS)
 TARGET_SDK_CFLAGS  +=$(TARGET_LIBC_CFLAGS)
 TARGET_SDK_CPPFLAGS+=$(TARGET_LIBC_CPPFLAGS)
-TARGET_SDK_LDFLAGS +=$(TARGET_LIBC_LDFLAGS) $(LIBGCC) 
+TARGET_SDK_LDFLAGS +=$(TARGET_LIBC_LDFLAGS)
 TARGET_SDK_LIBS    +=$(TARGET_LIBC_LIBS) -lgcc
 
 # Suffixes
 .SUFFIXES:
 .SUFFIXES: .c .cpp .cc .cxx .h .hpp .o .a .s .S
 
-%.o: %.c
+$(TARGET_BUILDDIR)%.o: $(TARGET_SOURCEDIR)%.c
 	@echo Compiling $<
 	$(CC) $(ALL_CFLAGS) -c $< -o $@ 
 ifdef TARGET_GEN_SYM
@@ -226,7 +274,7 @@ ifdef TARGET_GEN_LST
 	$(OBJDUMP)  -S -D  $@  > $@.lst
 endif
 
-%.o: %.cpp
+$(TARGET_BUILDDIR)%.o: $(TARGET_SOURCEDIR)%.cpp
 	@echo Compiling $<
 	$(CXX) $(ALL_CPPFLAGS) -c $< -o $@ 
 ifdef TARGET_GEN_SYM
@@ -236,9 +284,10 @@ ifdef TARGET_GEN_LST
 	$(OBJDUMP)  -S -D  $@  > $@.lst
 endif
 
-%.o: %.s
-	@echo Assembling $< 
-	$(AS) $(ALL_AFLAGS) $< -o $@
+$(TARGET_BUILDDIR)%.o: $(TARGET_SOURCEDIR)%.s
+	@echo Assembling $<
+	$(CC) $(ALL_AFLAGS) -c $< -o $@
+#	$(AS) $(ALL_AFLAGS) $< -o $@
 ifdef TARGET_GEN_SYM
 	$(OBJDUMP)  -t $@  > $@.sym
 endif
@@ -246,8 +295,8 @@ ifdef TARGET_GEN_LST
 	$(OBJDUMP)  -S -D $@  > $@.lst
 endif
 
-%.o: %.S
-	@echo Assembling $< 
+$(TARGET_BUILDDIR)%.o: $(TARGET_SOURCEDIR)%.S
+	@echo Assembling $<
 	$(ASPP) $(ALL_AFLAGS) $< -o $@
 #	$(ACPP) $(ALL_AFLAGS) | $(AS) -- $(ALL_AFLAGS) -o $
 ifdef TARGET_GEN_SYM
